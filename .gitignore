@@ -18,3 +18,14 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+# Package Files #
+*.war
+*.ear
+*.apk
+bin/
+bin
+gen/
+gen
+.metadata/
+.metadata
