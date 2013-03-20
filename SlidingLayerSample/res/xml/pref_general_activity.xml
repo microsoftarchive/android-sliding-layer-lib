@@ -1,0 +1,44 @@
+<!--
+  ~ pref_general_activity.xml
+  ~ 
+  ~ Copyright (C) 2013 6 Wunderkinder GmbH
+  ~
+  ~ Author: Jose L Ugia - @Jl_Ugia
+  ~ Author: Antonio Consuegra - @aconsuegra
+  ~ Author: Cesar Valiente - @CesarValiente
+  ~ Version: 1.0
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+            android:defaultValue="right"
+            android:dialogTitle="@string/pref_title_stick_container"
+            android:entries="@array/pref_list_titles"
+            android:entryValues="@array/pref_list_values"
+            android:key="layer_location"
+            android:title="@string/pref_title_stick_container"
+            android:summary="@string/pref_summary_stick_container" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="layer_has_shadow"
+        android:title="@string/pref_title_show_shadow" />
+    
+    <Preference 
+        android:title="@string/pref_go"
+        android:key="pref_go"/>
+
+</PreferenceScreen>
