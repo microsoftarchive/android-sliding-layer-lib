@@ -5,7 +5,6 @@
  * 
  * @author      Jose L Ugia - @Jl_Ugia
  * @author      Antonio Consuegra - @aconsuegra
- * @author      Cesar Valiente - @CesarValiente
  * @version     2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +20,7 @@
  * limitations under the License.
  */
 
-package com.ugia.slidinglayersample;
+package com.slidinglayersample;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -65,16 +64,23 @@ public class InitSelectionActivity extends PreferenceActivity {
 
         final ListPreference posPreference = (ListPreference) findPreference("layer_location");
         if (posPreference != null) {
+
+            setPreferenceSummary(posPreference,
+                    PreferenceManager.getDefaultSharedPreferences(this).getString("layer_location", "right"));
+
             posPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                    setPreferenceSummary(posPreference, (String) newValue);
 
                     if (newValue.equals("middle")) {
                         shadowPreference.setEnabled(false);
                         shadowPreference.setChecked(false);
                     } else {
                         shadowPreference.setEnabled(true);
+                        shadowPreference.setChecked(true);
                     }
                     return true;
                 }
@@ -85,6 +91,16 @@ public class InitSelectionActivity extends PreferenceActivity {
                 .equals("middle")) {
             shadowPreference.setEnabled(false);
             shadowPreference.setChecked(false);
+        }
+    }
+
+    private void setPreferenceSummary(Preference _preference, String _locationString) {
+        if (_locationString.equals("right")) {
+            _preference.setSummary(getResources().getString(R.string.label_right));
+        } else if (_locationString.equals("left")) {
+            _preference.setSummary(getResources().getString(R.string.label_left));
+        } else {
+            _preference.setSummary(getResources().getString(R.string.label_middle));
         }
     }
 }

@@ -6,7 +6,6 @@
   ~
   ~ Author: Jose L Ugia - @Jl_Ugia
   ~ Author: Antonio Consuegra - @aconsuegra
-  ~ Author: Cesar Valiente - @CesarValiente
   ~ Version: 1.0
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +26,7 @@
     <declare-styleable name="SlidingLayer">
         <attr name="shadowDrawable" format="boolean"/>
         <attr name="shadowWidth" format="dimension"/>
+        <attr name="closeOnTapEnabled" format="boolean"/>
         <attr name="stickTo" format="enum">
             <enum name="auto" value="0"/>
             <enum name="right" value="-1"/>

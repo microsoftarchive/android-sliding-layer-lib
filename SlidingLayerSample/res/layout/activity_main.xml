@@ -4,8 +4,8 @@
   ~ Copyright (C) 2013 6 Wunderkinder GmbH
   ~
   ~ Author: Jose L Ugia - @Jl_Ugia
-  ~ Author: Antonio Consuegra - @aconsuegra
-  ~ Author: Cesar Valiente - @CesarValiente
+  ~ Designer: Benedikt Lehnert - @blehnert
+  ~ Designer: Timothy Achumba - @iam_timm
   ~ Version: 1.0
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,14 +27,21 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
     
-    <Button
-        android:id="@+id/button2"
+    <ImageView 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="45dp"
+        android:contentDescription="@string/not_applicable"
+        android:src="@drawable/main_screen_rocket"/>
+    
+    <Button
+        android:id="@+id/buttonOpen"
+        style="@style/ButtonRed"
         android:onClick="buttonClicked"
-        android:text="@string/open_close_button_container" />
+        android:layout_centerInParent="true"
+        android:text="@string/open_button_container" />
 
     <com.slidinglayer.SlidingLayer
         xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
@@ -43,19 +50,34 @@
         android:layout_height="match_parent">
     <!--slidingLayer:shadowDrawable="@drawable/sidebar_shadow"
         slidingLayer:shadowWidth="@dimen/shadow_width"
-        slidingLayer:stickTo="auto|right|left|middle">-->
+        slidingLayer:stickTo="auto|right|left|middle"
+        slidingLayer:closeOnTapEnabled="true">-->
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray">
+            android:background="#14ad8f">
+                
+            <TextView 
+                android:id="@+id/swipeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:drawablePadding="15dip"
+                android:paddingBottom="80dp"
+                android:textSize="17sp"
+                android:textColor="#074035"/>
 
-	        <Button
-	            android:id="@+id/button1"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_centerInParent="true"
-	            android:text="@string/container_button_label" />
+            <Button
+		        android:id="@+id/buttonClose"
+		        style="@style/ButtonRed"
+		        android:onClick="buttonClicked"
+                android:layout_marginBottom="60dp"
+                android:layout_alignParentBottom="true"
+		        android:layout_centerHorizontal="true"
+		        android:text="@string/close_button_container" />
 
         </RelativeLayout>
 

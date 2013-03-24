@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ugia.slidinglayersample"
+    package="com.slidinglayersample"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -15,8 +15,9 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name="com.ugia.slidinglayersample.InitSelectionActivity"
-            android:label="@string/app_name" >
+            android:name="com.slidinglayersample.InitSelectionActivity"
+            android:label="@string/app_name" 
+            android:launchMode="singleTop">
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +26,8 @@
             
         </activity>
         
-        <activity android:name="com.ugia.slidinglayersample.MainActivity" />
+        <activity android:name="com.slidinglayersample.MainActivity" 
+            android:launchMode="singleTop"/>
         
     </application>
 

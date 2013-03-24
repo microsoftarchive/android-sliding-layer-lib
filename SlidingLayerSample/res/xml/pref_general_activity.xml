@@ -4,8 +4,6 @@
   ~ Copyright (C) 2013 6 Wunderkinder GmbH
   ~
   ~ Author: Jose L Ugia - @Jl_Ugia
-  ~ Author: Antonio Consuegra - @aconsuegra
-  ~ Author: Cesar Valiente - @CesarValiente
   ~ Version: 1.0
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,8 +27,7 @@
             android:entries="@array/pref_list_titles"
             android:entryValues="@array/pref_list_values"
             android:key="layer_location"
-            android:title="@string/pref_title_stick_container"
-            android:summary="@string/pref_summary_stick_container" />
+            android:title="@string/pref_title_stick_container"/>
     
     <CheckBoxPreference
         android:defaultValue="true"

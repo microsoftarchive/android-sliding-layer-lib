@@ -6,7 +6,8 @@
   ~
   ~ Author: Jose L Ugia - @Jl_Ugia
   ~ Author: Antonio Consuegra - @aconsuegra
-  ~ Author: Cesar Valiente - @CesarValiente
+  ~ Designer: Benedikt Lehnert - @blehnert
+  ~ Designer: Timothy Achumba - @iam_timm
   ~ Version: 1.0
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +23,9 @@
   ~ limitations under the License.
 -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle" >
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <gradient
-        android:endColor="#00000000"
-        android:centerColor="#11000000"
-        android:startColor="#33000000" />
+    <item android:drawable="@drawable/button_red_pressed" android:state_pressed="true"/>
+    <item android:drawable="@drawable/button_red"/>
 
-</shape>
+</selector>
