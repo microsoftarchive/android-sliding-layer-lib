@@ -25,7 +25,7 @@ XML
     xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
     android:id="@+id/slidingLayer1"
     android:layout_width="@dimen/layer_width"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
     slidingLayer:shadowDrawable="@drawable/sidebar_shadow"
     slidingLayer:shadowWidth="@dimen/shadow_width"
     slidingLayer:stickTo="auto|right|left|middle"
@@ -49,19 +49,19 @@ Java
   public class SlidingLayerExampleActivity extends Activity {
   
     @Override
-  	public void onCreate(Bundle savedInstanceState) {
-  		super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
   		setContentView(R.layout.main_view);
   
   		SlidingLayer slidingLayer = (SlidingLayer) findViewById(R.id.slidingLayer1);
-  
-    	slidingLayer.setShadowWidthRes(R.dimen.shadow_width);
+      
+      slidingLayer.setShadowWidthRes(R.dimen.shadow_width);
       slidingLayer.setShadowDrawable(R.drawable.sidebar_shadow);
       slidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT);
       slidingLayer.setCloseOnTapEnabled(false);
   		
       slidingLayer.addView(new Button(this));
   
-  	}
+    }
   }
 ```
