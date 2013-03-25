@@ -51,9 +51,9 @@ public class SlidingLayerExampleActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-  		  setContentView(R.layout.main_view);
+  		setContentView(R.layout.main_view);
   
-  		  SlidingLayer slidingLayer = (SlidingLayer) findViewById(R.id.slidingLayer1);
+  		SlidingLayer slidingLayer = (SlidingLayer) findViewById(R.id.slidingLayer1);
       
         slidingLayer.setShadowWidthRes(R.dimen.shadow_width);
         slidingLayer.setShadowDrawable(R.drawable.sidebar_shadow);
