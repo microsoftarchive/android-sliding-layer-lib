@@ -140,7 +140,7 @@ public class SlidingLayer extends FrameLayout {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLayer);
 
         // Set the side of the screen
-        setScreenSide(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
+        setStickTo(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
 
         // Sets the shadow drawable
         int shadowRes = ta.getResourceId(R.styleable.SlidingLayer_shadowDrawable, -1);
@@ -698,10 +698,14 @@ public class SlidingLayer extends FrameLayout {
         mScrolling = false;
     }
 
-    public void setScreenSide(int screenSide) {
+    public void setStickTo(int screenSide) {
 
         mScreenSide = screenSide;
         closeLayer(false, true);
+    }
+
+    public void setCloseOnTapEnabled(boolean _closeOnTapEnabled) {
+        closeOnTapEnabled = _closeOnTapEnabled;
     }
 
     @SuppressWarnings("deprecation")
@@ -773,7 +777,7 @@ public class SlidingLayer extends FrameLayout {
         }
 
         if (screenSide != mScreenSide) {
-            setScreenSide(screenSide);
+            setStickTo(screenSide);
 
             if (mScreenSide == STICK_TO_RIGHT) {
                 setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight(), getPaddingBottom());
