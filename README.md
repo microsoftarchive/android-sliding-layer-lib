@@ -21,7 +21,7 @@ In the following example the same layout will be added by using the two mentione
 XML
 -----
 ```xml
-  <com.slidinglayer.SlidingLayer
+<com.slidinglayer.SlidingLayer
     xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
     android:id="@+id/slidingLayer1"
     android:layout_width="@dimen/layer_width"
@@ -31,9 +31,9 @@ XML
     slidingLayer:stickTo="auto|right|left|middle"
     slidingLayer:closeOnTapEnabled="true">
 
-    ….
     …
-  </com.slidinglayer.SlidingLayer>
+    …
+</com.slidinglayer.SlidingLayer>
 ```
 
 Properties:
@@ -46,22 +46,22 @@ Properties:
 Java
 -----
 ```java
-  public class SlidingLayerExampleActivity extends Activity {
+public class SlidingLayerExampleActivity extends Activity {
   
     @Override
     public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-  		setContentView(R.layout.main_view);
+        super.onCreate(savedInstanceState);
+  		  setContentView(R.layout.main_view);
   
-  		SlidingLayer slidingLayer = (SlidingLayer) findViewById(R.id.slidingLayer1);
+  		  SlidingLayer slidingLayer = (SlidingLayer) findViewById(R.id.slidingLayer1);
       
-      slidingLayer.setShadowWidthRes(R.dimen.shadow_width);
-      slidingLayer.setShadowDrawable(R.drawable.sidebar_shadow);
-      slidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT);
-      slidingLayer.setCloseOnTapEnabled(false);
+        slidingLayer.setShadowWidthRes(R.dimen.shadow_width);
+        slidingLayer.setShadowDrawable(R.drawable.sidebar_shadow);
+        slidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT);
+        slidingLayer.setCloseOnTapEnabled(false);
   		
-      slidingLayer.addView(new Button(this));
+        slidingLayer.addView(new Button(this));
   
     }
-  }
+}
 ```
