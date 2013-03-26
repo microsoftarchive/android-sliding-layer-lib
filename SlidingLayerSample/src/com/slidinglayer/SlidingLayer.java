@@ -93,7 +93,7 @@ public class SlidingLayer extends FrameLayout {
     private int mShadowWidth;
     private Drawable mShadowDrawable;
 
-    private boolean mScrollingCacheEnabled;
+    private boolean mDrawingCacheEnabled;
 
     private int mScreenSide = STICK_TO_AUTO;
     private boolean closeOnTapEnabled = true;
@@ -656,9 +656,9 @@ public class SlidingLayer extends FrameLayout {
     @Override
     public void setDrawingCacheEnabled(boolean enabled) {
 
-        if (mScrollingCacheEnabled != enabled) {
+        if (mDrawingCacheEnabled != enabled) {
             super.setDrawingCacheEnabled(enabled);
-            mScrollingCacheEnabled = enabled;
+            mDrawingCacheEnabled = enabled;
 
             final int l = getChildCount();
             for (int i = 0; i < l; i++) {
