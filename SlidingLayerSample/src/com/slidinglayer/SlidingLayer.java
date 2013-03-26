@@ -93,6 +93,8 @@ public class SlidingLayer extends FrameLayout {
     private int mShadowWidth;
     private Drawable mShadowDrawable;
 
+    private boolean mScrollingCacheEnabled;
+
     private int mScreenSide = STICK_TO_AUTO;
     private boolean closeOnTapEnabled = true;
 
@@ -212,7 +214,7 @@ public class SlidingLayer extends FrameLayout {
 
     private void switchLayer(boolean open, boolean smoothAnim, boolean forceSwitch, int velocity) {
         if (!forceSwitch && open == mIsOpen) {
-            setScrollingCacheEnabled(false);
+            setDrawingCacheEnabled(false);
             return;
         }
         if (open) {
@@ -383,7 +385,7 @@ public class SlidingLayer extends FrameLayout {
             if (xDiff > mTouchSlop && xDiff > yDiff && allowDraging(dx)) {
                 mIsDragging = true;
                 mLastX = x;
-                setScrollingCacheEnabled(true);
+                setDrawingCacheEnabled(true);
             } else if (yDiff > mTouchSlop) {
                 mIsUnableToDrag = true;
             }
@@ -461,7 +463,7 @@ public class SlidingLayer extends FrameLayout {
                 if (xDiff > mTouchSlop && xDiff > yDiff) {
                     mIsDragging = true;
                     mLastX = x;
-                    setScrollingCacheEnabled(true);
+                    setDrawingCacheEnabled(true);
                 }
             }
             if (mIsDragging) {
@@ -588,8 +590,7 @@ public class SlidingLayer extends FrameLayout {
      */
     void smoothScrollTo(int x, int y, int velocity) {
         if (getChildCount() == 0) {
-            // Nothing to do.
-            setScrollingCacheEnabled(false);
+            setDrawingCacheEnabled(false);
             return;
         }
         int sx = getScrollX();
@@ -610,7 +611,7 @@ public class SlidingLayer extends FrameLayout {
             return;
         }
 
-        setScrollingCacheEnabled(true);
+        setDrawingCacheEnabled(true);
         mScrolling = true;
 
         final int width = getWidth();
@@ -652,9 +653,21 @@ public class SlidingLayer extends FrameLayout {
         }
     }
 
-    private void setScrollingCacheEnabled(boolean enabled) {
-        // TODO APply to all children
-        setDrawingCacheEnabled(false);
+    @Override
+    public void setDrawingCacheEnabled(boolean enabled) {
+
+        if (mScrollingCacheEnabled != enabled) {
+            super.setDrawingCacheEnabled(enabled);
+            mScrollingCacheEnabled = enabled;
+
+            final int l = getChildCount();
+            for (int i = 0; i < l; i++) {
+                final View child = getChildAt(i);
+                if (child.getVisibility() != GONE) {
+                    child.setDrawingCacheEnabled(enabled);
+                }
+            }
+        }
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
@@ -676,7 +689,7 @@ public class SlidingLayer extends FrameLayout {
         boolean needPopulate = mScrolling;
         if (needPopulate) {
             // Done with scroll, no longer want to cache view drawing.
-            setScrollingCacheEnabled(false);
+            setDrawingCacheEnabled(false);
             mScroller.abortAnimation();
             int oldX = getScrollX();
             int oldY = getScrollY();
