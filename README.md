@@ -3,9 +3,7 @@
 This repository host a library that provides an easy way to include an autonomous layer/view that slides from the side of your screen and which is fully gesture ready, the same way as our detail view in Wunderlist 2 does.
 This pattern can also be seen in Google+’s notification center or in Basecamp’s detail view.
 
-If you want to see how it works you can have a look to our video: http://www.youtube.com/watch?v=Xuz6MQK_6ew
-
-or directly download from Google Play it to test in on your device: https://play.google.com/store/apps/details?id=com.slidinglayersample
+If you want to see how it works you can have a look to our [video](http://www.youtube.com/watch?v=Xuz6MQK_6ew) or directly download from [Google Play](https://play.google.com/store/apps/details?id=com.slidinglayersample) it to test in on your device.
 
 
 Implementation setup
