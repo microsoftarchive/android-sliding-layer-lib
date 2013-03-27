@@ -524,7 +524,7 @@ public class SlidingLayer extends FrameLayout {
         }
         case MotionEventCompat.ACTION_POINTER_UP:
             onSecondaryPointerUp(ev);
-            mLastY = MotionEventCompat.getX(ev, MotionEventCompat.findPointerIndex(ev, mActivePointerId));
+            mLastX = MotionEventCompat.getX(ev, MotionEventCompat.findPointerIndex(ev, mActivePointerId));
             break;
         }
         if (mActivePointerId == INVALID_POINTER) {
