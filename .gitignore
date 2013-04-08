@@ -18,6 +18,10 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+# IntelliJ project files
+*.iml
+*.ipr
+*.iws
 
 # Package Files #
 *.war

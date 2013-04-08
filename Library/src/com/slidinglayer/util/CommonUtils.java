@@ -4,7 +4,7 @@
  * Copyright (C) 2013 6 Wunderkinder GmbH.
  * 
  * @author      Jose L Ugia - @Jl_Ugia
- * @version     2.0
+ * @version     1.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

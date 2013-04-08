@@ -8,7 +8,7 @@
  * @author      Cesar Valiente - @CesarValiente
  * @author      Benedikt Lehnert - @blehnert
  * @author      Timothy Achumba - @iam_timm
- * @version     2.0
+ * @version     1.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
