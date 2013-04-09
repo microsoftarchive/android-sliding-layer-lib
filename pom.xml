@@ -51,8 +51,8 @@
     <developers>
         <developer>
             <name>Jose L Ugia</name>
-            <id>Jl_Ugia</id>
-            <url>http://twitter/Jl_Ugia</url>
+            <id>JlUgia</id>
+            <url>http://twitter.com/Jl_Ugia</url>
             <timezone>0</timezone>
             <roles>
                 <role>developer</role>
@@ -61,7 +61,7 @@
         <developer>
             <name>Antonio Consuegra</name>
             <id>aconsuegra</id>
-            <url>http://twitter/aconsuegra</url>
+            <url>http://twitter.com/aconsuegra</url>
             <timezone>0</timezone>
             <roles>
                 <role>developer</role>
@@ -70,7 +70,7 @@
         <developer>
             <name>Cesar Valiente</name>
             <id>CesarValiente</id>
-            <url>http://twitter/CesarValiente</url>
+            <url>http://twitter.com/CesarValiente</url>
             <timezone>0</timezone>
             <roles>
                 <role>developer</role>
