@@ -6,7 +6,7 @@
  * @author      Jose L Ugia - @Jl_Ugia
  * @author      Antonio Consuegra - @aconsuegra
  * @author      Cesar Valiente - @CesarValiente
- * @version     2.0
+ * @version     1.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@
 
 package com.slidinglayer;
 
-import java.lang.reflect.Method;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -36,18 +34,14 @@ import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.util.FloatMath;
-import android.view.Display;
-import android.view.MotionEvent;
-import android.view.VelocityTracker;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.WindowManager;
+import android.view.*;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
-
 import com.slidinglayer.util.CommonUtils;
-import com.slidinglayersample.R;
+import com.slidinglayer.R;
+
+import java.lang.reflect.Method;
 
 public class SlidingLayer extends FrameLayout {
 
