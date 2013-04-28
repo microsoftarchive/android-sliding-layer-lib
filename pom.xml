@@ -27,6 +27,33 @@
         <version>7</version>
     </parent>
 
+    <distributionManagement>
+        <repository>
+            <id>archiva.internal</id>
+            <name>Bizzby Realease</name>
+            <url>http://165.225.136.142:8080/repository/internal/</url>
+        </repository>
+        <snapshotRepository>
+            <id>archiva.snapshots</id>
+            <name>Snapshot repo</name>
+            <url>http://165.225.136.142:8080/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>archiva.all</id>
+            <url>http://165.225.136.142:8080/repository/all/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <groupId>com.slidinglayer</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
@@ -98,7 +125,7 @@
         <java.version>1.6</java.version>
         <android.version>4.1.2_r4</android.version>
         <android.platform>16</android.platform>
-        <android-support.version>11</android-support.version>
+        <android.support.version>12</android.support.version>
 
         <android-maven.version>3.4.0</android-maven.version>
     </properties>
@@ -114,7 +141,7 @@
             <dependency>
                 <groupId>android.support</groupId>
                 <artifactId>compatibility-v4</artifactId>
-                <version>${android-support.version}</version>
+                <version>${android.support.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
