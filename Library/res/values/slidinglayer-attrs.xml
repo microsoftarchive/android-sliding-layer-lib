@@ -28,6 +28,8 @@
         <attr name="shadowDrawable" format="boolean"/>
         <attr name="shadowWidth" format="dimension"/>
         <attr name="closeOnTapEnabled" format="boolean"/>
+        <attr name="openOnTapEnabled" format="boolean"/>
+        <attr name="offsetWidth" format="dimension" />
         <attr name="stickTo" format="enum">
             <enum name="auto" value="0"/>
             <enum name="right" value="-1"/>

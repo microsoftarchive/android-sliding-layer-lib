@@ -33,6 +33,11 @@
         android:defaultValue="true"
         android:key="layer_has_shadow"
         android:title="@string/pref_title_show_shadow" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="layer_has_offset"
+        android:title="@string/pref_title_show_offset" />
     
     <Preference 
         android:title="@string/pref_go"

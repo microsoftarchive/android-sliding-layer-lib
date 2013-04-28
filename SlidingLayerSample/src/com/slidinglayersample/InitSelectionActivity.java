@@ -61,6 +61,7 @@ public class InitSelectionActivity extends PreferenceActivity {
         }
 
         final CheckBoxPreference shadowPreference = (CheckBoxPreference) findPreference("layer_has_shadow");
+        final CheckBoxPreference offsetPreference = (CheckBoxPreference) findPreference("layer_has_offset");
 
         final ListPreference posPreference = (ListPreference) findPreference("layer_location");
         if (posPreference != null) {
@@ -78,6 +79,8 @@ public class InitSelectionActivity extends PreferenceActivity {
                     if (newValue.equals("middle")) {
                         shadowPreference.setEnabled(false);
                         shadowPreference.setChecked(false);
+                        offsetPreference.setEnabled(false);
+                        offsetPreference.setChecked(false);
                     } else {
                         shadowPreference.setEnabled(true);
                         shadowPreference.setChecked(true);
@@ -91,6 +94,8 @@ public class InitSelectionActivity extends PreferenceActivity {
                 .equals("middle")) {
             shadowPreference.setEnabled(false);
             shadowPreference.setChecked(false);
+            offsetPreference.setEnabled(false);
+            offsetPreference.setChecked(false);
         }
     }
 
