@@ -39,7 +39,6 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 import com.slidinglayer.util.CommonUtils;
-import com.slidinglayer.R;
 
 import java.lang.reflect.Method;
 
@@ -87,10 +86,22 @@ public class SlidingLayer extends FrameLayout {
     private int mShadowWidth;
     private Drawable mShadowDrawable;
 
+    /**
+     * The with of the panel when closed
+     */
+    private int mOffsetWidth;
+
     private boolean mDrawingCacheEnabled;
 
     private int mScreenSide = STICK_TO_AUTO;
+    /**
+     * If the user taps the layer then we will close it if enabled.
+     */
     private boolean closeOnTapEnabled = true;
+    /**
+     * If the user taps the offset then we will open it if enabled.
+     */
+    private boolean openOnTapEnabled = true;
 
     private boolean mEnabled = true;
     private boolean mSlidingFromShadowEnabled = true;
@@ -133,22 +144,27 @@ public class SlidingLayer extends FrameLayout {
         super(context, attrs, defStyle);
 
         // Style
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLayer);
+        final TypedArray ta = context.obtainStyledAttributes(attrs, com.slidinglayer.R.styleable.SlidingLayer);
 
         // Set the side of the screen
-        setStickTo(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
+        setStickTo(ta.getInt(com.slidinglayer.R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
 
         // Sets the shadow drawable
-        int shadowRes = ta.getResourceId(R.styleable.SlidingLayer_shadowDrawable, -1);
+        int shadowRes = ta.getResourceId(com.slidinglayer.R.styleable.SlidingLayer_shadowDrawable, -1);
         if (shadowRes != -1) {
             setShadowDrawable(shadowRes);
         }
 
         // Sets the shadow width
-        setShadowWidth((int) ta.getDimension(R.styleable.SlidingLayer_shadowWidth, 0));
+        setShadowWidth((int) ta.getDimension(com.slidinglayer.R.styleable.SlidingLayer_shadowWidth, 0));
 
         // Sets the ability to close the layer by tapping in any empty space
-        closeOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_closeOnTapEnabled, true);
+        closeOnTapEnabled = ta.getBoolean(com.slidinglayer.R.styleable.SlidingLayer_closeOnTapEnabled, true);
+        // Sets the ability to open the layout by tapping on any of the exposed closed layer
+        openOnTapEnabled = ta.getBoolean(com.slidinglayer.R.styleable.SlidingLayer_openOnTapEnabled, true);
+
+        //How much of the view sticks out when closed
+        setOffsetWidth(ta.getDimensionPixelOffset(com.slidinglayer.R.styleable.SlidingLayer_offsetWidth, 0));
 
         ta.recycle();
 
@@ -260,7 +276,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Sets the shadow width by the value of a resource.
-     * 
+     *
      * @param resId
      *            The dimension resource id to be set as the shadow width.
      */
@@ -270,7 +286,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Return the current with of the shadow.
-     * 
+     *
      * @return The size of the shadow in pixels
      */
     public int getShadowWidth() {
@@ -279,7 +295,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Sets a drawable that will be used to create the shadow for the layer.
-     * 
+     *
      * @param d
      *            Drawable append as a shadow
      */
@@ -292,12 +308,27 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Sets a drawable resource that will be used to create the shadow for the layer.
-     * 
+     *
      * @param resId
      *            Resource ID of a drawable
      */
     public void setShadowDrawable(int resId) {
         setShadowDrawable(getContext().getResources().getDrawable(resId));
+    }
+
+    /**
+     * Sets the offset width of the panel. How much sticks out when off screen.
+     *
+     * @param offsetWidth Width of the offset in pixels
+     * @see #getOffsetWidth()
+     */
+    public void setOffsetWidth(int offsetWidth) {
+        mOffsetWidth = offsetWidth;
+        invalidate(getLeft(), getTop(), getRight(), getBottom());
+    }
+
+    public int getOffsetWidth() {
+        return mOffsetWidth;
     }
 
     @Override
@@ -376,7 +407,7 @@ public class SlidingLayer extends FrameLayout {
             final float xDiff = Math.abs(dx);
             final float y = MotionEventCompat.getY(ev, pointerIndex);
             final float yDiff = Math.abs(y - mLastY);
-            if (xDiff > mTouchSlop && xDiff > yDiff && allowDraging(dx)) {
+            if (xDiff > mTouchSlop && xDiff > yDiff && allowDraging(dx, mInitialX)) {
                 mIsDragging = true;
                 mLastX = x;
                 setDrawingCacheEnabled(true);
@@ -391,7 +422,7 @@ public class SlidingLayer extends FrameLayout {
                             : MotionEvent.ACTION_POINTER_INDEX_MASK);
             mLastX = mInitialX = MotionEventCompat.getX(ev, mActivePointerId);
             mLastY = MotionEventCompat.getY(ev, mActivePointerId);
-            if (allowSlidingFromHere(ev)) {
+            if (allowSlidingFromHere(ev, mInitialX)) {
                 mIsDragging = false;
                 mIsUnableToDrag = false;
                 // If nobody else got the focus we use it to close the layer
@@ -416,8 +447,8 @@ public class SlidingLayer extends FrameLayout {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (!mEnabled || !mIsDragging && !mLastTouchAllowed && !allowSlidingFromHere(ev)) {
+    public boolean onTouchEvent(final MotionEvent ev) {
+        if (!mEnabled || !mIsDragging && !mLastTouchAllowed && !allowSlidingFromHere(ev, mInitialX)) {
             return false;
         }
 
@@ -500,6 +531,8 @@ public class SlidingLayer extends FrameLayout {
                 endDrag();
             } else if (mIsOpen && closeOnTapEnabled) {
                 closeLayer(true);
+            } else if(!mIsOpen && openOnTapEnabled) {
+                openLayer(true);
             }
             break;
         case MotionEvent.ACTION_CANCEL:
@@ -527,12 +560,40 @@ public class SlidingLayer extends FrameLayout {
         return true;
     }
 
-    private boolean allowSlidingFromHere(MotionEvent ev) {
-        return mIsOpen /* && allowSlidingFromShadow || ev.getX() > mShadowWidth */;
+    private boolean allowSlidingFromHere(final MotionEvent ev, final float initialX) {
+        if(mIsOpen)
+            return true;
+        if(!mIsOpen && mOffsetWidth > 0){
+            switch (mScreenSide){
+                case STICK_TO_LEFT:
+                    return initialX <= mOffsetWidth;
+                case STICK_TO_RIGHT:
+                    return initialX >= getWidth() - mOffsetWidth;
+            }
+        }
+        return false;
+//        return mIsOpen /* && allowSlidingFromShadow || ev.getX() > mShadowWidth */;
     }
 
-    private boolean allowDraging(float dx) {
-        return mIsOpen && dx > 0;
+    /**
+     * Checks if the touch event is valid for dragging the view.
+     *
+     * @param dx       changed in delta from the initialX
+     * @param initialX where the touch event started.
+     * @return true if you can drag this view, false otherwise
+     */
+    private boolean allowDraging(final float dx, final float initialX) {
+        if(mIsOpen && getLeft() <= initialX && getRight() >= initialX && dx > 0)
+            return true;
+        if(!mIsOpen && mOffsetWidth > 0 && dx > 0){
+            switch (mScreenSide){
+                case STICK_TO_LEFT:
+                    return initialX <= mOffsetWidth;
+                case STICK_TO_RIGHT:
+                    return initialX >= getWidth() - mOffsetWidth;
+            }
+        }
+        return false;
     }
 
     private boolean determineNextStateOpened(boolean currentState, float swipeOffset, int velocity, int deltaX) {
@@ -715,6 +776,11 @@ public class SlidingLayer extends FrameLayout {
         closeOnTapEnabled = _closeOnTapEnabled;
     }
 
+    public void setOpenOnTapEnabled(boolean _openOnTapEnabled) {
+        _openOnTapEnabled = _openOnTapEnabled;
+    }
+
+
     @SuppressWarnings("deprecation")
     private int getScreenSideAuto(int newLeft, int newRight) {
 
@@ -808,14 +874,23 @@ public class SlidingLayer extends FrameLayout {
         return getDestScrollX(0);
     }
 
+    /**
+     * Get the x destination based on the velocity
+     * @param velocity
+     * @return
+     * @since 1.0
+     *
+     */
     private int getDestScrollX(int velocity) {
         if (mIsOpen) {
             return 0;
         } else {
             if (mScreenSide == STICK_TO_RIGHT) {
-                return -getWidth();
+                return -getWidth() + mOffsetWidth;
+//                return -getWidth();
             } else if (mScreenSide == STICK_TO_LEFT) {
-                return getWidth();
+                return getWidth() - mOffsetWidth;
+//                return getWidth();
             } else {
                 if (velocity == 0) {
                     return CommonUtils.getNextRandomBoolean() ? -getWidth() : getWidth();
