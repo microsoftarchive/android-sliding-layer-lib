@@ -33,6 +33,8 @@
             <enum name="right" value="-1"/>
             <enum name="left" value="-2"/>
             <enum name="middle" value="-3"/>
+            <enum name="top" value="-4"/>
+            <enum name="bottom" value="-5"/>
         </attr>
     </declare-styleable>
 
