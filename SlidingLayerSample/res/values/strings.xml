@@ -33,22 +33,30 @@
     <string name="swipe_label">Swipe!</string>
     <string name="swipe_left_label">Swipe left!</string>
     <string name="swipe_right_label">Swipe right!</string>
-    
+    <string name="swipe_up_label">Swipe up!</string>
+    <string name="swipe_down_label">Swipe down!</string>
+
     <string name="label_right">Right</string>
     <string name="label_left">Left</string>
     <string name="label_middle">Middle</string>
-    
+    <string name="label_top">Top</string>
+    <string name="label_bottom">Bottom</string>
+
     <string name="not_applicable">n/a</string>
     
     <string-array name="pref_list_titles">
         <item>@string/label_right</item>
         <item>@string/label_middle</item>
         <item>@string/label_left</item>
+        <item>@string/label_top</item>
+        <item>@string/label_bottom</item>
     </string-array>
     <string-array name="pref_list_values">
         <item>right</item>
         <item>middle</item>
         <item>left</item>
+        <item>top</item>
+        <item>bottom</item>
     </string-array>
 
     <string name="pref_go">Go!</string>
