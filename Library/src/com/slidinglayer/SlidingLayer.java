@@ -23,6 +23,8 @@
 
 package com.slidinglayer;
 
+import java.lang.reflect.Method;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -34,14 +36,17 @@ import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.util.FloatMath;
-import android.view.*;
+import android.view.Display;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
-import com.slidinglayer.util.CommonUtils;
-import com.slidinglayer.R;
 
-import java.lang.reflect.Method;
+import com.slidinglayer.util.CommonUtils;
 
 public class SlidingLayer extends FrameLayout {
 
@@ -532,7 +537,8 @@ public class SlidingLayer extends FrameLayout {
     }
 
     private boolean allowDraging(float dx) {
-        return mIsOpen && dx > 0;
+        return mIsOpen
+                && (mScreenSide == STICK_TO_RIGHT && dx > 0 || mScreenSide == STICK_TO_LEFT && dx < 0 || mScreenSide == STICK_TO_MIDDLE && dx != 0);
     }
 
     private boolean determineNextStateOpened(boolean currentState, float swipeOffset, int velocity, int deltaX) {
@@ -540,8 +546,8 @@ public class SlidingLayer extends FrameLayout {
 
         if (Math.abs(deltaX) > mFlingDistance && Math.abs(velocity) > mMinimumVelocity) {
 
-            targetState = mScreenSide == STICK_TO_RIGHT && velocity <= 0 || mScreenSide == STICK_TO_LEFT
-                    && velocity > 0;
+            targetState = mScreenSide == STICK_TO_MIDDLE || mScreenSide == STICK_TO_RIGHT && velocity < 0
+                    || mScreenSide == STICK_TO_LEFT && velocity > 0;
 
         } else {
             int w = getWidth();
