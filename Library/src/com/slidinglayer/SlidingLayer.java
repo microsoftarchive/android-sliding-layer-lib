@@ -788,7 +788,7 @@ public class SlidingLayer extends FrameLayout {
     }
 
     public void setOpenOnTapEnabled(boolean _openOnTapEnabled) {
-        _openOnTapEnabled = _openOnTapEnabled;
+        openOnTapEnabled = _openOnTapEnabled;
     }
 
 
