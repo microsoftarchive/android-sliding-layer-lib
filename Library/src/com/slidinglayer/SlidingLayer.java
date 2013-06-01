@@ -364,15 +364,16 @@ public class SlidingLayer extends FrameLayout {
                 mLastX = x;
                 setDrawingCacheEnabled(true);
             } else if (yDiff > mTouchSlop && yDiff > xDiff && allowDragingY(dy)) {
-            } else if (yDiff > mTouchSlop) {
-                mIsUnableToDrag = true;
+                mIsDragging = true;
+                mLastY = y;
+                setDrawingCacheEnabled(true);
             }
             break;
 
         case MotionEvent.ACTION_DOWN:
             mActivePointerId = ev.getAction()
                     & (Build.VERSION.SDK_INT >= 8 ? MotionEvent.ACTION_POINTER_INDEX_MASK
-                            : MotionEvent.ACTION_POINTER_INDEX_MASK);
+                            : MotionEventCompat.ACTION_POINTER_INDEX_MASK);
             mLastX = mInitialX = MotionEventCompat.getX(ev, mActivePointerId);
             mLastY = mInitialY = MotionEventCompat.getY(ev, mActivePointerId);
             if (allowSlidingFromHereX(ev)) {
@@ -596,10 +597,11 @@ public class SlidingLayer extends FrameLayout {
     private boolean allowDragingX(float dx) {
         switch (mScreenSide) {
             case STICK_TO_LEFT:
+                return mIsOpen && dx < 0;
             case STICK_TO_RIGHT:
-            case STICK_TO_AUTO:
-            case STICK_TO_MIDDLE:
                 return mIsOpen && dx > 0;
+            case STICK_TO_MIDDLE:
+                return mIsOpen && dx != 0;
             default:
                 return false;
         }
@@ -608,43 +610,85 @@ public class SlidingLayer extends FrameLayout {
     private boolean allowDragingY(float dy) {
         switch (mScreenSide) {
             case STICK_TO_TOP:
+                return mIsOpen && dy < 0;
             case STICK_TO_BOTTOM:
-            case STICK_TO_AUTO:
-            case STICK_TO_MIDDLE:
                 return mIsOpen && dy > 0;
+            case STICK_TO_MIDDLE:
+                return mIsOpen && dy != 0;
             default:
                 return false;
         }
     }
 
+    /**
+     * Based on the current state, position and velocity of the layer we calculate what the next state should be.
+     *
+     * @param currentState
+     * @param swipeOffsetX
+     * @param swipeOffsetY
+     * @param velocityX
+     * @param velocityY
+     * @param deltaX
+     * @param deltaY
+     * @return true means we should open it, false close it.
+     */
     private boolean determineNextStateOpened(final boolean currentState, final float swipeOffsetX, final float swipeOffsetY, final int velocityX, final int velocityY, final int deltaX, final int deltaY) {
         final boolean targetState;
+        final boolean calcX;
+        final boolean calcY;
 
-        if (Math.abs(deltaX) > mFlingDistance && Math.abs(velocityX) > mMinimumVelocity) {
+        //Work out which velocity we should listen to.
+        switch (mScreenSide) {
+            case STICK_TO_TOP:
+            case STICK_TO_BOTTOM:
+                calcY = true;
+                calcX = false;
+                break;
+            case STICK_TO_RIGHT:
+            case STICK_TO_LEFT:
+                calcX = true;
+                calcY = false;
+                break;
+            case  STICK_TO_MIDDLE:
+                calcX = calcY = true;
+                break;
+            default:
+                calcX = calcY = false;
+                break;
+        }
 
-            targetState = mScreenSide == STICK_TO_RIGHT && velocityX <= 0 || mScreenSide == STICK_TO_LEFT
-                    && velocityX > 0;
+        if (calcX && Math.abs(deltaX) > mFlingDistance && Math.abs(velocityX) > mMinimumVelocity) {
 
-        } else if (Math.abs(deltaY) > mFlingDistance && Math.abs(velocityY) > mMinimumVelocity) {
+            targetState = mScreenSide == STICK_TO_RIGHT && velocityX <= 0
+                    || mScreenSide == STICK_TO_LEFT && velocityX > 0;
 
-            targetState = mScreenSide == STICK_TO_BOTTOM && velocityY <= 0 || mScreenSide == STICK_TO_TOP
-                    && velocityY > 0;
+        } else if (calcY && Math.abs(deltaY) > mFlingDistance && Math.abs(velocityY) > mMinimumVelocity) {
+
+            targetState = mScreenSide == STICK_TO_BOTTOM && velocityY <= 0
+                    || mScreenSide == STICK_TO_TOP && velocityY > 0;
+
         } else {
             final int w = getWidth();
             final int h = getHeight();
 
-            if (mScreenSide == STICK_TO_RIGHT) {
-                targetState = swipeOffsetX > -w / 2;
-            } else if (mScreenSide == STICK_TO_BOTTOM) {
-                targetState = swipeOffsetY > -h / 2;
-            } else if (mScreenSide == STICK_TO_LEFT) {
-                targetState = swipeOffsetX < w / 2;
-            } else if (mScreenSide == STICK_TO_TOP) {
-                targetState = swipeOffsetY < h / 2;
-            } else if (mScreenSide == STICK_TO_MIDDLE) {
-                targetState = Math.abs(swipeOffsetX) < w / 2;
-            } else {
-                targetState = true;
+            switch (mScreenSide) {
+                case STICK_TO_RIGHT:
+                    targetState = swipeOffsetX > -w / 2;
+                    break;
+                case STICK_TO_BOTTOM:
+                    targetState = swipeOffsetY > -h / 2;
+                    break;
+                case STICK_TO_LEFT:
+                    targetState = swipeOffsetX < w / 2;
+                    break;
+                case STICK_TO_TOP:
+                    targetState = swipeOffsetY < h / 2;
+                    break;
+                case  STICK_TO_MIDDLE:
+                    targetState = Math.abs(swipeOffsetX) < w / 2;
+                    break;
+                default:
+                    targetState = true;
             }
         }
 
