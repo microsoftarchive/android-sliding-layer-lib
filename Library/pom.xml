@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.slidinglayer</groupId>
         <artifactId>parent</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -42,6 +42,8 @@
         <dependency>
             <groupId>android.support</groupId>
             <artifactId>compatibility-v4</artifactId>
+            <version>${android-support.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
