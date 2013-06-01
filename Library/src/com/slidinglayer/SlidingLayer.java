@@ -34,6 +34,7 @@ import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.util.FloatMath;
+import android.util.Log;
 import android.view.*;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
@@ -583,14 +584,24 @@ public class SlidingLayer extends FrameLayout {
      * @return true if you can drag this view, false otherwise
      */
     private boolean allowDraging(final float dx, final float initialX) {
-        if(mIsOpen && getLeft() <= initialX && getRight() >= initialX && dx > 0)
-            return true;
-        if(!mIsOpen && mOffsetWidth > 0 && dx > 0){
-            switch (mScreenSide){
-                case STICK_TO_LEFT:
-                    return initialX <= mOffsetWidth;
+        if(mIsOpen && getLeft() <= initialX && getRight() >= initialX) {
+            switch (mScreenSide) {
                 case STICK_TO_RIGHT:
-                    return initialX >= getWidth() - mOffsetWidth;
+                    return dx > 0;
+                case STICK_TO_LEFT:
+                    return dx < 0;
+                case STICK_TO_MIDDLE:
+                    return dx != 0;
+            }
+        }
+        if(!mIsOpen && mOffsetWidth > 0) {
+            switch (mScreenSide) {
+                case STICK_TO_LEFT:
+                    return initialX <= mOffsetWidth && dx > 0;
+                case STICK_TO_RIGHT:
+                    return initialX >= getWidth() - mOffsetWidth && dx < 0;
+                case STICK_TO_MIDDLE:
+                    return dx != 0;
             }
         }
         return false;
@@ -601,8 +612,8 @@ public class SlidingLayer extends FrameLayout {
 
         if (Math.abs(deltaX) > mFlingDistance && Math.abs(velocity) > mMinimumVelocity) {
 
-            targetState = mScreenSide == STICK_TO_RIGHT && velocity <= 0 || mScreenSide == STICK_TO_LEFT
-                    && velocity > 0;
+            targetState = mScreenSide == STICK_TO_RIGHT && velocity < 0
+                    || mScreenSide == STICK_TO_LEFT && velocity > 0;
 
         } else {
             int w = getWidth();
