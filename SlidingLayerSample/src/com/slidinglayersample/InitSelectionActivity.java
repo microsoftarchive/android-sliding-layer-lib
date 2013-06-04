@@ -84,6 +84,8 @@ public class InitSelectionActivity extends PreferenceActivity {
                     } else {
                         shadowPreference.setEnabled(true);
                         shadowPreference.setChecked(true);
+                        offsetPreference.setEnabled(true);
+                        offsetPreference.setChecked(true);
                     }
                     return true;
                 }
