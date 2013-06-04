@@ -45,11 +45,6 @@ import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
-import android.util.Log;
-import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
-import android.widget.Scroller;
-import com.slidinglayer.util.CommonUtils;
 
 import com.slidinglayer.util.CommonUtils;
 
@@ -155,27 +150,27 @@ public class SlidingLayer extends FrameLayout {
         super(context, attrs, defStyle);
 
         // Style
-        final TypedArray ta = context.obtainStyledAttributes(attrs, com.slidinglayer.R.styleable.SlidingLayer);
+        final TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLayer);
 
         // Set the side of the screen
-        setStickTo(ta.getInt(com.slidinglayer.R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
+        setStickTo(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
 
         // Sets the shadow drawable
-        int shadowRes = ta.getResourceId(com.slidinglayer.R.styleable.SlidingLayer_shadowDrawable, -1);
+        int shadowRes = ta.getResourceId(R.styleable.SlidingLayer_shadowDrawable, -1);
         if (shadowRes != -1) {
             setShadowDrawable(shadowRes);
         }
 
         // Sets the shadow width
-        setShadowWidth((int) ta.getDimension(com.slidinglayer.R.styleable.SlidingLayer_shadowWidth, 0));
+        setShadowWidth((int) ta.getDimension(R.styleable.SlidingLayer_shadowWidth, 0));
 
         // Sets the ability to close the layer by tapping in any empty space
-        closeOnTapEnabled = ta.getBoolean(com.slidinglayer.R.styleable.SlidingLayer_closeOnTapEnabled, true);
+        closeOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_closeOnTapEnabled, true);
         // Sets the ability to open the layout by tapping on any of the exposed closed layer
-        openOnTapEnabled = ta.getBoolean(com.slidinglayer.R.styleable.SlidingLayer_openOnTapEnabled, true);
+        openOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_openOnTapEnabled, true);
 
-        //How much of the view sticks out when closed
-        setOffsetWidth(ta.getDimensionPixelOffset(com.slidinglayer.R.styleable.SlidingLayer_offsetWidth, 0));
+        // How much of the view sticks out when closed
+        setOffsetWidth(ta.getDimensionPixelOffset(R.styleable.SlidingLayer_offsetWidth, 0));
 
         ta.recycle();
 
@@ -542,7 +537,7 @@ public class SlidingLayer extends FrameLayout {
                 endDrag();
             } else if (mIsOpen && closeOnTapEnabled) {
                 closeLayer(true);
-            } else if(!mIsOpen && openOnTapEnabled) {
+            } else if (!mIsOpen && openOnTapEnabled) {
                 openLayer(true);
             }
             break;
@@ -623,8 +618,8 @@ public class SlidingLayer extends FrameLayout {
 
         if (Math.abs(deltaX) > mFlingDistance && Math.abs(velocity) > mMinimumVelocity) {
 
-            targetState = mScreenSide == STICK_TO_MIDDLE || mScreenSide == STICK_TO_RIGHT && velocity < 0
-                    || mScreenSide == STICK_TO_LEFT && velocity > 0;
+            targetState = mScreenSide == STICK_TO_RIGHT && velocity < 0 || mScreenSide == STICK_TO_LEFT
+                    && velocity > 0;
 
         } else {
             int w = getWidth();
@@ -802,7 +797,6 @@ public class SlidingLayer extends FrameLayout {
         openOnTapEnabled = _openOnTapEnabled;
     }
 
-
     @SuppressWarnings("deprecation")
     private int getScreenSideAuto(int newLeft, int newRight) {
 
@@ -909,10 +903,10 @@ public class SlidingLayer extends FrameLayout {
         } else {
             if (mScreenSide == STICK_TO_RIGHT) {
                 return -getWidth() + mOffsetWidth;
-//                return -getWidth();
+                // return -getWidth();
             } else if (mScreenSide == STICK_TO_LEFT) {
                 return getWidth() - mOffsetWidth;
-//                return getWidth();
+                // return getWidth();
             } else {
                 if (velocity == 0) {
                     return CommonUtils.getNextRandomBoolean() ? -getWidth() : getWidth();
