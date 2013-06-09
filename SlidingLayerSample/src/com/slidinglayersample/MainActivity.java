@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
 
     private String mStickContainerToRightLeftOrMiddle;
     private boolean mShowShadow;
+    private boolean mShowOffset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class MainActivity extends Activity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mStickContainerToRightLeftOrMiddle = prefs.getString("layer_location", "right");
         mShowShadow = prefs.getBoolean("layer_has_shadow", false);
+        mShowOffset = prefs.getBoolean("layer_has_offset", false);
     }
 
     /**
@@ -141,6 +143,11 @@ public class MainActivity extends Activity {
         } else {
             mSlidingLayer.setShadowWidth(0);
             mSlidingLayer.setShadowDrawable(null);
+        }
+        if(mShowOffset) {
+            mSlidingLayer.setOffsetWidth(getResources().getDimensionPixelOffset(R.dimen.offset_width));
+        } else {
+            mSlidingLayer.setOffsetWidth(0);
         }
     }
 

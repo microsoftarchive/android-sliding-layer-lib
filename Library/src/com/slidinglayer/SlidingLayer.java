@@ -95,9 +95,23 @@ public class SlidingLayer extends FrameLayout {
     private Scroller mScroller;
     private int mShadowWidth;
     private Drawable mShadowDrawable;
+
+    /**
+     * The with of the panel when closed
+     */
+    private int mOffsetWidth;
+
     private boolean mDrawingCacheEnabled;
     private int mScreenSide = STICK_TO_AUTO;
+    /**
+     * If the user taps the layer then we will close it if enabled.
+     */
     private boolean closeOnTapEnabled = true;
+    /**
+     * If the user taps the offset then we will open it if enabled.
+     */
+    private boolean openOnTapEnabled = true;
+
     private boolean mEnabled = true;
     private boolean mSlidingFromShadowEnabled = true;
     private boolean mIsDragging;
@@ -126,7 +140,7 @@ public class SlidingLayer extends FrameLayout {
         super(context, attrs, defStyle);
 
         // Style
-        TypedArray ta = context.obtainStyledAttributes(attrs, com.slidinglayer.R.styleable.SlidingLayer);
+        final TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLayer);
 
         // Set the side of the screen
         setStickTo(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
@@ -142,6 +156,11 @@ public class SlidingLayer extends FrameLayout {
 
         // Sets the ability to close the layer by tapping in any empty space
         closeOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_closeOnTapEnabled, true);
+        // Sets the ability to open the layout by tapping on any of the exposed closed layer
+        openOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_openOnTapEnabled, true);
+
+        // How much of the view sticks out when closed
+        setOffsetWidth(ta.getDimensionPixelOffset(R.styleable.SlidingLayer_offsetWidth, 0));
 
         ta.recycle();
 
@@ -282,6 +301,21 @@ public class SlidingLayer extends FrameLayout {
         setShadowDrawable(getContext().getResources().getDrawable(resId));
     }
 
+    /**
+     * Sets the offset width of the panel. How much sticks out when off screen.
+     *
+     * @param offsetWidth Width of the offset in pixels
+     * @see #getOffsetWidth()
+     */
+    public void setOffsetWidth(int offsetWidth) {
+        mOffsetWidth = offsetWidth;
+        invalidate(getLeft(), getTop(), getRight(), getBottom());
+    }
+
+    public int getOffsetWidth() {
+        return mOffsetWidth;
+    }
+
     @Override
     protected boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == mShadowDrawable;
@@ -359,11 +393,12 @@ public class SlidingLayer extends FrameLayout {
             final float y = MotionEventCompat.getY(ev, pointerIndex);
             final float dy = y - mLastY;
             final float yDiff = Math.abs(y - mLastY);
-            if (xDiff > mTouchSlop && xDiff > yDiff && allowDragingX(dx)) {
+
+            if (xDiff > mTouchSlop && xDiff > yDiff && allowDragingX(dx, mInitialX)) {
                 mIsDragging = true;
                 mLastX = x;
                 setDrawingCacheEnabled(true);
-            } else if (yDiff > mTouchSlop && yDiff > xDiff && allowDragingY(dy)) {
+            } else if (yDiff > mTouchSlop && yDiff > xDiff && allowDragingY(dy, mInitialY)) {
                 mIsDragging = true;
                 mLastY = y;
                 setDrawingCacheEnabled(true);
@@ -376,12 +411,12 @@ public class SlidingLayer extends FrameLayout {
                             : MotionEventCompat.ACTION_POINTER_INDEX_MASK);
             mLastX = mInitialX = MotionEventCompat.getX(ev, mActivePointerId);
             mLastY = mInitialY = MotionEventCompat.getY(ev, mActivePointerId);
-            if (allowSlidingFromHereX(ev)) {
+            if (allowSlidingFromHereX(ev,mInitialX)) {
                 mIsDragging = false;
                 mIsUnableToDrag = false;
                 // If nobody else got the focus we use it to close the layer
                 return super.onInterceptTouchEvent(ev);
-            } else if (allowSlidingFromHereY(ev)) {
+            } else if (allowSlidingFromHereY(ev,mInitialY)) {
                 mIsDragging = false;
                 mIsUnableToDrag = false;
                 // If nobody else got the focus we use it to close the layer
@@ -407,7 +442,7 @@ public class SlidingLayer extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mEnabled || !mIsDragging && !mLastTouchAllowed && !allowSlidingFromHereX(ev) && !allowSlidingFromHereY(ev)) {
+        if (!mEnabled || !mIsDragging && !mLastTouchAllowed && !allowSlidingFromHereX(ev,mInitialX) && !allowSlidingFromHereY(ev,mInitialY)) {
             return false;
         }
 
@@ -542,6 +577,8 @@ public class SlidingLayer extends FrameLayout {
                 endDrag();
             } else if (mIsOpen && closeOnTapEnabled) {
                 closeLayer(true);
+            } else if (!mIsOpen && openOnTapEnabled) {
+                openLayer(true);
             }
             break;
         case MotionEvent.ACTION_CANCEL:
@@ -570,54 +607,99 @@ public class SlidingLayer extends FrameLayout {
         return true;
     }
 
-    private boolean allowSlidingFromHereX(MotionEvent ev) {
+    private boolean allowSlidingFromHereX(final MotionEvent ev, final float initialX) {
         switch (mScreenSide) {
             case STICK_TO_LEFT:
             case STICK_TO_RIGHT:
-            case STICK_TO_AUTO:
             case STICK_TO_MIDDLE:
-                return mIsOpen /* && allowSlidingFromShadow || ev.getX() > mShadowWidth */;
+                if(mIsOpen)
+                    return true;
+                if(!mIsOpen && mOffsetWidth > 0){
+                    switch (mScreenSide){
+                        case STICK_TO_LEFT:
+                            return initialX <= mOffsetWidth;
+                        case STICK_TO_RIGHT:
+                            return initialX >= getWidth() - mOffsetWidth;
+                    }
+                }
             default:
                 return false;
         }
     }
 
-    private boolean allowSlidingFromHereY(MotionEvent ev) {
+    private boolean allowSlidingFromHereY(final MotionEvent ev, final float initialY) {
         switch (mScreenSide) {
             case STICK_TO_TOP:
             case STICK_TO_BOTTOM:
-            case STICK_TO_AUTO:
             case STICK_TO_MIDDLE:
-                return mIsOpen /* && allowSlidingFromShadow || ev.getX() > mShadowWidth */;
+                if(mIsOpen)
+                    return true;
+                if(!mIsOpen && mOffsetWidth > 0){
+                    switch (mScreenSide){
+                        case STICK_TO_TOP:
+                            return initialY <= mOffsetWidth;
+                        case STICK_TO_BOTTOM:
+                            return initialY >= getHeight() - mOffsetWidth;
+                    }
+                }
             default:
                 return false;
         }
     }
 
-    private boolean allowDragingX(float dx) {
-        switch (mScreenSide) {
-            case STICK_TO_LEFT:
-                return mIsOpen && dx < 0;
-            case STICK_TO_RIGHT:
-                return mIsOpen && dx > 0;
-            case STICK_TO_MIDDLE:
-                return mIsOpen && dx != 0;
-            default:
-                return false;
+    /**
+     * Checks if the touch event is valid for dragging the view.
+     *
+     * @param dx       changed in delta from the initialX
+     * @param initialX where the touch event started.
+     * @return true if you can drag this view, false otherwise
+     */
+    private boolean allowDragingX(final float dx, final float initialX) {
+        if(mIsOpen && getLeft() <= initialX || getRight() >= initialX) {
+            switch (mScreenSide) {
+                case STICK_TO_RIGHT:
+                    return dx > 0;
+                case STICK_TO_LEFT:
+                    return dx < 0;
+                case STICK_TO_MIDDLE:
+                    return dx != 0;
+            }
         }
+        if(!mIsOpen && mOffsetWidth > 0 && dx > 0) {
+            switch (mScreenSide) {
+                case STICK_TO_LEFT:
+                    return initialX <= mOffsetWidth && dx > 0;
+                case STICK_TO_RIGHT:
+                    return initialX >= getWidth() - mOffsetWidth && dx < 0;
+                case STICK_TO_MIDDLE:
+                    return dx != 0;
+            }
+        }
+        return false;
     }
 
-    private boolean allowDragingY(float dy) {
-        switch (mScreenSide) {
-            case STICK_TO_TOP:
-                return mIsOpen && dy < 0;
-            case STICK_TO_BOTTOM:
-                return mIsOpen && dy > 0;
-            case STICK_TO_MIDDLE:
-                return mIsOpen && dy != 0;
-            default:
-                return false;
+    private boolean allowDragingY(final float dy, final float initialY) {
+        if(mIsOpen && getTop() <= initialY || getBottom() >= initialY) {
+            switch (mScreenSide) {
+                case STICK_TO_BOTTOM:
+                    return mIsOpen && dy > 0;
+                case STICK_TO_TOP:
+                    return mIsOpen && dy < 0;
+                case STICK_TO_MIDDLE:
+                    return mIsOpen && dy != 0;
+            }
         }
+        if(!mIsOpen && mOffsetWidth > 0 && dy > 0) {
+            switch (mScreenSide) {
+                case STICK_TO_TOP:
+                    return initialY <= mOffsetWidth && dy > 0;
+                case STICK_TO_BOTTOM:
+                    return initialY >= getHeight() - mOffsetWidth && dy < 0;
+                case STICK_TO_MIDDLE:
+                    return dy != 0;
+            }
+        }
+        return false;
     }
 
     /**
@@ -850,6 +932,10 @@ public class SlidingLayer extends FrameLayout {
         closeOnTapEnabled = _closeOnTapEnabled;
     }
 
+    public void setOpenOnTapEnabled(boolean _openOnTapEnabled) {
+        openOnTapEnabled = _openOnTapEnabled;
+    }
+
     @SuppressWarnings("deprecation")
     private int getScreenSideAuto(int newLeft, int newRight) {
 
@@ -951,14 +1037,21 @@ public class SlidingLayer extends FrameLayout {
         return getDestScrollY(0);
     }
 
+    /**
+     * Get the x destination based on the velocity
+     * @param velocity
+     * @return
+     * @since 1.0
+     *
+     */
     private int getDestScrollX(int velocity) {
         if (mIsOpen) {
             return 0;
         } else {
             if (mScreenSide == STICK_TO_RIGHT) {
-                return -getWidth();
+                return -getWidth() + mOffsetWidth;
             } else if (mScreenSide == STICK_TO_LEFT) {
-                return getWidth();
+                return getWidth() - mOffsetWidth;
             } else if (mScreenSide == STICK_TO_TOP || mScreenSide == STICK_TO_BOTTOM) {
                 return 0;
             } else {
@@ -976,9 +1069,9 @@ public class SlidingLayer extends FrameLayout {
             return 0;
         } else {
             if (mScreenSide == STICK_TO_BOTTOM) {
-                return -getHeight();
+                return -getHeight() + mOffsetWidth;
             } else if (mScreenSide == STICK_TO_TOP) {
-                return getHeight();
+                return getHeight() - mOffsetWidth;
             } else if (mScreenSide == STICK_TO_LEFT || mScreenSide == STICK_TO_RIGHT) {
                 return 0;
             } else {
