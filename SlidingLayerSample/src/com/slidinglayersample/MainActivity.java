@@ -38,7 +38,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
-
 import com.slidinglayer.SlidingLayer;
 
 public class MainActivity extends Activity {
@@ -108,6 +107,22 @@ public class MainActivity extends Activity {
             d = getResources().getDrawable(R.drawable.container_rocket_left);
 
             rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        } else if (mStickContainerToRightLeftOrMiddle.equals("top")) {
+            textResource = R.string.swipe_up_label;
+            d = getResources().getDrawable(R.drawable.container_rocket);
+
+            mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_TOP);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            rlp.width = LayoutParams.MATCH_PARENT;
+            rlp.height = getResources().getDimensionPixelSize(R.dimen.layer_width);
+        } else if (mStickContainerToRightLeftOrMiddle.equals("bottom")) {
+            textResource = R.string.swipe_down_label;
+            d = getResources().getDrawable(R.drawable.container_rocket);
+
+            mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_BOTTOM);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            rlp.width = LayoutParams.MATCH_PARENT;
+            rlp.height = getResources().getDimensionPixelSize(R.dimen.layer_width);
         } else {
             textResource = R.string.swipe_label;
             d = getResources().getDrawable(R.drawable.container_rocket);

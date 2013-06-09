@@ -106,6 +106,10 @@ public class InitSelectionActivity extends PreferenceActivity {
             _preference.setSummary(getResources().getString(R.string.label_right));
         } else if (_locationString.equals("left")) {
             _preference.setSummary(getResources().getString(R.string.label_left));
+        } else if (_locationString.equals("top")) {
+            _preference.setSummary(getResources().getString(R.string.label_top));
+        } else if (_locationString.equals("bottom")) {
+            _preference.setSummary(getResources().getString(R.string.label_bottom));
         } else {
             _preference.setSummary(getResources().getString(R.string.label_middle));
         }
