@@ -51,8 +51,6 @@ import com.slidinglayersample.R;
 
 public class SlidingLayer extends FrameLayout {
 
-    // TODO Document
-
     /**
      * Default value for the position of the layer. STICK_TO_AUTO shall inspect the container and choose a stick
      * mode depending on the position of the layour (ie.: layout is positioned on the right = STICK_TO_RIGHT).
@@ -1141,48 +1139,6 @@ public class SlidingLayer extends FrameLayout {
             }
 
             return pos;
-        }
-    }
-
-    private int getDestScrollX(int xValue, float m) {
-        if (mIsOpen) {
-            return 0;
-        } else {
-            if (mScreenSide == STICK_TO_RIGHT) {
-                return -getWidth() + mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_LEFT) {
-                return getWidth() - mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_TOP || mScreenSide == STICK_TO_BOTTOM) {
-                return 0;
-            } else {
-                if (Math.abs(m) >= 1) {
-                    return Math.round(getOperationSignForDiffMeasure(xValue) * getHeight() / Math.abs(m)
-                            - (mLastX - getWidth() / 2));
-                } else {
-                    return Math.round(getOperationSignForDiffMeasure(xValue) * getWidth());
-                }
-            }
-        }
-    }
-
-    private int getDestScrollY(int yValue, float m) {
-        if (mIsOpen) {
-            return 0;
-        } else {
-            if (mScreenSide == STICK_TO_BOTTOM) {
-                return -getHeight() + mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_TOP) {
-                return getHeight() - mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_LEFT || mScreenSide == STICK_TO_RIGHT) {
-                return 0;
-            } else {
-                if (Math.abs(m) < 1) {
-                    return Math.round(getOperationSignForDiffMeasure(yValue) * getWidth() * Math.abs(m)
-                            - (mLastY - getHeight() / 2));
-                } else {
-                    return Math.round(getOperationSignForDiffMeasure(yValue) * getHeight());
-                }
-            }
         }
     }
 
