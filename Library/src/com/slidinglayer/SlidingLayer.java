@@ -47,8 +47,6 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import com.slidinglayersample.R;
-
 public class SlidingLayer extends FrameLayout {
 
     // TODO Document
