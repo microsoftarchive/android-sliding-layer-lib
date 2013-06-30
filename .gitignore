@@ -35,3 +35,7 @@ gen/
 gen
 .metadata/
 .metadata
+
+# Gradle files
+.gradle/
+build/
