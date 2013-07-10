@@ -1159,14 +1159,33 @@ public class SlidingLayer extends FrameLayout {
         completeScroll();
     }
 
+    /**
+     * Handler interface for obtaining updates on the <code>SlidingLayer</code>'s state.
+     * <code>OnInteractListener</code> allows for external classes to be notified when the <code>SlidingLayer</code>
+     * receives input to be opened or closed.
+     */ 
     public interface OnInteractListener {
 
+        /**
+    	 * This method is called when an attempt is made to open the current <code>SlidingLayer</code>. Note
+    	 * that because of animation, the <code>SlidingLayer</code> may not be visible yet. 
+    	 */
         public void onOpen();
-
+        /**
+        * This method is called when an attempt is made to close the current <code>SlidingLayer</code>. Note
+    	* that because of animation, the <code>SlidingLayer</code> may still be visible. 
+    	*/
         public void onClose();
 
+        /**
+         * this method is executed after <code>onOpen()</code>, when the animation has finished. 
+         */
         public void onOpened();
 
+        /**
+         * this method is executed after <code>onClose()</code>, when the animation has finished and the  <code>SlidingLayer</code> is
+         * therefore no longer visible. 
+         */
         public void onClosed();
 
     }
