@@ -53,7 +53,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Default value for the position of the layer. STICK_TO_AUTO shall inspect the container and choose a stick
-     * mode depending on the position of the layour (ie.: layout is positioned on the right = STICK_TO_RIGHT).
+     * mode depending on the position of the layout (ie.: layout is positioned on the right = STICK_TO_RIGHT).
      */
     public static final int STICK_TO_AUTO = 0;
     /**
@@ -142,6 +142,19 @@ public class SlidingLayer extends FrameLayout {
         this(context, attrs, 0);
     }
 
+    /**
+     * Constructor for the sliding layer.<br>
+     * By default this panel will
+     * <ol>
+     *     <li>{@link #setStickTo(int)} with param {@link #STICK_TO_AUTO}</li>
+     * 	<li>Use no shadow drawable. (i.e. with width of 0)</li>
+     * 	<li>Close when the panel is tapped</li>
+     * 	<li>Open when the offset is tapped, but will have an offset of 0</li>
+     * </ol>
+     * @param context a reference to an existing context
+     * @param attrs attribute set constructed from attributes set in android .xml file 
+     * @param defStyle style res id
+     */
     public SlidingLayer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
@@ -188,6 +201,12 @@ public class SlidingLayer extends FrameLayout {
         mFlingDistance = (int) (MIN_DISTANCE_FOR_FLING * density);
     }
 
+    /**
+     * Returns whether the panel is open or not.
+     * @return returns true if the panel is open, false otherwise. Please note that if 
+     * the panel was opened with smooth animation this method is not guaranteed to return
+     * true. This method will only return true after the panel has completely opened.
+     */
     public boolean isOpened() {
         return mIsOpen;
     }
@@ -320,6 +339,10 @@ public class SlidingLayer extends FrameLayout {
         invalidate(getLeft(), getTop(), getRight(), getBottom());
     }
 
+    /**
+     * 
+     * @return returns the number of pixels that are visible when the panel is closed
+     */
     public int getOffsetWidth() {
         return mOffsetWidth;
     }
@@ -939,6 +962,12 @@ public class SlidingLayer extends FrameLayout {
         mScrolling = false;
     }
 
+    /**
+     * Sets the default location where the SlidingLayer will appear
+     * @param screenSide The location where the Sliding layer will appear. Possible values are
+     * {@link #STICK_TO_AUTO}, {@link #STICK_TO_BOTTOM}, {@link #STICK_TO_LEFT}, {@link #STICK_TO_MIDDLE}
+     * {@link #STICK_TO_RIGHT}, {@link #STICK_TO_TOP}
+     */
     public void setStickTo(int screenSide) {
 
         if (screenSide != STICK_TO_AUTO) {
@@ -949,10 +978,24 @@ public class SlidingLayer extends FrameLayout {
         closeLayer(false, true);
     }
 
+    /**
+     * If parameter is set to <code>true</code>, whenever the <code>SlidingLayer</code> is tapped and
+     * the SlidingLayer is opened, it will attempt to close.
+     * If parameter is set to <code>false</code>, then tapping the <code>SlidingLayer</code> will
+     * do nothing
+     * 
+     * @param _closeOnTapEnabled  
+     */
     public void setCloseOnTapEnabled(boolean _closeOnTapEnabled) {
         closeOnTapEnabled = _closeOnTapEnabled;
     }
 
+    /**
+     * Given that there is a visible offset and it is tapped, if the parameter is set 
+     * to true it will attempt to open the <code>SlidingLayer</code>. If parameter is false, 
+     * tapping a visible offset will yield no result.
+     * @param _openOnTapEnabled
+     */
     public void setOpenOnTapEnabled(boolean _openOnTapEnabled) {
         openOnTapEnabled = _openOnTapEnabled;
     }
@@ -1054,10 +1097,18 @@ public class SlidingLayer extends FrameLayout {
         super.onDraw(canvas);
     }
 
+    /**
+     * Convenience method equivalent to {@link #getDestScrollX(int)}, with velocity set to 0
+     * @return
+     */
     private int getDestScrollX() {
         return getDestScrollX(0);
     }
 
+    /**
+     * Convenience method equivalent to {@link #getDestScrollY(int)}, with velocity set to 0
+     * @return
+     */
     private int getDestScrollY() {
         return getDestScrollY(0);
     }
@@ -1090,6 +1141,14 @@ public class SlidingLayer extends FrameLayout {
         }
     }
 
+    /**
+     * Get the y destination based on the velocity
+     * 
+     * @param velocity
+     * @return
+     * @since 1.0
+     * 
+     */
     private int getDestScrollY(int velocity) {
         if (mIsOpen) {
             return 0;
