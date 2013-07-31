@@ -1032,18 +1032,18 @@ public class SlidingLayer extends FrameLayout {
             mScreenSide = screenSide;
             closeLayer(false, true);
 
-            if (mScreenSide == STICK_TO_RIGHT) {
-                setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight(), getPaddingBottom());
-            } else if (mScreenSide == STICK_TO_BOTTOM) {
-                setPadding(getPaddingLeft(), getPaddingTop() + mShadowWidth, getPaddingRight(), getPaddingBottom());
-            } else if (mScreenSide == STICK_TO_LEFT) {
-                setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight() + mShadowWidth, getPaddingBottom());
-            } else if (mScreenSide == STICK_TO_TOP) {
-                setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom() + mShadowWidth);
-            } else if (mScreenSide == STICK_TO_MIDDLE) {
-                setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight() + mShadowWidth,
-                        getPaddingBottom());
-            }
+            // if (mScreenSide == STICK_TO_RIGHT) {
+                // setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight(), getPaddingBottom());
+            // } else if (mScreenSide == STICK_TO_BOTTOM) {
+                // setPadding(getPaddingLeft(), getPaddingTop() + mShadowWidth, getPaddingRight(), getPaddingBottom());
+            // } else if (mScreenSide == STICK_TO_LEFT) {
+                // setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight() + mShadowWidth, getPaddingBottom());
+            // } else if (mScreenSide == STICK_TO_TOP) {
+                // setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom() + mShadowWidth);
+            // } else if (mScreenSide == STICK_TO_MIDDLE) {
+                // setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight() + mShadowWidth,
+                        // getPaddingBottom());
+            // }
         }
 
         super.onLayout(changed, left, top, right, bottom);
@@ -1075,9 +1075,9 @@ public class SlidingLayer extends FrameLayout {
             return 0;
         } else {
             if (mScreenSide == STICK_TO_RIGHT) {
-                return -getWidth() + mOffsetWidth;
+                return -getWidth() - mShadowWidth + mOffsetWidth;
             } else if (mScreenSide == STICK_TO_LEFT) {
-                return getWidth() - mOffsetWidth;
+                return getWidth() + mShadowWidth - mOffsetWidth;
             } else if (mScreenSide == STICK_TO_TOP || mScreenSide == STICK_TO_BOTTOM) {
                 return 0;
             } else {
@@ -1095,9 +1095,9 @@ public class SlidingLayer extends FrameLayout {
             return 0;
         } else {
             if (mScreenSide == STICK_TO_BOTTOM) {
-                return -getHeight() + mOffsetWidth;
+                return -getHeight() - mShadowWidth + mOffsetWidth;
             } else if (mScreenSide == STICK_TO_TOP) {
-                return getHeight() - mOffsetWidth;
+                return getHeight() + mShadowWidth - mOffsetWidth;
             } else if (mScreenSide == STICK_TO_LEFT || mScreenSide == STICK_TO_RIGHT) {
                 return 0;
             } else {
@@ -1119,20 +1119,24 @@ public class SlidingLayer extends FrameLayout {
         super.dispatchDraw(canvas);
         // Draw the margin drawable if needed.
         if (mShadowWidth > 0 && mShadowDrawable != null) {
-            if (mScreenSide == STICK_TO_RIGHT) {
-                mShadowDrawable.setBounds(0, 0, mShadowWidth, getHeight());
-            }
-            if (mScreenSide == STICK_TO_TOP) {
-                mShadowDrawable.setBounds(0, getHeight() - mShadowWidth, getWidth(), getHeight());
-            }
-            if (mScreenSide == STICK_TO_LEFT) {
-                mShadowDrawable.setBounds(getWidth() - mShadowWidth, 0, getWidth(), getHeight());
-            }
-            if (mScreenSide == STICK_TO_BOTTOM) {
-                mShadowDrawable.setBounds(0, 0, getWidth(), mShadowWidth);
-            }
-            mShadowDrawable.draw(canvas);
-        }
+			if (mScreenSide == STICK_TO_RIGHT) {
+				mShadowDrawable.setBounds(getLeft() - mShadowWidth, 0,
+						getLeft(), getHeight());
+			}
+			if (mScreenSide == STICK_TO_TOP) {
+				mShadowDrawable.setBounds(0, getHeight(), getWidth(),
+						getHeight() + mShadowWidth);
+			}
+			if (mScreenSide == STICK_TO_LEFT) {
+				mShadowDrawable.setBounds(getWidth(), 0, getWidth()
+						+ mShadowWidth, getHeight());
+			}
+			if (mScreenSide == STICK_TO_BOTTOM) {
+				mShadowDrawable.setBounds(0, -mShadowWidth,
+						getWidth(), 0);
+			}
+			mShadowDrawable.draw(canvas);
+		}
     }
 
     @Override
