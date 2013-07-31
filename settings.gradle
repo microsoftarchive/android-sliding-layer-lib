@@ -1,2 +1,2 @@
-include 'Library'
-include 'SlidingLayerSample'
+include ':Library'
+include ':SlidingLayerSample'
