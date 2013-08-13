@@ -34,6 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.util.FloatMath;
@@ -1207,9 +1208,8 @@ public class SlidingLayer extends FrameLayout {
                     scrollTo(x, y);
                 }
 
-                // We invalidate a slightly larger area now, this was only optimised for right menu previously
-                // Keep on drawing until the animation has finished. Just re-draw the necessary part
-                invalidate(getLeft() + oldX, getTop() + oldY, getRight() - oldX, getBottom() - oldY);
+                // Make sure computeScroll() will be called before scroller finished
+				ViewCompat.postInvalidateOnAnimation(this);
                 return;
             }
         }
