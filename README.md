@@ -27,7 +27,8 @@ XML
     android:layout_height="match_parent"
     slidingLayer:shadowDrawable="@drawable/sidebar_shadow"
     slidingLayer:shadowWidth="@dimen/shadow_width"
-    slidingLayer:stickTo="auto|right|left|middle"
+    slidingLayer:offsetWidth="@dimen/offset_width"
+    slidingLayer:stickTo="auto|right|left|middle|top|bottom"
     slidingLayer:closeOnTapEnabled="true">
 
     …
@@ -38,7 +39,8 @@ XML
 Properties:
 * `shadowDrawable` - a reference to the resource drawable used to paint the shadow of the container
 * `shadowWidth` - a reference to the dimension of the desired width of the given shadow
-* `stickTo` - an enum that determines to where the container should stick to. ‘left’ sticks the container to the left side of the screen. ‘right’ sticks the container to the right side of the screen. ‘middle’ makes the container be centered covering the whole screen and ‘auto’ makes the decision based on where you deliberately placed your container in the view. Default is ‘auto’.
+* `offsetWidth` - a reference to the dimension of the desired width for the layer to offset in the screen in order for it to be directly swipable to open
+* `stickTo` - an enum that determines to where the container should stick to. ‘left’ sticks the container to the left side of the screen. ‘right’ sticks the container to the right side of the screen, and so on with ‘top‘ and ‘bottom‘ states. ‘middle’ makes the container be centered covering the whole screen and ‘auto’ makes the decision based on where you deliberately placed your container in the view. Default is ‘auto’.
 * `closeOnTapEnabled` - a boolean that enables/disables the action to close the layer by tapping on an empty space of the container. Default value is true.
 
 
@@ -55,6 +57,7 @@ public class SlidingLayerExampleActivity extends Activity {
   		SlidingLayer slidingLayer = (SlidingLayer) findViewById(R.id.slidingLayer1);
       
         slidingLayer.setShadowWidthRes(R.dimen.shadow_width);
+        slidingLayer.setOffsetWidth(25);
         slidingLayer.setShadowDrawable(R.drawable.sidebar_shadow);
         slidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT);
         slidingLayer.setCloseOnTapEnabled(false);

@@ -47,40 +47,45 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-public class SlidingLayer extends FrameLayout {
 
-    // TODO Document
+public class SlidingLayer extends FrameLayout {
 
     /**
      * Default value for the position of the layer. STICK_TO_AUTO shall inspect the container and choose a stick
      * mode depending on the position of the layout (ie.: layout is positioned on the right = STICK_TO_RIGHT).
      */
     public static final int STICK_TO_AUTO = 0;
+
     /**
      * Special value for the position of the layer. STICK_TO_RIGHT means that the view shall be attached to the
      * right side of the screen, and come from there into the viewable area.
      */
     public static final int STICK_TO_RIGHT = -1;
+
     /**
      * Special value for the position of the layer. STICK_TO_LEFT means that the view shall be attached to the left
      * side of the screen, and come from there into the viewable area.
      */
     public static final int STICK_TO_LEFT = -2;
+
     /**
      * Special value for the position of the layer. STICK_TO_MIDDLE means that the view will stay attached trying to
      * be in the middle of the screen and allowing dismissing both to right and left side.
      */
     public static final int STICK_TO_MIDDLE = -3;
+
     /**
      * Special value for the position of the layer. STICK_TO_TOP means that the view will stay attached to the top
-     * side of the screen, and come from there into the viewable area.
+     * part of the screen, and come from there into the viewable area.
      */
     public static final int STICK_TO_TOP = -4;
+
     /**
-     * Special value for the position of the layer. STICK_TO_TOP means that the view will stay attached to the top
-     * side of the screen, and come from there into the viewable area.
+     * Special value for the position of the layer. STICK_TO_BOTTOM means that the view will stay attached to the
+     * bottom part of the screen, and come from there into the viewable area.
      */
     public static final int STICK_TO_BOTTOM = -5;
+
     private static final int MAX_SCROLLING_DURATION = 600; // in ms
     private static final int MIN_DISTANCE_FOR_FLING = 25; // in dip
     private static final Interpolator sMenuInterpolator = new Interpolator() {
@@ -90,6 +95,7 @@ public class SlidingLayer extends FrameLayout {
             return (float) Math.pow(t, 5) + 1.0f;
         }
     };
+
     /**
      * Sentinel value for no current active pointer. Used by {@link #mActivePointerId}.
      */
@@ -97,7 +103,11 @@ public class SlidingLayer extends FrameLayout {
     protected int mActivePointerId = INVALID_POINTER;
     protected VelocityTracker mVelocityTracker;
     protected int mMaximumVelocity;
+
+    private Random mRandom;
+
     private Scroller mScroller;
+
     private int mShadowWidth;
     private Drawable mShadowDrawable;
     private boolean mForceLayout;
@@ -109,10 +119,12 @@ public class SlidingLayer extends FrameLayout {
 
     private boolean mDrawingCacheEnabled;
     private int mScreenSide = STICK_TO_AUTO;
+
     /**
      * If the user taps the layer then we will close it if enabled.
      */
     private boolean closeOnTapEnabled = true;
+
     /**
      * If the user taps the offset then we will open it if enabled.
      */
@@ -123,13 +135,18 @@ public class SlidingLayer extends FrameLayout {
     private boolean mIsDragging;
     private boolean mIsUnableToDrag;
     private int mTouchSlop;
+
     private float mLastX = -1;
     private float mLastY = -1;
+
     private float mInitialX = -1;
     private float mInitialY = -1;
+
     private boolean mIsOpen;
     private boolean mScrolling;
+
     private OnInteractListener mOnInteractListener;
+
     private int mMinimumVelocity;
     private int mFlingDistance;
     private boolean mLastTouchAllowed = false;
@@ -199,6 +216,8 @@ public class SlidingLayer extends FrameLayout {
 
         final float density = context.getResources().getDisplayMetrics().density;
         mFlingDistance = (int) (MIN_DISTANCE_FOR_FLING * density);
+
+        mRandom = new Random();
     }
 
     /**
@@ -249,14 +268,25 @@ public class SlidingLayer extends FrameLayout {
 
         mIsOpen = open;
 
-        final int destX = getDestScrollX(velocityX);
-        final int destY = getDestScrollY(velocityY);
+        // Get translation values
+        float tx = mLastX - getWidth() / 2;
+        float ty = mLastY - getHeight() / 2;
+
+        // Get boolean for velocity check
+        boolean noVelocityInStickToMidle = mScreenSide == STICK_TO_MIDDLE && Math.abs(velocityX) < mMinimumVelocity
+                && Math.abs(velocityY) < mMinimumVelocity;
+
+        // Follow velocity or translation depending on the case
+        int dx = noVelocityInStickToMidle ? (int) tx : velocityX;
+        int dy = noVelocityInStickToMidle ? (int) ty : velocityY;
+
+        final int pos[] = getDestScrollPos(dx, dy);
 
         if (smoothAnim) {
-            smoothScrollTo(destX, destY, Math.max(velocityX, velocityY));
+            smoothScrollTo(pos[0], pos[1], Math.max(velocityX, velocityY));
         } else {
             completeScroll();
-            scrollTo(destX, destY);
+            scrollTo(pos[0], pos[1]);
         }
     }
 
@@ -581,7 +611,6 @@ public class SlidingLayer extends FrameLayout {
                     scrollY = bottomBound;
                 }
 
-                // TODO top/bottom bounds
                 // Keep the precision
                 mLastX += scrollX - (int) scrollX;
                 mLastY += scrollY - (int) scrollY;
@@ -807,7 +836,7 @@ public class SlidingLayer extends FrameLayout {
                 targetState = swipeOffsetY < h / 2;
                 break;
             case STICK_TO_MIDDLE:
-                targetState = Math.abs(swipeOffsetX) < w / 2;
+                targetState = Math.abs(swipeOffsetX) < w / 2 && Math.abs(swipeOffsetY) < h / 2;
                 break;
             default:
                 targetState = true;
@@ -1023,7 +1052,8 @@ public class SlidingLayer extends FrameLayout {
             boolean boundToLeftBorder = newLeft == 0;
             boolean boundToRightBorder = newRight == screenWidth;
 
-            if (boundToLeftBorder == boundToRightBorder && getLayoutParams().width == LayoutParams.MATCH_PARENT) {
+            if (boundToLeftBorder == boundToRightBorder
+                    && getLayoutParams().width == android.view.ViewGroup.LayoutParams.MATCH_PARENT) {
                 newScreenSide = STICK_TO_MIDDLE;
             } else if (boundToLeftBorder) {
                 newScreenSide = STICK_TO_LEFT;
@@ -1054,11 +1084,11 @@ public class SlidingLayer extends FrameLayout {
         // Make sure scroll position is set correctly.
         if (w != oldw) {
             completeScroll();
-            scrollTo(getDestScrollX(), getDestScrollY());
+            int[] pos = getDestScrollPos();
+            scrollTo(pos[0], pos[1]);
         }
     }
 
-    // FIXME Draw with lefts and rights instead of paddings
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
@@ -1097,75 +1127,79 @@ public class SlidingLayer extends FrameLayout {
         super.onDraw(canvas);
     }
 
-    /**
-     * Convenience method equivalent to {@link #getDestScrollX(int)}, with velocity set to 0
-     * @return
-     */
-    private int getDestScrollX() {
-        return getDestScrollX(0);
-    }
-
-    /**
-     * Convenience method equivalent to {@link #getDestScrollY(int)}, with velocity set to 0
-     * @return
-     */
-    private int getDestScrollY() {
-        return getDestScrollY(0);
+    private int[] getDestScrollPos() {
+        return getDestScrollPos(0, 0);
     }
 
     /**
      * Get the x destination based on the velocity
      * 
-     * @param velocity
+     * @param xValue
+     * @param yValue
      * @return
      * @since 1.0
      * 
      */
-    private int getDestScrollX(int velocity) {
+    private int[] getDestScrollPos(int xValue, int yValue) {
+
+        int[] pos = new int[2];
+
         if (mIsOpen) {
-            return 0;
+            return pos;
         } else {
-            if (mScreenSide == STICK_TO_RIGHT) {
-                return -getWidth() + mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_LEFT) {
-                return getWidth() - mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_TOP || mScreenSide == STICK_TO_BOTTOM) {
-                return 0;
-            } else {
-                if (velocity == 0) {
-                    return new Random().nextBoolean() ? -getWidth() : getWidth();
+
+            switch (mScreenSide) {
+            case STICK_TO_RIGHT:
+                pos[0] = -getWidth() + mOffsetWidth;
+                break;
+            case STICK_TO_LEFT:
+                pos[0] = getWidth() - mOffsetWidth;
+                break;
+            case STICK_TO_TOP:
+                pos[1] = getHeight() - mOffsetWidth;
+                break;
+            case STICK_TO_BOTTOM:
+                pos[1] = -getHeight() + mOffsetWidth;
+                break;
+            case STICK_TO_MIDDLE:
+
+                // Calculate slope m to get direction of swiping and apply the same vector until the end of the
+                // animation
+                float m = 1;
+
+                // If no veocity nor translation (difficult to get) the target is random
+                if (xValue == 0 && yValue == 0) {
+                    m = mRandom != null ? (float) Math.tan(mRandom.nextFloat() * Math.PI - Math.PI / 2) : 1;
+                } else if (xValue == 0) {
+                    // Avoid division by 0 (Get the max value of the tan which is equivalent)
+                    m = (float) Math.tan(Math.PI / 2);
                 } else {
-                    return velocity > 0 ? -getWidth() : getWidth();
+                    // Get slope
+                    m = yValue / (float) xValue;
                 }
+
+                if (Math.abs(m) >= 1) {
+                    pos[0] = Math.round(getOperationSignForDiffMeasure(xValue) * getHeight() / Math.abs(m)
+                            - (mLastX - getWidth() / 2));
+                    pos[1] = Math.round(getOperationSignForDiffMeasure(yValue) * getHeight());
+                } else {
+                    pos[0] = Math.round(getOperationSignForDiffMeasure(xValue) * getWidth());
+                    pos[1] = Math.round(getOperationSignForDiffMeasure(yValue) * getWidth() * Math.abs(m)
+                            - (mLastY - getHeight() / 2));
+                }
+                break;
+
             }
+
+            return pos;
         }
     }
 
-    /**
-     * Get the y destination based on the velocity
-     * 
-     * @param velocity
-     * @return
-     * @since 1.0
-     * 
-     */
-    private int getDestScrollY(int velocity) {
-        if (mIsOpen) {
-            return 0;
+    private int getOperationSignForDiffMeasure(float d) {
+        if (mRandom == null) {
+            return 1;
         } else {
-            if (mScreenSide == STICK_TO_BOTTOM) {
-                return -getHeight() + mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_TOP) {
-                return getHeight() - mOffsetWidth;
-            } else if (mScreenSide == STICK_TO_LEFT || mScreenSide == STICK_TO_RIGHT) {
-                return 0;
-            } else {
-                if (velocity == 0) {
-                    return new Random().nextBoolean() ? -getHeight() : getHeight();
-                } else {
-                    return velocity > 0 ? -getHeight() : getHeight();
-                }
-            }
+            return Math.abs(d) < mMinimumVelocity ? mRandom.nextBoolean() ? 1 : -1 : d > 0 ? -1 : 1;
         }
     }
 
