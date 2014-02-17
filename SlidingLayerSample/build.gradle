@@ -1,18 +1,26 @@
 apply plugin: 'android'
 
 dependencies {
-  compile project(':Library')
+    compile project(':Library')
 }
 
 android {
-  compileSdkVersion 18
-  buildToolsVersion '18.0.1'
+    compileSdkVersion 19
+    buildToolsVersion '19.0.1'
 
-  sourceSets {
-    main {
-      manifest.srcFile 'AndroidManifest.xml'
-      java.srcDirs = ['src']
-      res.srcDirs = ['res']
+    defaultConfig {
+        minSdkVersion 4
+        targetSdkVersion 19
+        versionCode 2
+        versionName "1.5"
+        packageName "com.slidinglayersample"
     }
-  }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
 }
