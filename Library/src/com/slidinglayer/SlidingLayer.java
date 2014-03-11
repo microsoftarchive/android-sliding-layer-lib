@@ -203,6 +203,7 @@ public class SlidingLayer extends FrameLayout {
         init();
     }
 
+    //TODO 需要研究
     private void init() {
         setWillNotDraw(false);
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
@@ -253,7 +254,6 @@ public class SlidingLayer extends FrameLayout {
     private void switchLayer(final boolean open, final boolean smoothAnim, final boolean forceSwitch,
             final int velocityX, final int velocityY) {
         if (!forceSwitch && open == mIsOpen) {
-            setDrawingCacheEnabled(false);
             return;
         }
         if (open) {
@@ -409,7 +409,7 @@ public class SlidingLayer extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-
+        boolean handle=false;
         if (!mEnabled) {
             return false;
         }
@@ -417,13 +417,7 @@ public class SlidingLayer extends FrameLayout {
         final int action = ev.getAction() & MotionEventCompat.ACTION_MASK;
 
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
-            mIsDragging = false;
-            mIsUnableToDrag = false;
-            mActivePointerId = INVALID_POINTER;
-            if (mVelocityTracker != null) {
-                mVelocityTracker.recycle();
-                mVelocityTracker = null;
-            }
+            endDrag();
             return false;
         }
 
@@ -456,13 +450,11 @@ public class SlidingLayer extends FrameLayout {
             final float yDiff = Math.abs(y - mLastY);
 
             if (xDiff > mTouchSlop && xDiff > yDiff && allowDragingX(dx, mInitialX)) {
-                mIsDragging = true;
+                handle = true;
                 mLastX = x;
-                setDrawingCacheEnabled(true);
             } else if (yDiff > mTouchSlop && yDiff > xDiff && allowDragingY(dy, mInitialY)) {
-                mIsDragging = true;
+                handle = true;
                 mLastY = y;
-                setDrawingCacheEnabled(true);
             }
             break;
 
@@ -473,13 +465,11 @@ public class SlidingLayer extends FrameLayout {
             mLastX = mInitialX = MotionEventCompat.getX(ev, mActivePointerId);
             mLastY = mInitialY = MotionEventCompat.getY(ev, mActivePointerId);
             if (allowSlidingFromHereX(ev, mInitialX)) {
-                mIsDragging = false;
-                mIsUnableToDrag = false;
+                handle = false;
                 // If nobody else got the focus we use it to close the layer
                 return super.onInterceptTouchEvent(ev);
             } else if (allowSlidingFromHereY(ev, mInitialY)) {
-                mIsDragging = false;
-                mIsUnableToDrag = false;
+                handle = false;
                 // If nobody else got the focus we use it to close the layer
                 return super.onInterceptTouchEvent(ev);
             } else {
@@ -498,7 +488,7 @@ public class SlidingLayer extends FrameLayout {
             mVelocityTracker.addMovement(ev);
         }
 
-        return mIsDragging;
+        return handle;
     }
 
     @Override
@@ -870,7 +860,6 @@ public class SlidingLayer extends FrameLayout {
      */
     void smoothScrollTo(int x, int y, int velocity) {
         if (getChildCount() == 0) {
-            setDrawingCacheEnabled(false);
             return;
         }
         int sx = getScrollX();
@@ -969,7 +958,6 @@ public class SlidingLayer extends FrameLayout {
         boolean needPopulate = mScrolling;
         if (needPopulate) {
             // Done with scroll, no longer want to cache view drawing.
-            setDrawingCacheEnabled(false);
             mScroller.abortAnimation();
             int oldX = getScrollX();
             int oldY = getScrollY();
@@ -1125,6 +1113,10 @@ public class SlidingLayer extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if(!mScrolling&&!mIsDragging)
+        {
+            setDrawingCacheEnabled(false);
+        }
     }
 
     private int[] getDestScrollPos() {
@@ -1247,9 +1239,10 @@ public class SlidingLayer extends FrameLayout {
                 return;
             }
         }
-
-        // Done with scroll, clean up state.
-        completeScroll();
+        else
+        {
+            completeScroll();
+        }
     }
 
     /**
