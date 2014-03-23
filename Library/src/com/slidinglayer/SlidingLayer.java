@@ -937,7 +937,6 @@ public class SlidingLayer extends FrameLayout {
     public void setDrawingCacheEnabled(boolean enabled) {
 
         if (mDrawingCacheEnabled != enabled) {
-            super.setDrawingCacheEnabled(enabled);
             mDrawingCacheEnabled = enabled;
 
             final int l = getChildCount();
