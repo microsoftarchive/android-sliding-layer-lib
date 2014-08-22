@@ -1147,7 +1147,10 @@ public class SlidingLayer extends FrameLayout {
             mForceLayout = false;
 
             mScreenSide = screenSide;
-            closeLayer(false, true);
+
+            if (!mIsOpen) {
+                closeLayer(false, true);
+            }
 
             if (mScreenSide == STICK_TO_RIGHT) {
                 setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight(), getPaddingBottom());
