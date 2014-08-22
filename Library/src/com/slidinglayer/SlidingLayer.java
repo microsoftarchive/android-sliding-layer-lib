@@ -32,6 +32,9 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewConfigurationCompat;
@@ -50,27 +53,33 @@ import android.widget.Scroller;
 
 public class SlidingLayer extends FrameLayout {
 
+    private static final String KEY_IS_OPEN = "is_open";
+
     /**
-     * Default value for the position of the layer. STICK_TO_AUTO shall inspect the container and choose a stick
-     * mode depending on the position of the layout (ie.: layout is positioned on the right = STICK_TO_RIGHT).
+     * Default value for the position of the layer. STICK_TO_AUTO shall inspect
+     * the container and choose a stick mode depending on the position of the
+     * layour (ie.: layout is positioned on the right = STICK_TO_RIGHT).
      */
     public static final int STICK_TO_AUTO = 0;
 
     /**
-     * Special value for the position of the layer. STICK_TO_RIGHT means that the view shall be attached to the
-     * right side of the screen, and come from there into the viewable area.
+     * Special value for the position of the layer. STICK_TO_RIGHT means that
+     * the view shall be attached to the right side of the screen, and come from
+     * there into the viewable area.
      */
     public static final int STICK_TO_RIGHT = -1;
 
     /**
-     * Special value for the position of the layer. STICK_TO_LEFT means that the view shall be attached to the left
-     * side of the screen, and come from there into the viewable area.
+     * Special value for the position of the layer. STICK_TO_LEFT means that the
+     * view shall be attached to the left side of the screen, and come from
+     * there into the viewable area.
      */
     public static final int STICK_TO_LEFT = -2;
 
     /**
-     * Special value for the position of the layer. STICK_TO_MIDDLE means that the view will stay attached trying to
-     * be in the middle of the screen and allowing dismissing both to right and left side.
+     * Special value for the position of the layer. STICK_TO_MIDDLE means that
+     * the view will stay attached trying to be in the middle of the screen and
+     * allowing dismissing both to right and left side.
      */
     public static final int STICK_TO_MIDDLE = -3;
 
@@ -105,6 +114,7 @@ public class SlidingLayer extends FrameLayout {
     protected int mMaximumVelocity;
 
     private Random mRandom;
+    protected Bundle mState;
 
     private Scroller mScroller;
 
@@ -169,7 +179,7 @@ public class SlidingLayer extends FrameLayout {
      * 	<li>Open when the offset is tapped, but will have an offset of 0</li>
      * </ol>
      * @param context a reference to an existing context
-     * @param attrs attribute set constructed from attributes set in android .xml file 
+     * @param attrs attribute set constructed from attributes set in android .xml file
      * @param defStyle style res id
      */
     public SlidingLayer(Context context, AttributeSet attrs, int defStyle) {
@@ -222,7 +232,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Returns whether the panel is open or not.
-     * @return returns true if the panel is open, false otherwise. Please note that if 
+     * @return returns true if the panel is open, false otherwise. Please note that if
      * the panel was opened with smooth animation this method is not guaranteed to return
      * true. This method will only return true after the panel has completely opened.
      */
@@ -251,7 +261,7 @@ public class SlidingLayer extends FrameLayout {
     }
 
     private void switchLayer(final boolean open, final boolean smoothAnim, final boolean forceSwitch,
-            final int velocityX, final int velocityY) {
+                             final int velocityX, final int velocityY) {
         if (!forceSwitch && open == mIsOpen) {
             setDrawingCacheEnabled(false);
             return;
@@ -291,8 +301,9 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Sets the listener to be invoked after a switch change {@link OnInteractListener}.
-     * 
+     * Sets the listener to be invoked after a switch change
+     * {@link OnInteractListener}.
+     *
      * @param listener
      *            Listener to set
      */
@@ -301,28 +312,9 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Sets the shadow width by the value of a resource.
-     * 
-     * @param resId
-     *            The dimension resource id to be set as the shadow width.
-     */
-    public void setShadowWidthRes(int resId) {
-        setShadowWidth((int) getResources().getDimension(resId));
-    }
-
-    /**
-     * Return the current with of the shadow.
-     * 
-     * @return The size of the shadow in pixels
-     */
-    public int getShadowWidth() {
-        return mShadowWidth;
-    }
-
-    /**
-     * Sets the shadow of the width which will be included within the view by using padding since it's on the left
-     * of the view in this case
-     * 
+     * Sets the shadow of the width which will be included within the view by
+     * using padding since it's on the left of the view in this case
+     *
      * @param shadowWidth
      *            Desired width of the shadow
      * @see #getShadowWidth()
@@ -335,8 +327,27 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
+     * Sets the shadow width by the value of a resource.
+     *
+     * @param resId
+     *            The dimension resource id to be set as the shadow width.
+     */
+    public void setShadowWidthRes(int resId) {
+        setShadowWidth((int) getResources().getDimension(resId));
+    }
+
+    /**
+     * Return the current with of the shadow.
+     *
+     * @return The size of the shadow in pixels
+     */
+    public int getShadowWidth() {
+        return mShadowWidth;
+    }
+
+    /**
      * Sets a drawable that will be used to create the shadow for the layer.
-     * 
+     *
      * @param d
      *            Drawable append as a shadow
      */
@@ -348,8 +359,9 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Sets a drawable resource that will be used to create the shadow for the layer.
-     * 
+     * Sets a drawable resource that will be used to create the shadow for the
+     * layer.
+     *
      * @param resId
      *            Resource ID of a drawable
      */
@@ -359,7 +371,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Sets the offset width of the panel. How much sticks out when off screen.
-     * 
+     *
      * @param offsetWidth
      *            Width of the offset in pixels
      * @see #getOffsetWidth()
@@ -370,7 +382,7 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * 
+     *
      * @return returns the number of pixels that are visible when the panel is closed
      */
     public int getOffsetWidth() {
@@ -405,6 +417,33 @@ public class SlidingLayer extends FrameLayout {
 
     public void setSlidingFromShadowEnabled(boolean _slidingShadow) {
         mSlidingFromShadowEnabled = _slidingShadow;
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState state = new SavedState(superState);
+        if (mState == null) {
+            mState = new Bundle();
+        }
+        mState.putBoolean(KEY_IS_OPEN, isOpened());
+        state.mState = mState;
+        return state;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        SavedState savedState = (SavedState) state;
+        super.onRestoreInstanceState(savedState.getSuperState());
+        restoreState(savedState.mState);
+    }
+
+    public void restoreState(Parcelable in) {
+        mState = (Bundle) in;
+        boolean isOpened = mState.getBoolean(KEY_IS_OPEN);
+        if (isOpened) {
+            openLayer(true);
+        }
     }
 
     @Override
@@ -469,7 +508,7 @@ public class SlidingLayer extends FrameLayout {
         case MotionEvent.ACTION_DOWN:
             mActivePointerId = ev.getAction()
                     & (Build.VERSION.SDK_INT >= 8 ? MotionEvent.ACTION_POINTER_INDEX_MASK
-                            : MotionEventCompat.ACTION_POINTER_INDEX_MASK);
+                    : MotionEventCompat.ACTION_POINTER_INDEX_MASK);
             mLastX = mInitialX = MotionEventCompat.getX(ev, mActivePointerId);
             mLastY = mInitialY = MotionEventCompat.getY(ev, mActivePointerId);
             if (allowSlidingFromHereX(ev, mInitialX)) {
@@ -715,7 +754,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Checks if the touch event is valid for dragging the view.
-     * 
+     *
      * @param dx
      *            changed in delta from the initialX
      * @param initialX
@@ -772,7 +811,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Based on the current state, position and velocity of the layer we calculate what the next state should be.
-     * 
+     *
      * @param currentState
      * @param swipeOffsetX
      * @param swipeOffsetY
@@ -783,7 +822,8 @@ public class SlidingLayer extends FrameLayout {
      * @return true means we should open it, false close it.
      */
     private boolean determineNextStateOpened(final boolean currentState, final float swipeOffsetX,
-            final float swipeOffsetY, final int velocityX, final int velocityY, final int deltaX, final int deltaY) {
+                                             final float swipeOffsetY, final int velocityX, final int velocityY,
+                                             final int deltaX, final int deltaY) {
         final boolean targetState;
         final boolean calcX;
         final boolean calcY;
@@ -848,7 +888,7 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Like {@link View#scrollBy}, but scroll smoothly instead of immediately.
-     * 
+     *
      * @param x
      *            the number of pixels to scroll by on the X axis
      * @param y
@@ -860,13 +900,14 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Like {@link View#scrollBy}, but scroll smoothly instead of immediately.
-     * 
+     *
      * @param x
      *            the number of pixels to scroll by on the X axis
      * @param y
      *            the number of pixels to scroll by on the Y axis
      * @param velocity
-     *            the velocity associated with a fling, if applicable. (0 otherwise)
+     *            the velocity associated with a fling, if applicable. (0
+     *            otherwise)
      */
     void smoothScrollTo(int x, int y, int velocity) {
         if (getChildCount() == 0) {
@@ -912,9 +953,12 @@ public class SlidingLayer extends FrameLayout {
         invalidate();
     }
 
-    // We want the duration of the page snap animation to be influenced by the distance that
-    // the screen has to travel, however, we don't want this duration to be effected in a
-    // purely linear fashion. Instead, we use this method to moderate the effect that the distance
+    // We want the duration of the page snap animation to be influenced by the
+    // distance that
+    // the screen has to travel, however, we don't want this duration to be
+    // effected in a
+    // purely linear fashion. Instead, we use this method to moderate the effect
+    // that the distance
     // of travel has on the overall snap duration.
     float distanceInfluenceForSnapDuration(float f) {
         f -= 0.5f; // center the values about 0.
@@ -1012,16 +1056,16 @@ public class SlidingLayer extends FrameLayout {
      * the SlidingLayer is opened, it will attempt to close.
      * If parameter is set to <code>false</code>, then tapping the <code>SlidingLayer</code> will
      * do nothing
-     * 
-     * @param _closeOnTapEnabled  
+     *
+     * @param _closeOnTapEnabled
      */
     public void setCloseOnTapEnabled(boolean _closeOnTapEnabled) {
         closeOnTapEnabled = _closeOnTapEnabled;
     }
 
     /**
-     * Given that there is a visible offset and it is tapped, if the parameter is set 
-     * to true it will attempt to open the <code>SlidingLayer</code>. If parameter is false, 
+     * Given that there is a visible offset and it is tapped, if the parameter is set
+     * to true it will attempt to open the <code>SlidingLayer</code>. If parameter is false,
      * tapping a visible offset will yield no result.
      * @param _openOnTapEnabled
      */
@@ -1133,12 +1177,12 @@ public class SlidingLayer extends FrameLayout {
 
     /**
      * Get the x destination based on the velocity
-     * 
+     *
      * @param xValue
      * @param yValue
      * @return
      * @since 1.0
-     * 
+     *
      */
     private int[] getDestScrollPos(int xValue, int yValue) {
 
@@ -1256,32 +1300,63 @@ public class SlidingLayer extends FrameLayout {
      * Handler interface for obtaining updates on the <code>SlidingLayer</code>'s state.
      * <code>OnInteractListener</code> allows for external classes to be notified when the <code>SlidingLayer</code>
      * receives input to be opened or closed.
-     */ 
+     */
     public interface OnInteractListener {
 
         /**
-    	 * This method is called when an attempt is made to open the current <code>SlidingLayer</code>. Note
-    	 * that because of animation, the <code>SlidingLayer</code> may not be visible yet. 
-    	 */
+         * This method is called when an attempt is made to open the current <code>SlidingLayer</code>. Note
+         * that because of animation, the <code>SlidingLayer</code> may not be visible yet.
+         */
         public void onOpen();
-        
+
         /**
-        * This method is called when an attempt is made to close the current <code>SlidingLayer</code>. Note
-    	* that because of animation, the <code>SlidingLayer</code> may still be visible. 
-    	*/
+         * This method is called when an attempt is made to close the current <code>SlidingLayer</code>. Note
+         * that because of animation, the <code>SlidingLayer</code> may still be visible.
+         */
         public void onClose();
 
         /**
-         * this method is executed after <code>onOpen()</code>, when the animation has finished. 
+         * this method is executed after <code>onOpen()</code>, when the animation has finished.
          */
         public void onOpened();
 
         /**
-         * this method is executed after <code>onClose()</code>, when the animation has finished and the  <code>SlidingLayer</code> is
-         * therefore no longer visible. 
+         * this method is executed after <code>onClose()</code>, when the animation has finished and the
+         * <code>SlidingLayer</code> is
+         * therefore no longer visible.
          */
         public void onClosed();
-
     }
 
+    static class SavedState extends BaseSavedState {
+
+        Bundle mState;
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        public SavedState(Parcel in) {
+            super(in);
+            mState = in.readBundle();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeBundle(mState);
+        }
+
+        public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+            @Override
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 }
