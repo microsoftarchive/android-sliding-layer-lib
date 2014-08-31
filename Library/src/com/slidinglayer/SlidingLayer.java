@@ -259,6 +259,24 @@ public class SlidingLayer extends FrameLayout {
     private void switchLayer(boolean open, boolean smoothAnim, boolean forceSwitch) {
         switchLayer(open, smoothAnim, forceSwitch, 0, 0);
     }
+    
+    /**
+	 * Simple Toggle Method.
+	 * If layer is open the Layer will close. 
+	 * If the layer is closed it will open.
+	 * It's just that simple.
+	 * @param smoothAnim
+	 * @author adfleshner
+	 */
+    public void toggleLayer(boolean smoothAnim) {
+		if (isOpened()) {
+			closeLayer(smoothAnim, false);
+		} else {
+			openLayer(smoothAnim, false);
+		}
+	}
+
+    
 
     private void switchLayer(final boolean open, final boolean smoothAnim, final boolean forceSwitch,
                              final int velocityX, final int velocityY) {
