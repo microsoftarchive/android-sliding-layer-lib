@@ -1,4 +1,5 @@
 apply plugin: 'android-library'
+apply plugin: 'maven-publish'
 
 dependencies {
     compile 'com.android.support:support-v4:20.0.+'
@@ -22,3 +23,16 @@ android {
         }
     }
 }
+
+def getArtifactFullPath() {
+    return "${project.buildDir}/outputs/aar/${project.name}-${project.version}.aar"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact getArtifactFullPath()
+        }
+    }
+}
+
