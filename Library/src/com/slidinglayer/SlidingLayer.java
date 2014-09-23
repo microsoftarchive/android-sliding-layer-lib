@@ -240,6 +240,22 @@ public class SlidingLayer extends FrameLayout {
         return mIsOpen;
     }
 
+    public void toggleLayer(boolean smoothAnim) {
+    	if(mIsOpen){
+    		closeLayer(smoothAnim, false);
+    	}else{
+    		openLayer(smoothAnim, false);
+    	}
+    }
+    
+    public void toggleLayer(boolean smoothAnim, boolean forceOpen) {
+    	if(mIsOpen){
+    		switchLayer(false, smoothAnim, forceClose, 0, 0);
+    	}else{
+    		switchLayer(true, smoothAnim, forceOpen, 0, 0);
+    	}
+    }
+    
     public void openLayer(boolean smoothAnim) {
         openLayer(smoothAnim, false);
     }
