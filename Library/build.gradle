@@ -1,16 +1,16 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 dependencies {
-    compile 'com.android.support:support-v4:20.0.+'
+    compile 'com.android.support:support-v4:20.0.0'
 }
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 4
-        targetSdkVersion 18
+        targetSdkVersion 21
     }
 
     sourceSets {
