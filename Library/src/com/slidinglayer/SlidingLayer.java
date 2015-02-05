@@ -41,6 +41,7 @@ import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -1136,6 +1137,28 @@ public class SlidingLayer extends FrameLayout {
         if (screenSide != mScreenSide || mForceLayout) {
 
             mForceLayout = false;
+
+            if (screenSide != STICK_TO_MIDDLE) {
+
+                LayoutParams layoutParams = (LayoutParams) getLayoutParams();
+
+                switch (screenSide) {
+                case STICK_TO_BOTTOM:
+                    layoutParams.gravity = Gravity.BOTTOM;
+                    break;
+                case STICK_TO_LEFT:
+                    layoutParams.gravity = Gravity.LEFT;
+                    break;
+                case STICK_TO_RIGHT:
+                    layoutParams.gravity = Gravity.RIGHT;
+                    break;
+                case STICK_TO_TOP:
+                    layoutParams.gravity = Gravity.TOP;
+                    break;
+                }
+
+                setLayoutParams(layoutParams);
+            }
 
             mScreenSide = screenSide;
 
