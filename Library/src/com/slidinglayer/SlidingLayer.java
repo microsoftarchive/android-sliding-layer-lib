@@ -109,8 +109,8 @@ public class SlidingLayer extends FrameLayout {
     /**
      * Sentinel value for no current active pointer. Used by {@link #mActivePointerId}.
      */
-    private static final int INVALID_POINTER = -1;
-    protected int mActivePointerId = INVALID_POINTER;
+    private static final int INVALID_VALUE = -1;
+    protected int mActivePointerId = INVALID_VALUE;
     protected VelocityTracker mVelocityTracker;
     protected int mMaximumVelocity;
 
@@ -147,11 +147,11 @@ public class SlidingLayer extends FrameLayout {
     private boolean mIsUnableToDrag;
     private int mTouchSlop;
 
-    private float mLastX = -1;
-    private float mLastY = -1;
+    private float mLastX = INVALID_VALUE;
+    private float mLastY = INVALID_VALUE;
 
-    private float mInitialX = -1;
-    private float mInitialY = -1;
+    private float mInitialX = INVALID_VALUE;
+    private float mInitialY = INVALID_VALUE;
 
     private boolean mIsOpen;
     private boolean mScrolling;
@@ -194,8 +194,8 @@ public class SlidingLayer extends FrameLayout {
         setStickTo(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
 
         // Sets the shadow drawable
-        int shadowRes = ta.getResourceId(R.styleable.SlidingLayer_shadowDrawable, -1);
-        if (shadowRes != -1) {
+        int shadowRes = ta.getResourceId(R.styleable.SlidingLayer_shadowDrawable, INVALID_VALUE);
+        if (shadowRes != INVALID_VALUE) {
             setShadowDrawable(shadowRes);
         }
 
@@ -454,7 +454,7 @@ public class SlidingLayer extends FrameLayout {
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
             mIsDragging = false;
             mIsUnableToDrag = false;
-            mActivePointerId = INVALID_POINTER;
+            mActivePointerId = INVALID_VALUE;
             if (mVelocityTracker != null) {
                 mVelocityTracker.recycle();
                 mVelocityTracker = null;
@@ -473,13 +473,13 @@ public class SlidingLayer extends FrameLayout {
         switch (action) {
         case MotionEvent.ACTION_MOVE:
             final int activePointerId = mActivePointerId;
-            if (activePointerId == INVALID_POINTER) {
+            if (activePointerId == INVALID_VALUE) {
                 break;
             }
 
             final int pointerIndex = MotionEventCompat.findPointerIndex(ev, activePointerId);
-            if (pointerIndex == -1) {
-                mActivePointerId = INVALID_POINTER;
+            if (pointerIndex == INVALID_VALUE) {
+                mActivePointerId = INVALID_VALUE;
                 break;
             }
 
@@ -569,8 +569,8 @@ public class SlidingLayer extends FrameLayout {
         case MotionEvent.ACTION_MOVE:
             if (!mIsDragging) {
                 final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                if (pointerIndex == -1) {
-                    mActivePointerId = INVALID_POINTER;
+                if (pointerIndex == INVALID_VALUE) {
+                    mActivePointerId = INVALID_VALUE;
                     break;
                 }
                 final float x = MotionEventCompat.getX(ev, pointerIndex);
@@ -590,8 +590,8 @@ public class SlidingLayer extends FrameLayout {
             if (mIsDragging) {
                 // Scroll to follow the motion event
                 final int activePointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                if (activePointerIndex == -1) {
-                    mActivePointerId = INVALID_POINTER;
+                if (activePointerIndex == INVALID_VALUE) {
+                    mActivePointerId = INVALID_VALUE;
                     break;
                 }
                 final float x = MotionEventCompat.getX(ev, activePointerIndex);
@@ -672,7 +672,7 @@ public class SlidingLayer extends FrameLayout {
                         initialVelocityY, totalDeltaX, totalDeltaY);
                 switchLayer(nextStateOpened, true, true, initialVelocityX, initialVelocityY);
 
-                mActivePointerId = INVALID_POINTER;
+                mActivePointerId = INVALID_VALUE;
                 endDrag();
             } else if (mIsOpen && closeOnTapEnabled) {
                 closeLayer(true);
@@ -683,7 +683,7 @@ public class SlidingLayer extends FrameLayout {
         case MotionEvent.ACTION_CANCEL:
             if (mIsDragging) {
                 switchLayer(mIsOpen, true, true);
-                mActivePointerId = INVALID_POINTER;
+                mActivePointerId = INVALID_VALUE;
                 endDrag();
             }
             break;
@@ -700,7 +700,7 @@ public class SlidingLayer extends FrameLayout {
             mLastY = MotionEventCompat.getY(ev, MotionEventCompat.findPointerIndex(ev, mActivePointerId));
             break;
         }
-        if (mActivePointerId == INVALID_POINTER) {
+        if (mActivePointerId == INVALID_VALUE) {
             mLastTouchAllowed = false;
         }
         return true;
