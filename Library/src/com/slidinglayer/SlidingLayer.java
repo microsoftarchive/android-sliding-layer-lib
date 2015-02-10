@@ -1220,6 +1220,40 @@ public class SlidingLayer extends FrameLayout {
         public void onClosed();
     }
 
+    private void notifyActionStartedForState(int state) {
+
+        switch (state) {
+        case STATE_CLOSED:
+            mOnInteractListener.onClose();
+            break;
+
+        case STATE_PREVIEW:
+            mOnInteractListener.onShowPreview();
+            break;
+
+        case STATE_OPENED:
+            mOnInteractListener.onOpen();
+            break;
+        }
+    }
+
+    private void notifyActionFinished() {
+
+        switch (mCurrentState) {
+        case STATE_CLOSED:
+            mOnInteractListener.onClosed();
+            break;
+
+        case STATE_PREVIEW:
+            mOnInteractListener.onPreviewShowed();
+            break;
+
+        case STATE_OPENED:
+            mOnInteractListener.onOpened();
+            break;
+        }
+    }
+
     static class SavedState extends BaseSavedState {
 
         Bundle mState;
