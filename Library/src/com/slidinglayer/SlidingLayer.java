@@ -116,9 +116,9 @@ public class SlidingLayer extends FrameLayout {
     private int mScreenSide = STICK_TO_AUTO;
 
     /**
-     * If the user taps the layer then we will close it if enabled.
+     * If the user taps the layer then we will switch state it if enabled.
      */
-    private boolean closeOnTapEnabled = true;
+    private boolean changeStateOnTap = true;
 
     /**
      * The size of the panel in preview mode
@@ -194,10 +194,8 @@ public class SlidingLayer extends FrameLayout {
         // Sets the shadow size
         mShadowSize = (int) ta.getDimension(R.styleable.SlidingLayer_shadowSize, 0);
 
-        // Sets the ability to close the layer by tapping in any empty space
-        closeOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_closeOnTapEnabled, true);
-        // Sets the ability to open the layout by tapping on any of the exposed closed layer
-        openOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_openOnTapEnabled, true);
+        // Sets the ability to open or close the layer by tapping in any empty space
+        changeStateOnTap = ta.getBoolean(R.styleable.SlidingLayer_changeStateOnTap, true);
 
         // How much of the view sticks out when closed
         mOffsetDistance = ta.getDimensionPixelOffset(R.styleable.SlidingLayer_offsetDistance, 0);
@@ -666,10 +664,10 @@ public class SlidingLayer extends FrameLayout {
 
                 mActivePointerId = INVALID_VALUE;
                 endDrag();
-            } else if (mIsOpen && closeOnTapEnabled) {
-                closeLayer(true);
-            } else if (!mIsOpen && openOnTapEnabled) {
-                openLayer(true);
+
+            } else if (changeStateOnTap) {
+                int nextState = determineNextStateAfterTap();
+                setLayerState(nextState, true, true);
             }
             break;
         case MotionEvent.ACTION_CANCEL:
@@ -856,7 +854,23 @@ public class SlidingLayer extends FrameLayout {
             }
         }
 
-        return targetState;
+    /**
+     * Based on the current state of the panel, this method returns the next state after tapping.
+     *
+     * @return the state of the panel (@link STATE_OPENED, STATE_CLOSED or STATE_PREVIEW).
+     */
+    private int determineNextStateAfterTap() {
+
+        switch (mCurrentState) {
+        case STATE_CLOSED:
+            return isPreviewModeEnabled() ? STATE_PREVIEW : STATE_OPENED;
+        case STATE_PREVIEW:
+            return STATE_OPENED;
+        case STATE_OPENED:
+            return isPreviewModeEnabled() ? STATE_PREVIEW : STATE_CLOSED;
+        }
+
+        return STATE_CLOSED;
     }
 
     /**
@@ -1017,16 +1031,12 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Given that there is a visible offset and it is tapped, if the parameter is set
-     * to true it will attempt to open the <code>SlidingLayer</code>. If parameter is false,
-     * tapping a visible offset will yield no result.
+     * Sets the behavior when tapping the sliding layer
      *
-     * @param _openOnTapEnabled
+     * @param changeStateOnTap
      */
-    public void setOpenOnTapEnabled(boolean _openOnTapEnabled) {
-        openOnTapEnabled = _openOnTapEnabled;
-    }
-
+    public void setChangeStateOnTap(boolean changeStateOnTap) {
+        this.changeStateOnTap = changeStateOnTap;
     }
 
     @Override
