@@ -268,44 +268,32 @@ public class SlidingLayer extends FrameLayout {
         setLayerState(state, smoothAnimation, false);
     }
 
-    private void switchLayer(final boolean open, final boolean smoothAnim, final boolean forceSwitch,
-                             final int velocityX, final int velocityY) {
-        if (!forceSwitch && open == mIsOpen) {
+    private void setLayerState(final int state, final boolean smoothAnimation, boolean force) {
+        setLayerState(state, smoothAnimation, force, 0, 0);
+    }
+
+    private void setLayerState(final int state, final boolean smoothAnimation, final boolean force,
+                               final int velocityX, final int velocityY) {
+
+        if (!force && mCurrentState == state) {
             setDrawingCacheEnabled(false);
             return;
         }
-        if (open) {
-            if (mOnInteractListener != null) {
-                mOnInteractListener.onOpen();
-            }
-        } else {
-            if (mOnInteractListener != null) {
-                mOnInteractListener.onClose();
-            }
+
+        if (mOnInteractListener != null) {
+            notifyActionStartedForState(state);
         }
 
-        mIsOpen = open;
+        final int pos[] = getDestScrollPosForState(state);
 
-        // Get translation values
-        float tx = mLastX - getWidth() / 2;
-        float ty = mLastY - getHeight() / 2;
-
-        // Get boolean for velocity check
-        boolean noVelocityInStickToMidle = mScreenSide == STICK_TO_MIDDLE && Math.abs(velocityX) < mMinimumVelocity
-                && Math.abs(velocityY) < mMinimumVelocity;
-
-        // Follow velocity or translation depending on the case
-        int dx = noVelocityInStickToMidle ? (int) tx : velocityX;
-        int dy = noVelocityInStickToMidle ? (int) ty : velocityY;
-
-        final int pos[] = getDestScrollPos(dx, dy);
-
-        if (smoothAnim) {
+        if (smoothAnimation) {
             smoothScrollTo(pos[0], pos[1], Math.max(velocityX, velocityY));
         } else {
             completeScroll();
             scrollTo(pos[0], pos[1]);
         }
+
+        mCurrentState = state;
     }
 
     /**
