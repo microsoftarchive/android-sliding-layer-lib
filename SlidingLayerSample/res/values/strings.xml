@@ -26,6 +26,7 @@
     <string name="app_name">SlidingLayerSample</string>
 
     <string name="pref_title_stick_container">Stick layer to</string>
+    <string name="pref_title_enable_preview_mode">Enable preview mode</string>
     <string name="pref_title_show_shadow">Show shadow</string>
     <string name="pref_title_show_offset">Closed offset</string>
     <string name="open_button_container">Open</string>

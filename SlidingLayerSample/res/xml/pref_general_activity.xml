@@ -19,7 +19,7 @@
   ~ limitations under the License.
 -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
             android:defaultValue="right"
@@ -28,19 +28,24 @@
             android:entryValues="@array/pref_list_values"
             android:key="layer_location"
             android:title="@string/pref_title_stick_container"/>
-    
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="layer_has_shadow"
-        android:title="@string/pref_title_show_shadow" />
 
     <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="layer_has_offset"
-        android:title="@string/pref_title_show_offset" />
-    
-    <Preference 
-        android:title="@string/pref_go"
-        android:key="pref_go"/>
+            android:defaultValue="true"
+            android:key="preview_mode_enabled"
+            android:title="@string/pref_title_enable_preview_mode"/>
+
+    <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="layer_has_shadow"
+            android:title="@string/pref_title_show_shadow"/>
+
+    <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="layer_has_offset"
+            android:title="@string/pref_title_show_offset"/>
+
+    <Preference
+            android:title="@string/pref_go"
+            android:key="pref_go"/>
 
 </PreferenceScreen>

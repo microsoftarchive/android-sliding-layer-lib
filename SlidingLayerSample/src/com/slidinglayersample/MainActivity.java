@@ -45,16 +45,11 @@ public class MainActivity extends Activity {
     private SlidingLayer mSlidingLayer;
     private TextView swipeText;
 
-    private String mStickContainerTo;
-    private boolean mShowShadow;
-    private boolean mShowOffset;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getPrefs();
         bindViews();
         initState();
     }
@@ -78,36 +73,36 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Get current value for preferences
-     */
-    private void getPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mStickContainerTo = prefs.getString("layer_location", "right");
-        mShowShadow = prefs.getBoolean("layer_has_shadow", false);
-        mShowOffset = prefs.getBoolean("layer_has_offset", false);
-    }
-
-    /**
      * Initializes the origin state of the layer
      */
     private void initState() {
 
-        // Sticks container to right or left
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        setupSlidingLayerPosition(prefs.getString("layer_location", "right"));
+
+        setupShadow(prefs.getBoolean("layer_has_shadow", false));
+        setupLayerOffset(prefs.getBoolean("layer_has_offset", false));
+        setupPreviewMode(prefs.getBoolean("preview_mode_enabled", false));
+    }
+
+    private void setupSlidingLayerPosition(String layerPosition) {
+
         LayoutParams rlp = (LayoutParams) mSlidingLayer.getLayoutParams();
         int textResource;
         Drawable d;
 
-        if (mStickContainerTo.equals("right")) {
+        if (layerPosition.equals("right")) {
             textResource = R.string.swipe_right_label;
             d = getResources().getDrawable(R.drawable.container_rocket_right);
 
             mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_RIGHT);
-        } else if (mStickContainerTo.equals("left")) {
+        } else if (layerPosition.equals("left")) {
             textResource = R.string.swipe_left_label;
             d = getResources().getDrawable(R.drawable.container_rocket_left);
 
             mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT);
-        } else if (mStickContainerTo.equals("top")) {
+        } else if (layerPosition.equals("top")) {
             textResource = R.string.swipe_up_label;
             d = getResources().getDrawable(R.drawable.container_rocket);
 
@@ -127,20 +122,26 @@ public class MainActivity extends Activity {
         swipeText.setCompoundDrawables(null, d, null, null);
         swipeText.setText(getResources().getString(textResource));
         mSlidingLayer.setLayoutParams(rlp);
+    }
 
-        // Sets the shadow of the container
-        if (mShowShadow) {
+    private void setupShadow(boolean enabled) {
+        if (enabled) {
             mSlidingLayer.setShadowSizeRes(R.dimen.shadow_size);
             mSlidingLayer.setShadowDrawable(R.drawable.sidebar_shadow);
         } else {
             mSlidingLayer.setShadowSize(0);
             mSlidingLayer.setShadowDrawable(null);
         }
-        if (mShowOffset) {
-            mSlidingLayer.setOffsetDistance(getResources().getDimensionPixelOffset(R.dimen.offset_distance));
-        } else {
-            mSlidingLayer.setOffsetDistance(0);
-        }
+    }
+
+    private void setupLayerOffset(boolean enabled) {
+        int offsetDistance = enabled ? getResources().getDimensionPixelOffset(R.dimen.offset_distance) : 0;
+        mSlidingLayer.setOffsetDistance(offsetDistance);
+    }
+
+    private void setupPreviewMode(boolean enabled) {
+        int previewOffset = enabled ? getResources().getDimensionPixelOffset(R.dimen.preview_offset_distance) : -1;
+        mSlidingLayer.setPreviewOffsetDistance(previewOffset);
     }
 
     public void buttonClicked(View v) {

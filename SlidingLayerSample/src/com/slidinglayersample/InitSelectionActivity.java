@@ -24,7 +24,6 @@ package com.slidinglayersample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -59,9 +58,6 @@ public class InitSelectionActivity extends PreferenceActivity {
                 }
             });
         }
-
-        final CheckBoxPreference shadowPreference = (CheckBoxPreference) findPreference("layer_has_shadow");
-        final CheckBoxPreference offsetPreference = (CheckBoxPreference) findPreference("layer_has_offset");
 
         final ListPreference posPreference = (ListPreference) findPreference("layer_location");
         if (posPreference != null) {
