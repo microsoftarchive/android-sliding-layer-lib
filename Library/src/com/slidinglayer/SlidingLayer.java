@@ -1030,7 +1030,7 @@ public class SlidingLayer extends FrameLayout {
             } else if (mScreenSide == STICK_TO_LEFT) {
                 setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight() + mShadowSize, getPaddingBottom());
             } else if (mScreenSide == STICK_TO_TOP) {
-                setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom() + mShadowWidth);
+                setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom() + mShadowSize);
             }
         }
 
