@@ -1120,18 +1120,20 @@ public class SlidingLayer extends FrameLayout {
             return pos;
         } else {
 
+            int layerOffset = state == STATE_CLOSED ? mOffsetDistance : mPreviewOffsetDistance;
+
             switch (mScreenSide) {
             case STICK_TO_RIGHT:
-                pos[0] = state == STATE_CLOSED ? -getWidth() + mOffsetDistance : -mPreviewOffsetDistance;
+                pos[0] = -getWidth() + layerOffset;
                 break;
             case STICK_TO_LEFT:
-                pos[0] = state == STATE_CLOSED ? getWidth() - mOffsetDistance : mPreviewOffsetDistance;
+                pos[0] = getWidth() - layerOffset;
                 break;
             case STICK_TO_TOP:
-                pos[1] = state == STATE_CLOSED ? getHeight() - mOffsetDistance : mPreviewOffsetDistance;
+                pos[1] = getHeight() - layerOffset;
                 break;
             case STICK_TO_BOTTOM:
-                pos[1] = state == STATE_CLOSED ? -getHeight() + mOffsetDistance : -mPreviewOffsetDistance;
+                pos[1] = -getHeight() + layerOffset;
                 break;
             }
 
