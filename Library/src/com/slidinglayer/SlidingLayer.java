@@ -401,6 +401,14 @@ public class SlidingLayer extends FrameLayout {
                     "offset dimension of the preview mode");
         }
     }
+
+    /**
+     * @return true if the preview mode is enabled
+     */
+    private boolean isPreviewModeEnabled() {
+        return mPreviewOffsetDistance != INVALID_VALUE;
+    }
+
     @Override
     protected boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == mShadowDrawable;
