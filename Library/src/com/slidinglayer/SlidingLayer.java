@@ -1192,6 +1192,13 @@ public class SlidingLayer extends FrameLayout {
         public void onOpen();
 
         /**
+         * This method is called when an attempt is made to show the preview mode in the current
+         * <code>SlidingLayer</code>. Note that because of animation, the <code>SlidingLayer</code> may not be
+         * visible yet.
+         */
+        public void onShowPreview();
+
+        /**
          * This method is called when an attempt is made to close the current <code>SlidingLayer</code>. Note
          * that because of animation, the <code>SlidingLayer</code> may still be visible.
          */
@@ -1201,6 +1208,11 @@ public class SlidingLayer extends FrameLayout {
          * this method is executed after <code>onOpen()</code>, when the animation has finished.
          */
         public void onOpened();
+
+        /**
+         * this method is executed after <code>onShowPreview()</code>, when the animation has finished.
+         */
+        public void onPreviewShowed();
 
         /**
          * this method is executed after <code>onClose()</code>, when the animation has finished and the
