@@ -138,16 +138,16 @@ public class MainActivity extends Activity {
 
         // Sets the shadow of the container
         if (mShowShadow) {
-            mSlidingLayer.setShadowWidthRes(R.dimen.shadow_width);
+            mSlidingLayer.setShadowSizeRes(R.dimen.shadow_size);
             mSlidingLayer.setShadowDrawable(R.drawable.sidebar_shadow);
         } else {
-            mSlidingLayer.setShadowWidth(0);
+            mSlidingLayer.setShadowSize(0);
             mSlidingLayer.setShadowDrawable(null);
         }
-        if(mShowOffset) {
-            mSlidingLayer.setOffsetWidth(getResources().getDimensionPixelOffset(R.dimen.offset_width));
+        if (mShowOffset) {
+            mSlidingLayer.setOffsetDistance(getResources().getDimensionPixelOffset(R.dimen.offset_distance));
         } else {
-            mSlidingLayer.setOffsetWidth(0);
+            mSlidingLayer.setOffsetDistance(0);
         }
     }
 

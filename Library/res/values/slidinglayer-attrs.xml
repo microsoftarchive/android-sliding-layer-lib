@@ -26,7 +26,7 @@
 
     <declare-styleable name="SlidingLayer">
         <attr name="shadowDrawable" format="boolean"/>
-        <attr name="shadowWidth" format="dimension"/>
+        <attr name="shadowSize" format="dimension"/>
         <attr name="changeStateOnTap" format="boolean"/>
         <attr name="offsetDistance" format="dimension"/>
         <attr name="previewOffsetDistance" format="dimension"/>

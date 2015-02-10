@@ -119,12 +119,12 @@ public class SlidingLayer extends FrameLayout {
 
     private Scroller mScroller;
 
-    private int mShadowWidth;
+    private int mShadowSize;
     private Drawable mShadowDrawable;
     private boolean mForceLayout;
 
     /**
-     * The with of the panel when closed
+     * The size of the panel that sticks out when closed
      */
     private int mOffsetDistance;
 
@@ -137,9 +137,9 @@ public class SlidingLayer extends FrameLayout {
     private boolean closeOnTapEnabled = true;
 
     /**
-     * If the user taps the offset then we will open it if enabled.
+     * The size of the panel in preview mode
      */
-    private boolean openOnTapEnabled = true;
+    private int mPreviewOffsetDistance = INVALID_VALUE;
 
     private boolean mEnabled = true;
     private boolean mSlidingFromShadowEnabled = true;
@@ -199,8 +199,8 @@ public class SlidingLayer extends FrameLayout {
             setShadowDrawable(shadowRes);
         }
 
-        // Sets the shadow width
-        setShadowWidth((int) ta.getDimension(R.styleable.SlidingLayer_shadowWidth, 0));
+        // Sets the shadow size
+        mShadowSize = (int) ta.getDimension(R.styleable.SlidingLayer_shadowSize, 0);
 
         // Sets the ability to close the layer by tapping in any empty space
         closeOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_closeOnTapEnabled, true);
@@ -208,7 +208,7 @@ public class SlidingLayer extends FrameLayout {
         openOnTapEnabled = ta.getBoolean(R.styleable.SlidingLayer_openOnTapEnabled, true);
 
         // How much of the view sticks out when closed
-        setOffsetDistance(ta.getDimensionPixelOffset(R.styleable.SlidingLayer_offsetDistance, 0));
+        mOffsetDistance = ta.getDimensionPixelOffset(R.styleable.SlidingLayer_offsetDistance, 0);
 
         ta.recycle();
 
@@ -314,35 +314,35 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Sets the shadow of the width which will be included within the view by
+     * Sets the shadow of the size which will be included within the view by
      * using padding since it's on the left of the view in this case
      *
-     * @param shadowWidth Desired width of the shadow
-     * @see #getShadowWidth()
+     * @param shadowSize Desired size of the shadow
+     * @see #getShadowSize()
      * @see #setShadowDrawable(Drawable)
      * @see #setShadowDrawable(int)
      */
-    public void setShadowWidth(final int shadowWidth) {
-        mShadowWidth = shadowWidth;
+    public void setShadowSize(final int shadowSize) {
+        mShadowSize = shadowSize;
         invalidate(getLeft(), getTop(), getRight(), getBottom());
     }
 
     /**
-     * Sets the shadow width by the value of a resource.
+     * Sets the shadow size by the value of a resource.
      *
-     * @param resId The dimension resource id to be set as the shadow width.
+     * @param resId The dimension resource id to be set as the shadow size.
      */
-    public void setShadowWidthRes(int resId) {
-        setShadowWidth((int) getResources().getDimension(resId));
+    public void setShadowSizeRes(int resId) {
+        setShadowSize((int) getResources().getDimension(resId));
     }
 
     /**
-     * Return the current with of the shadow.
+     * Return the current size of the shadow.
      *
      * @return The size of the shadow in pixels
      */
-    public int getShadowWidth() {
-        return mShadowWidth;
+    public int getShadowSize() {
+        return mShadowSize;
     }
 
     /**
@@ -368,9 +368,9 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Sets the offset width of the panel. How much sticks out when off screen.
+     * Sets the offset distance of the panel. How much sticks out when off screen.
      *
-     * @param offsetDistance Width of the offset in pixels
+     * @param offsetDistance Size of the offset in pixels
      * @see #getOffsetDistance()
      */
     public void setOffsetDistance(int offsetDistance) {
@@ -1167,11 +1167,11 @@ public class SlidingLayer extends FrameLayout {
             }
 
             if (mScreenSide == STICK_TO_RIGHT) {
-                setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight(), getPaddingBottom());
+                setPadding(getPaddingLeft() + mShadowSize, getPaddingTop(), getPaddingRight(), getPaddingBottom());
             } else if (mScreenSide == STICK_TO_BOTTOM) {
-                setPadding(getPaddingLeft(), getPaddingTop() + mShadowWidth, getPaddingRight(), getPaddingBottom());
+                setPadding(getPaddingLeft(), getPaddingTop() + mShadowSize, getPaddingRight(), getPaddingBottom());
             } else if (mScreenSide == STICK_TO_LEFT) {
-                setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight() + mShadowWidth, getPaddingBottom());
+                setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight() + mShadowSize, getPaddingBottom());
             } else if (mScreenSide == STICK_TO_TOP) {
                 setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom() + mShadowWidth);
             } else if (mScreenSide == STICK_TO_MIDDLE) {
@@ -1271,18 +1271,18 @@ public class SlidingLayer extends FrameLayout {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         // Draw the margin drawable if needed.
-        if (mShadowWidth > 0 && mShadowDrawable != null) {
+        if (mShadowSize > 0 && mShadowDrawable != null) {
             if (mScreenSide == STICK_TO_RIGHT) {
-                mShadowDrawable.setBounds(0, 0, mShadowWidth, getHeight());
+                mShadowDrawable.setBounds(0, 0, mShadowSize, getHeight());
             }
             if (mScreenSide == STICK_TO_TOP) {
-                mShadowDrawable.setBounds(0, getHeight() - mShadowWidth, getWidth(), getHeight());
+                mShadowDrawable.setBounds(0, getHeight() - mShadowSize, getWidth(), getHeight());
             }
             if (mScreenSide == STICK_TO_LEFT) {
-                mShadowDrawable.setBounds(getWidth() - mShadowWidth, 0, getWidth(), getHeight());
+                mShadowDrawable.setBounds(getWidth() - mShadowSize, 0, getWidth(), getHeight());
             }
             if (mScreenSide == STICK_TO_BOTTOM) {
-                mShadowDrawable.setBounds(0, 0, getWidth(), mShadowWidth);
+                mShadowDrawable.setBounds(0, 0, getWidth(), mShadowSize);
             }
             mShadowDrawable.draw(canvas);
         }

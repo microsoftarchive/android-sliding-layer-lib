@@ -23,7 +23,8 @@
 -->
 
 <resources>
-    <dimen name="shadow_width">8dp</dimen>
-    <dimen name="layer_width">300dp</dimen>
-    <dimen name="offset_width">48dp</dimen>
+    <dimen name="shadow_size">8dp</dimen>
+    <dimen name="layer_size">300dp</dimen>
+    <dimen name="preview_offset_distance">150dp</dimen>
+    <dimen name="offset_distance">48dp</dimen>
 </resources>
