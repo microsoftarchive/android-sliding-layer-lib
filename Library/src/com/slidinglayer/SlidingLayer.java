@@ -150,6 +150,11 @@ public class SlidingLayer extends FrameLayout {
 
     private OnInteractListener mOnInteractListener;
 
+    /**
+     * Optional callback to notify client when scroll position has changed
+     */
+    private OnScrollListener mOnScrollListener;
+
     private int mMinimumVelocity;
     private int mFlingDistance;
     private boolean mLastTouchAllowed = false;
@@ -293,7 +298,7 @@ public class SlidingLayer extends FrameLayout {
             smoothScrollTo(pos[0], pos[1], Math.max(velocityX, velocityY));
         } else {
             completeScroll();
-            scrollTo(pos[0], pos[1]);
+            scrollToAndNotify(pos[0], pos[1]);
         }
 
         mCurrentState = state;
@@ -305,9 +310,18 @@ public class SlidingLayer extends FrameLayout {
      *
      * @param listener Listener to set
      */
-
     public void setOnInteractListener(OnInteractListener listener) {
         mOnInteractListener = listener;
+    }
+
+    /**
+     * Sets the listener to be invoked when the layer is being scrolled
+     * {@link OnScrollListener}.
+     *
+     * @param listener Listener to set
+     */
+    public void setOnScrollListener(OnScrollListener listener) {
+        mOnScrollListener = listener;
     }
 
     /**
@@ -684,7 +698,7 @@ public class SlidingLayer extends FrameLayout {
                 // Keep the precision
                 mLastX += scrollX - (int) scrollX;
                 mLastY += scrollY - (int) scrollY;
-                scrollTo((int) scrollX, (int) scrollY);
+                scrollToAndNotify((int) scrollX, (int) scrollY);
             }
             break;
         case MotionEvent.ACTION_UP:
@@ -980,13 +994,29 @@ public class SlidingLayer extends FrameLayout {
             int x = mScroller.getCurrX();
             int y = mScroller.getCurrY();
             if (oldX != x || oldY != y) {
-                scrollTo(x, y);
+                scrollToAndNotify(x, y);
             }
             if (mOnInteractListener != null) {
                 notifyActionFinished();
             }
         }
         mScrolling = false;
+    }
+
+    private void scrollToAndNotify(int x, int y) {
+        scrollTo(x, y);
+
+        if (mOnScrollListener != null) {
+
+            int scroll = 0;
+            if (mScreenSide == STICK_TO_TOP || mScreenSide == STICK_TO_BOTTOM) {
+                scroll = y;
+            } else if (mScreenSide == STICK_TO_LEFT || mScreenSide == STICK_TO_RIGHT) {
+                scroll = x;
+            }
+
+            mOnScrollListener.onScroll(Math.abs(scroll));
+        }
     }
 
     /**
@@ -1030,7 +1060,7 @@ public class SlidingLayer extends FrameLayout {
         if (w != oldw) {
             completeScroll();
             int[] pos = getDestScrollPosForState(mCurrentState);
-            scrollTo(pos[0], pos[1]);
+            scrollToAndNotify(pos[0], pos[1]);
         }
     }
 
@@ -1184,7 +1214,7 @@ public class SlidingLayer extends FrameLayout {
                 final int y = mScroller.getCurrY();
 
                 if (oldX != x || oldY != y) {
-                    scrollTo(x, y);
+                    scrollToAndNotify(x, y);
                 }
 
                 // We invalidate a slightly larger area now, this was only optimised for right menu previously
@@ -1274,6 +1304,20 @@ public class SlidingLayer extends FrameLayout {
             mOnInteractListener.onOpened();
             break;
         }
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when the layer has been scrolled.
+     */
+    public interface OnScrollListener {
+
+        /**
+         * Callback method to be invoked when the layer has been scrolled. This will be
+         * called after the scroll has completed
+         *
+         * @param absoluteScroll The absolute scrolling distance delta
+         */
+        public void onScroll(int absoluteScroll);
     }
 
     static class SavedState extends BaseSavedState {
