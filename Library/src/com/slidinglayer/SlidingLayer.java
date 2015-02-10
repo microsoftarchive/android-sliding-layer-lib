@@ -113,7 +113,7 @@ public class SlidingLayer extends FrameLayout {
     private int mOffsetDistance;
 
     private boolean mDrawingCacheEnabled;
-    private int mScreenSide = STICK_TO_AUTO;
+    private int mScreenSide;
 
     /**
      * If the user taps the layer then we will switch state it if enabled.
