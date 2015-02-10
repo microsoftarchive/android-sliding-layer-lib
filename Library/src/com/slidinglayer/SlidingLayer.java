@@ -365,6 +365,15 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
+     * Sets the offset distance of the panel by using a dimension resource.
+     *
+     * @param resId The dimension resource id to be set as the offset.
+     */
+    public void setOffsetDistanceRes(int resId) {
+        setOffsetDistance((int) getResources().getDimension(resId));
+    }
+
+    /**
      * Sets the offset distance of the panel. How much sticks out when off screen.
      *
      * @param offsetDistance Size of the offset in pixels
@@ -381,6 +390,15 @@ public class SlidingLayer extends FrameLayout {
      */
     public int getOffsetDistance() {
         return mOffsetDistance;
+    }
+
+    /**
+     * Sets the offset distance of the preview panel by using a dimension resource.
+     *
+     * @param resId The dimension resource id to be set as the size of the preview mode.
+     */
+    public void setPreviewOffsetDistanceRes(int resId) {
+        setPreviewOffsetDistance((int) getResources().getDimension(resId));
     }
 
     /**
