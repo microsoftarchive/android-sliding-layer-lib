@@ -763,75 +763,62 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Based on the current state, position and velocity of the layer we calculate what the next state should be.
+     * Based on the position and velocity of the layer we calculate what the next state should be.
      *
-     * @param currentState
-     * @param swipeOffsetX
-     * @param swipeOffsetY
      * @param velocityX
      * @param velocityY
      * @param deltaX
      * @param deltaY
-     * @return true means we should open it, false close it.
+     * @return the state of the panel (@link STATE_OPENED, STATE_CLOSED or STATE_PREVIEW).
      */
-    private boolean determineNextStateOpened(final boolean currentState, final float swipeOffsetX,
-                                             final float swipeOffsetY, final int velocityX, final int velocityY,
-                                             final int deltaX, final int deltaY) {
-        final boolean targetState;
-        final boolean calcX;
-        final boolean calcY;
+    private int determineNextStateForDrag(final int scrollX, final int scrollY, final int velocityX,
+                                          final int velocityY, final int deltaX, final int deltaY) {
 
-        // Work out which velocity we should listen to.
-        switch (mScreenSide) {
-        case STICK_TO_TOP:
-        case STICK_TO_BOTTOM:
-            calcY = true;
-            calcX = false;
-            break;
-        case STICK_TO_RIGHT:
-        case STICK_TO_LEFT:
-            calcX = true;
-            calcY = false;
-            break;
-        case STICK_TO_MIDDLE:
-            calcX = calcY = true;
-            break;
-        default:
-            calcX = calcY = false;
-            break;
+        final boolean horizontal = mScreenSide == STICK_TO_RIGHT || mScreenSide == STICK_TO_LEFT;
+
+        int relativeVelocity;
+        int absoluteDelta;
+        int panelSize;
+        int panelOffset;
+
+        if (horizontal) {
+            relativeVelocity = velocityX * (mScreenSide == STICK_TO_LEFT ? 1 : -1);
+            panelSize = getWidth();
+            absoluteDelta = Math.abs(deltaX);
+            panelOffset = Math.abs(scrollX);
+        } else {
+            relativeVelocity = velocityY * (mScreenSide == STICK_TO_TOP ? 1 : -1);
+            panelSize = getHeight();
+            absoluteDelta = Math.abs(deltaY);
+            panelOffset = Math.abs(scrollY);
         }
 
-        if (calcX && Math.abs(deltaX) > mFlingDistance && Math.abs(velocityX) > mMinimumVelocity) {
+        final int absoluteVelocity = Math.abs(relativeVelocity);
+        final boolean isOverThreshold = absoluteDelta > mFlingDistance && absoluteVelocity > mMinimumVelocity;
 
-            targetState = mScreenSide == STICK_TO_RIGHT && velocityX <= 0 || mScreenSide == STICK_TO_LEFT
-                    && velocityX > 0;
+        if (isOverThreshold) {
 
-        } else if (calcY && Math.abs(deltaY) > mFlingDistance && Math.abs(velocityY) > mMinimumVelocity) {
-
-            targetState = mScreenSide == STICK_TO_BOTTOM && velocityY <= 0 || mScreenSide == STICK_TO_TOP
-                    && velocityY > 0;
+            if (relativeVelocity > 0) {
+                return STATE_OPENED;
+            } else if (isPreviewModeEnabled() && panelSize - panelOffset > mPreviewOffsetDistance) {
+                return STATE_PREVIEW;
+            } else {
+                return STATE_CLOSED;
+            }
 
         } else {
-            final int w = getWidth();
-            final int h = getHeight();
 
-            switch (mScreenSide) {
-            case STICK_TO_RIGHT:
-                targetState = swipeOffsetX > -w / 2;
-                break;
-            case STICK_TO_BOTTOM:
-                targetState = swipeOffsetY > -h / 2;
-                break;
-            case STICK_TO_LEFT:
-                targetState = swipeOffsetX < w / 2;
-                break;
-            case STICK_TO_TOP:
-                targetState = swipeOffsetY < h / 2;
-                break;
-            default:
-                targetState = true;
+            int openedThreshold = (panelSize - (isPreviewModeEnabled() ? mPreviewOffsetDistance : 0)) / 2;
+
+            if (panelOffset < openedThreshold) {
+                return STATE_OPENED;
+            } else if (isPreviewModeEnabled() && panelSize - panelOffset > mPreviewOffsetDistance / 2) {
+                return STATE_PREVIEW;
+            } else {
+                return STATE_CLOSED;
             }
         }
+    }
 
     /**
      * Based on the current state of the panel, this method returns the next state after tapping.
