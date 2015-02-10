@@ -41,7 +41,7 @@ Properties:
 * `shadowDrawable` - a reference to the resource drawable used to paint the shadow of the container
 * `shadowSize` - a reference to the dimension of the desired size of the given shadow
 * `offsetDistance` - a reference to the dimension of the desired size for the layer to offset in the screen in order for it to be directly swipable to open
-* `previewOffsetDistance` - a reference to the dimension of the desired size of the preview mode. When opening the layer in this state, it will only show this amount of the layer. Preview mode can be open by tapping the layer, dragging or programmatically: openPreview(boolean smoothAnimation)
+* `previewOffsetDistance` - a reference to the dimension of the desired size of the preview mode. When opening the layer in this state, it will only show this amount of the layer. Preview mode can be open by tapping the layer, dragging or programmatically by calling `openPreview(boolean smoothAnimation)`.
 * `stickTo` - an enum that determines to where the container should stick to. ‘left’ sticks the container to the left side of the screen. ‘right’ sticks the container to the right side of the screen, and so on with ‘top‘ and ‘bottom‘ states. ‘middle’ makes the container be centered covering the whole screen and ‘auto’ makes the decision based on where you deliberately placed your container in the view. Default is ‘auto’.
 * `changeStateOnTap` - a boolean that enables/disables the action to change the state of the layer -open, preview or close- by tapping on an empty space of the container. Default value is true.
 
