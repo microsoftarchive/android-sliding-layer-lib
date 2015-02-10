@@ -52,7 +52,7 @@ import android.widget.Scroller;
 
 public class SlidingLayer extends FrameLayout {
 
-    private static final String KEY_IS_OPEN = "is_open";
+    private static final String KEY_STATE = "state";
 
     /**
      * Special value for the position of the layer. STICK_TO_RIGHT means that
@@ -137,7 +137,15 @@ public class SlidingLayer extends FrameLayout {
     private float mInitialX = INVALID_VALUE;
     private float mInitialY = INVALID_VALUE;
 
-    private boolean mIsOpen;
+    /**
+     * Flags to determine the state of the layer
+     */
+    private static final int STATE_CLOSED = 0;
+    private static final int STATE_PREVIEW = 1;
+    private static final int STATE_OPENED = 2;
+
+    private int mCurrentState;
+
     private boolean mScrolling;
 
     private OnInteractListener mOnInteractListener;
@@ -217,34 +225,42 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Returns whether the panel is open or not.
+     * Method exposing the state of the panel
      *
-     * @return returns true if the panel is open, false otherwise. Please note that if
-     * the panel was opened with smooth animation this method is not guaranteed to return
-     * true. This method will only return true after the panel has completely opened.
+     * @return returns the state of the panel (@link STATE_OPENED, STATE_CLOSED or STATE_PREVIEW). Please note
+     * that if the panel was opened with smooth animation this method is not guaranteed to return
+     * its final value until the panel has reached its final position.
      */
+    private int getCurrentState() {
+        return mCurrentState;
+    }
+
     public boolean isOpened() {
-        return mIsOpen;
+        return mCurrentState == STATE_OPENED || mCurrentState == STATE_PREVIEW;
     }
 
-    public void openLayer(boolean smoothAnim) {
-        openLayer(smoothAnim, false);
+    public boolean isClosed() {
+        return mCurrentState == STATE_CLOSED;
     }
 
-    private void openLayer(boolean smoothAnim, boolean forceOpen) {
-        switchLayer(true, smoothAnim, forceOpen, 0, 0);
+    public void openLayer(final boolean smoothAnimation) {
+        setLayerState(STATE_OPENED, smoothAnimation);
     }
 
-    public void closeLayer(boolean smoothAnim) {
-        closeLayer(smoothAnim, false);
+    public void openPreview(final boolean smoothAnimation) {
+        if (mPreviewOffsetDistance == INVALID_VALUE) {
+            throw new IllegalStateException("A value offset for the preview has to be specified in order to open " +
+                    "the layer in preview mode. Use setPreviewOffsetDistance or set its associated XML property ");
+        }
+        setLayerState(STATE_PREVIEW, smoothAnimation);
     }
 
-    private void closeLayer(boolean smoothAnim, boolean forceClose) {
-        switchLayer(false, smoothAnim, forceClose, 0, 0);
+    public void closeLayer(final boolean smoothAnimation) {
+        setLayerState(STATE_CLOSED, smoothAnimation);
     }
 
-    private void switchLayer(boolean open, boolean smoothAnim, boolean forceSwitch) {
-        switchLayer(open, smoothAnim, forceSwitch, 0, 0);
+    private void setLayerState(final int state, final boolean smoothAnimation) {
+        setLayerState(state, smoothAnimation, false);
     }
 
     private void switchLayer(final boolean open, final boolean smoothAnim, final boolean forceSwitch,
@@ -406,7 +422,7 @@ public class SlidingLayer extends FrameLayout {
         if (mState == null) {
             mState = new Bundle();
         }
-        mState.putBoolean(KEY_IS_OPEN, isOpened());
+        mState.putInt(KEY_STATE, mCurrentState);
         state.mState = mState;
         return state;
     }
@@ -420,10 +436,8 @@ public class SlidingLayer extends FrameLayout {
 
     public void restoreState(Parcelable in) {
         mState = (Bundle) in;
-        boolean isOpened = mState.getBoolean(KEY_IS_OPEN);
-        if (isOpened) {
-            openLayer(true);
-        }
+        int state = mState.getInt(KEY_STATE);
+        setLayerState(state, true);
     }
 
     @Override
@@ -646,9 +660,9 @@ public class SlidingLayer extends FrameLayout {
                 final int totalDeltaX = (int) (x - mInitialX);
                 final int totalDeltaY = (int) (y - mInitialY);
 
-                boolean nextStateOpened = determineNextStateOpened(mIsOpen, scrollX, scrollY, initialVelocityX,
-                        initialVelocityY, totalDeltaX, totalDeltaY);
-                switchLayer(nextStateOpened, true, true, initialVelocityX, initialVelocityY);
+                int nextState = determineNextStateForDrag(scrollX, scrollY, initialVelocityX, initialVelocityY,
+                        totalDeltaX, totalDeltaY);
+                setLayerState(nextState, true, true, initialVelocityX, initialVelocityY);
 
                 mActivePointerId = INVALID_VALUE;
                 endDrag();
@@ -660,7 +674,7 @@ public class SlidingLayer extends FrameLayout {
             break;
         case MotionEvent.ACTION_CANCEL:
             if (mIsDragging) {
-                switchLayer(mIsOpen, true, true);
+                setLayerState(mCurrentState, true, true);
                 mActivePointerId = INVALID_VALUE;
                 endDrag();
             }
@@ -997,20 +1011,9 @@ public class SlidingLayer extends FrameLayout {
      *                   {@link #STICK_TO_RIGHT}, {@link #STICK_TO_TOP}
      */
     public void setStickTo(int screenSide) {
+        mForceLayout = true;
         mScreenSide = screenSide;
-        closeLayer(false, true);
-    }
-
-    /**
-     * If parameter is set to <code>true</code>, whenever the <code>SlidingLayer</code> is tapped and
-     * the SlidingLayer is opened, it will attempt to close.
-     * If parameter is set to <code>false</code>, then tapping the <code>SlidingLayer</code> will
-     * do nothing
-     *
-     * @param _closeOnTapEnabled
-     */
-    public void setCloseOnTapEnabled(boolean _closeOnTapEnabled) {
-        closeOnTapEnabled = _closeOnTapEnabled;
+        setLayerState(STATE_CLOSED, false, true);
     }
 
     /**
@@ -1040,10 +1043,11 @@ public class SlidingLayer extends FrameLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+
         // Make sure scroll position is set correctly.
         if (w != oldw) {
             completeScroll();
-            int[] pos = getDestScrollPos();
+            int[] pos = getDestScrollPosForState(mCurrentState);
             scrollTo(pos[0], pos[1]);
         }
     }
@@ -1078,36 +1082,32 @@ public class SlidingLayer extends FrameLayout {
     }
 
     /**
-     * Get the x destination based on the velocity
+     * Get the destination position based on the velocity
      *
-     * @param xValue
-     * @param yValue
      * @return
      * @since 1.0
      */
-    private int[] getDestScrollPos(int xValue, int yValue) {
+    private int[] getDestScrollPosForState(int state) {
 
         int[] pos = new int[2];
 
-        if (mIsOpen) {
+        if (state == STATE_OPENED) {
             return pos;
         } else {
 
             switch (mScreenSide) {
             case STICK_TO_RIGHT:
-                pos[0] = -getWidth() + mOffsetDistance;
+                pos[0] = state == STATE_CLOSED ? -getWidth() + mOffsetDistance : -mPreviewOffsetDistance;
                 break;
             case STICK_TO_LEFT:
-                pos[0] = getWidth() - mOffsetDistance;
+                pos[0] = state == STATE_CLOSED ? getWidth() - mOffsetDistance : mPreviewOffsetDistance;
                 break;
             case STICK_TO_TOP:
-                pos[1] = getHeight() - mOffsetDistance;
+                pos[1] = state == STATE_CLOSED ? getHeight() - mOffsetDistance : mPreviewOffsetDistance;
                 break;
             case STICK_TO_BOTTOM:
-                pos[1] = -getHeight() + mOffsetDistance;
+                pos[1] = state == STATE_CLOSED ? -getHeight() + mOffsetDistance : -mPreviewOffsetDistance;
                 break;
-                break;
-
             }
 
             return pos;
