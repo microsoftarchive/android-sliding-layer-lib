@@ -1021,7 +1021,7 @@ public class SlidingLayer extends FrameLayout {
 
         if (mForceLayout) {
             mForceLayout = false;
-            adjustLayourParams();
+            adjustLayoutParams();
 
             if (mScreenSide == STICK_TO_RIGHT) {
                 setPadding(getPaddingLeft() + mShadowSize, getPaddingTop(), getPaddingRight(), getPaddingBottom());
@@ -1042,8 +1042,50 @@ public class SlidingLayer extends FrameLayout {
         super.onDraw(canvas);
     }
 
-    private int[] getDestScrollPos() {
-        return getDestScrollPos(0, 0);
+    private void adjustLayoutParams() {
+
+        ViewGroup.LayoutParams baseParams = getLayoutParams();
+
+        if (baseParams instanceof LayoutParams) {
+
+            LayoutParams layoutParams = (LayoutParams) baseParams;
+
+            switch (mScreenSide) {
+            case STICK_TO_BOTTOM:
+                layoutParams.gravity = Gravity.BOTTOM;
+                break;
+            case STICK_TO_LEFT:
+                layoutParams.gravity = Gravity.LEFT;
+                break;
+            case STICK_TO_RIGHT:
+                layoutParams.gravity = Gravity.RIGHT;
+                break;
+            case STICK_TO_TOP:
+                layoutParams.gravity = Gravity.TOP;
+                break;
+            }
+            setLayoutParams(baseParams);
+
+        } else if (baseParams instanceof RelativeLayout.LayoutParams) {
+
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) baseParams;
+
+            switch (mScreenSide) {
+            case STICK_TO_BOTTOM:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                break;
+            case STICK_TO_LEFT:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                break;
+            case STICK_TO_RIGHT:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                break;
+            case STICK_TO_TOP:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                break;
+            }
+        }
+
     }
 
     /**
