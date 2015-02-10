@@ -1019,8 +1019,9 @@ public class SlidingLayer extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
-
+        if (mForceLayout) {
             mForceLayout = false;
+            adjustLayourParams();
 
             if (mScreenSide == STICK_TO_RIGHT) {
                 setPadding(getPaddingLeft() + mShadowSize, getPaddingTop(), getPaddingRight(), getPaddingBottom());
