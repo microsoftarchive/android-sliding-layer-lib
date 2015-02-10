@@ -213,11 +213,14 @@ public class SlidingLayer extends FrameLayout {
     }
 
     private void init() {
+
         setWillNotDraw(false);
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setFocusable(true);
+
         final Context context = getContext();
         mScroller = new Scroller(context, sMenuInterpolator);
+
         final ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
@@ -302,6 +305,7 @@ public class SlidingLayer extends FrameLayout {
      *
      * @param listener Listener to set
      */
+
     public void setOnInteractListener(OnInteractListener listener) {
         mOnInteractListener = listener;
     }
@@ -657,6 +661,7 @@ public class SlidingLayer extends FrameLayout {
             }
             break;
         case MotionEvent.ACTION_UP:
+
             if (mIsDragging) {
                 final VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
@@ -916,14 +921,8 @@ public class SlidingLayer extends FrameLayout {
         int dy = y - sy;
         if (dx == 0 && dy == 0) {
             completeScroll();
-            if (mIsOpen) {
-                if (mOnInteractListener != null) {
-                    mOnInteractListener.onOpened();
-                }
-            } else {
-                if (mOnInteractListener != null) {
-                    mOnInteractListener.onClosed();
-                }
+            if (mOnInteractListener != null) {
+                notifyActionFinished();
             }
             return;
         }
@@ -1018,14 +1017,8 @@ public class SlidingLayer extends FrameLayout {
             if (oldX != x || oldY != y) {
                 scrollTo(x, y);
             }
-            if (mIsOpen) {
-                if (mOnInteractListener != null) {
-                    mOnInteractListener.onOpened();
-                }
-            } else {
-                if (mOnInteractListener != null) {
-                    mOnInteractListener.onClosed();
-                }
+            if (mOnInteractListener != null) {
+                notifyActionFinished();
             }
         }
         mScrolling = false;
