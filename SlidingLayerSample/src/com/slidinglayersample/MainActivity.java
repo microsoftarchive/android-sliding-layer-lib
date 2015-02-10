@@ -35,9 +35,9 @@ import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+
 import com.slidinglayer.SlidingLayer;
 
 public class MainActivity extends Activity {
@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
     private SlidingLayer mSlidingLayer;
     private TextView swipeText;
 
-    private String mStickContainerToRightLeftOrMiddle;
+    private String mStickContainerTo;
     private boolean mShowShadow;
     private boolean mShowOffset;
 
@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
      */
     private void getPrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mStickContainerToRightLeftOrMiddle = prefs.getString("layer_location", "right");
+        mStickContainerTo = prefs.getString("layer_location", "right");
         mShowShadow = prefs.getBoolean("layer_has_shadow", false);
         mShowOffset = prefs.getBoolean("layer_has_offset", false);
     }
@@ -97,38 +97,30 @@ public class MainActivity extends Activity {
         int textResource;
         Drawable d;
 
-        if (mStickContainerToRightLeftOrMiddle.equals("right")) {
+        if (mStickContainerTo.equals("right")) {
             textResource = R.string.swipe_right_label;
             d = getResources().getDrawable(R.drawable.container_rocket_right);
 
-            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        } else if (mStickContainerToRightLeftOrMiddle.equals("left")) {
+            mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_RIGHT);
+        } else if (mStickContainerTo.equals("left")) {
             textResource = R.string.swipe_left_label;
             d = getResources().getDrawable(R.drawable.container_rocket_left);
 
-            rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        } else if (mStickContainerToRightLeftOrMiddle.equals("top")) {
+            mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT);
+        } else if (mStickContainerTo.equals("top")) {
             textResource = R.string.swipe_up_label;
             d = getResources().getDrawable(R.drawable.container_rocket);
 
             mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_TOP);
-            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             rlp.width = LayoutParams.MATCH_PARENT;
-            rlp.height = getResources().getDimensionPixelSize(R.dimen.layer_width);
-        } else if (mStickContainerToRightLeftOrMiddle.equals("bottom")) {
+            rlp.height = getResources().getDimensionPixelSize(R.dimen.layer_size);
+        } else {
             textResource = R.string.swipe_down_label;
             d = getResources().getDrawable(R.drawable.container_rocket);
 
             mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_BOTTOM);
-            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             rlp.width = LayoutParams.MATCH_PARENT;
-            rlp.height = getResources().getDimensionPixelSize(R.dimen.layer_width);
-        } else {
-            textResource = R.string.swipe_label;
-            d = getResources().getDrawable(R.drawable.container_rocket);
-
-            rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
-            rlp.width = LayoutParams.MATCH_PARENT;
+            rlp.height = getResources().getDimensionPixelSize(R.dimen.layer_size);
         }
 
         d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
@@ -154,14 +146,10 @@ public class MainActivity extends Activity {
     public void buttonClicked(View v) {
         switch (v.getId()) {
         case R.id.buttonOpen:
-            if (!mSlidingLayer.isOpened()) {
-                mSlidingLayer.openLayer(true);
-            }
+            mSlidingLayer.openLayer(true);
             break;
         case R.id.buttonClose:
-            if (mSlidingLayer.isOpened()) {
-                mSlidingLayer.closeLayer(true);
-            }
+            mSlidingLayer.closeLayer(true);
             break;
         }
     }
