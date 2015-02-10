@@ -81,7 +81,7 @@ public class SlidingLayer extends FrameLayout {
     public static final int STICK_TO_BOTTOM = -4;
 
     private static final int MAX_SCROLLING_DURATION = 600; // in ms
-    private static final int MIN_DISTANCE_FOR_FLING = 25; // in dip
+    private static final int MIN_DISTANCE_FOR_FLING = 10; // in dip
     private static final Interpolator sMenuInterpolator = new Interpolator() {
         @Override
         public float getInterpolation(float t) {
