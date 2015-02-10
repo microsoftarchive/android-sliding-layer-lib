@@ -510,13 +510,17 @@ public class SlidingLayer extends FrameLayout {
             final float y = MotionEventCompat.getY(ev, pointerIndex);
             final float yDiff = Math.abs(y - mLastY);
 
-            if (xDiff > mTouchSlop && xDiff > yDiff && allowDragingX(dx, mInitialX)) {
-                mIsDragging = true;
+            final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
+            final boolean validVerticalDrag = yDiff > mTouchSlop && yDiff > xDiff;
+
+            if (validHorizontalDrag) {
                 mLastX = x;
-                setDrawingCacheEnabled(true);
-            } else if (yDiff > mTouchSlop && yDiff > xDiff && allowDragingY(dy, mInitialY)) {
-                mIsDragging = true;
+            } else if (validVerticalDrag) {
                 mLastY = y;
+            }
+
+            if (validHorizontalDrag || validVerticalDrag) {
+                mIsDragging = true;
                 setDrawingCacheEnabled(true);
             }
             break;
