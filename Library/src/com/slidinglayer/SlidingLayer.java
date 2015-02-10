@@ -200,6 +200,13 @@ public class SlidingLayer extends FrameLayout {
         // How much of the view sticks out when closed
         mOffsetDistance = ta.getDimensionPixelOffset(R.styleable.SlidingLayer_offsetDistance, 0);
 
+        // Sets the size of the preview summary, if any
+        mPreviewOffsetDistance = ta.getDimensionPixelOffset(R.styleable.SlidingLayer_previewOffsetDistance,
+                INVALID_VALUE);
+
+        // If showing offset is greater than preview mode offset dimension, exception is thrown
+        checkPreviewModeConsistency();
+
         ta.recycle();
 
         init();
@@ -373,6 +380,7 @@ public class SlidingLayer extends FrameLayout {
      */
     public void setOffsetDistance(int offsetDistance) {
         mOffsetDistance = offsetDistance;
+        checkPreviewModeConsistency();
         invalidate(getLeft(), getTop(), getRight(), getBottom());
     }
 
@@ -383,6 +391,24 @@ public class SlidingLayer extends FrameLayout {
         return mOffsetDistance;
     }
 
+    /**
+     * Sets the size of the panel when in preview mode.
+     *
+     * @param previewOffsetDistance Size of the offset in pixels
+     * @see #getOffsetDistance()
+     */
+    public void setPreviewOffsetDistance(int previewOffsetDistance) {
+        mPreviewOffsetDistance = previewOffsetDistance;
+        checkPreviewModeConsistency();
+        invalidate(getLeft(), getTop(), getRight(), getBottom());
+    }
+
+    private void checkPreviewModeConsistency() {
+        if (isPreviewModeEnabled() && mOffsetDistance > mPreviewOffsetDistance) {
+            throw new IllegalStateException("The showing offset of the layer can never be greater than the " +
+                    "offset dimension of the preview mode");
+        }
+    }
     @Override
     protected boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == mShadowDrawable;
