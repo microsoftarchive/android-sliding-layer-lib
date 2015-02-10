@@ -57,13 +57,6 @@ public class SlidingLayer extends FrameLayout {
     private static final String KEY_IS_OPEN = "is_open";
 
     /**
-     * Default value for the position of the layer. STICK_TO_AUTO shall inspect
-     * the container and choose a stick mode depending on the position of the
-     * layour (ie.: layout is positioned on the right = STICK_TO_RIGHT).
-     */
-    public static final int STICK_TO_AUTO = 0;
-
-    /**
      * Special value for the position of the layer. STICK_TO_RIGHT means that
      * the view shall be attached to the right side of the screen, and come from
      * there into the viewable area.
@@ -78,23 +71,16 @@ public class SlidingLayer extends FrameLayout {
     public static final int STICK_TO_LEFT = -2;
 
     /**
-     * Special value for the position of the layer. STICK_TO_MIDDLE means that
-     * the view will stay attached trying to be in the middle of the screen and
-     * allowing dismissing both to right and left side.
-     */
-    public static final int STICK_TO_MIDDLE = -3;
-
-    /**
      * Special value for the position of the layer. STICK_TO_TOP means that the view will stay attached to the top
      * part of the screen, and come from there into the viewable area.
      */
-    public static final int STICK_TO_TOP = -4;
+    public static final int STICK_TO_TOP = -3;
 
     /**
      * Special value for the position of the layer. STICK_TO_BOTTOM means that the view will stay attached to the
      * bottom part of the screen, and come from there into the viewable area.
      */
-    public static final int STICK_TO_BOTTOM = -5;
+    public static final int STICK_TO_BOTTOM = -4;
 
     private static final int MAX_SCROLLING_DURATION = 600; // in ms
     private static final int MIN_DISTANCE_FOR_FLING = 25; // in dip
@@ -174,8 +160,8 @@ public class SlidingLayer extends FrameLayout {
      * Constructor for the sliding layer.<br>
      * By default this panel will
      * <ol>
-     * <li>{@link #setStickTo(int)} with param {@link #STICK_TO_AUTO}</li>
-     * <li>Use no shadow drawable. (i.e. with width of 0)</li>
+     * <li>{@link #setStickTo(int)} with param {@link #STICK_TO_RIGHT}</li>
+     * <li>Use no shadow drawable. (i.e. with size of 0)</li>
      * <li>Close when the panel is tapped</li>
      * <li>Open when the offset is tapped, but will have an offset of 0</li>
      * </ol>
@@ -191,7 +177,7 @@ public class SlidingLayer extends FrameLayout {
         final TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLayer);
 
         // Set the side of the screen
-        setStickTo(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_AUTO));
+        setStickTo(ta.getInt(R.styleable.SlidingLayer_stickTo, STICK_TO_RIGHT));
 
         // Sets the shadow drawable
         int shadowRes = ta.getResourceId(R.styleable.SlidingLayer_shadowDrawable, INVALID_VALUE);
@@ -613,12 +599,6 @@ public class SlidingLayer extends FrameLayout {
                     topBound = bottomBound = rightBound = 0;
                     leftBound = getWidth(); // How far left we can scroll
                     break;
-                case STICK_TO_MIDDLE:
-                    topBound = getHeight();
-                    bottomBound = -getHeight();
-                    leftBound = getWidth();
-                    rightBound = -getWidth();
-                    break;
                 case STICK_TO_RIGHT:
                     rightBound = -getWidth();
                     topBound = bottomBound = leftBound = 0;
@@ -710,7 +690,6 @@ public class SlidingLayer extends FrameLayout {
         switch (mScreenSide) {
         case STICK_TO_LEFT:
         case STICK_TO_RIGHT:
-        case STICK_TO_MIDDLE:
             if (mIsOpen) {
                 return true;
             }
@@ -731,7 +710,6 @@ public class SlidingLayer extends FrameLayout {
         switch (mScreenSide) {
         case STICK_TO_TOP:
         case STICK_TO_BOTTOM:
-        case STICK_TO_MIDDLE:
             if (mIsOpen) {
                 return true;
             }
@@ -762,8 +740,6 @@ public class SlidingLayer extends FrameLayout {
                 return dx > 0;
             case STICK_TO_LEFT:
                 return dx < 0;
-            case STICK_TO_MIDDLE:
-                return dx != 0;
             }
         }
         if (!mIsOpen && mOffsetDistance > 0 && dx > 0) {
@@ -772,8 +748,6 @@ public class SlidingLayer extends FrameLayout {
                 return initialX <= mOffsetDistance && dx > 0;
             case STICK_TO_RIGHT:
                 return initialX >= getWidth() - mOffsetDistance && dx < 0;
-            case STICK_TO_MIDDLE:
-                return dx != 0;
             }
         }
         return false;
@@ -786,8 +760,6 @@ public class SlidingLayer extends FrameLayout {
                 return mIsOpen && dy > 0;
             case STICK_TO_TOP:
                 return mIsOpen && dy < 0;
-            case STICK_TO_MIDDLE:
-                return mIsOpen && dy != 0;
             }
         }
         if (!mIsOpen && mOffsetDistance > 0 && dy > 0) {
@@ -796,8 +768,6 @@ public class SlidingLayer extends FrameLayout {
                 return initialY <= mOffsetDistance && dy > 0;
             case STICK_TO_BOTTOM:
                 return initialY >= getHeight() - mOffsetDistance && dy < 0;
-            case STICK_TO_MIDDLE:
-                return dy != 0;
             }
         }
         return false;
@@ -868,9 +838,6 @@ public class SlidingLayer extends FrameLayout {
                 break;
             case STICK_TO_TOP:
                 targetState = swipeOffsetY < h / 2;
-                break;
-            case STICK_TO_MIDDLE:
-                targetState = Math.abs(swipeOffsetX) < w / 2 && Math.abs(swipeOffsetY) < h / 2;
                 break;
             default:
                 targetState = true;
@@ -1028,16 +995,10 @@ public class SlidingLayer extends FrameLayout {
      * Sets the default location where the SlidingLayer will appear
      *
      * @param screenSide The location where the Sliding layer will appear. Possible values are
-     *                   {@link #STICK_TO_AUTO}, {@link #STICK_TO_BOTTOM}, {@link #STICK_TO_LEFT},
-     *                   {@link #STICK_TO_MIDDLE}
+     *                   {@link #STICK_TO_BOTTOM}, {@link #STICK_TO_LEFT}
      *                   {@link #STICK_TO_RIGHT}, {@link #STICK_TO_TOP}
      */
     public void setStickTo(int screenSide) {
-
-        if (screenSide != STICK_TO_AUTO) {
-            mForceLayout = true;
-        }
-
         mScreenSide = screenSide;
         closeLayer(false, true);
     }
@@ -1065,42 +1026,6 @@ public class SlidingLayer extends FrameLayout {
         openOnTapEnabled = _openOnTapEnabled;
     }
 
-    @SuppressWarnings("deprecation")
-    private int getScreenSideAuto(int newLeft, int newRight) {
-
-        int newScreenSide;
-
-        if (mScreenSide == STICK_TO_AUTO) {
-            int screenWidth;
-            Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
-                    .getDefaultDisplay();
-            try {
-                Class<?> cls = Display.class;
-                Class<?>[] parameterTypes = { Point.class };
-                Point parameter = new Point();
-                Method method = cls.getMethod("getSize", parameterTypes);
-                method.invoke(display, parameter);
-                screenWidth = parameter.x;
-            } catch (Exception e) {
-                screenWidth = display.getWidth();
-            }
-
-            boolean boundToLeftBorder = newLeft == 0;
-            boolean boundToRightBorder = newRight == screenWidth;
-
-            if (boundToLeftBorder == boundToRightBorder
-                    && getLayoutParams().width == android.view.ViewGroup.LayoutParams.MATCH_PARENT) {
-                newScreenSide = STICK_TO_MIDDLE;
-            } else if (boundToLeftBorder) {
-                newScreenSide = STICK_TO_LEFT;
-            } else {
-                newScreenSide = STICK_TO_RIGHT;
-            }
-        } else {
-            newScreenSide = mScreenSide;
-        }
-
-        return newScreenSide;
     }
 
     @Override
@@ -1128,43 +1053,8 @@ public class SlidingLayer extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
-        int screenSide = mScreenSide;
-
-        if (mScreenSide == STICK_TO_AUTO) {
-            screenSide = getScreenSideAuto(left, right);
-        }
-
-        if (screenSide != mScreenSide || mForceLayout) {
 
             mForceLayout = false;
-
-            if (screenSide != STICK_TO_MIDDLE) {
-
-                LayoutParams layoutParams = (LayoutParams) getLayoutParams();
-
-                switch (screenSide) {
-                case STICK_TO_BOTTOM:
-                    layoutParams.gravity = Gravity.BOTTOM;
-                    break;
-                case STICK_TO_LEFT:
-                    layoutParams.gravity = Gravity.LEFT;
-                    break;
-                case STICK_TO_RIGHT:
-                    layoutParams.gravity = Gravity.RIGHT;
-                    break;
-                case STICK_TO_TOP:
-                    layoutParams.gravity = Gravity.TOP;
-                    break;
-                }
-
-                setLayoutParams(layoutParams);
-            }
-
-            mScreenSide = screenSide;
-
-            if (!mIsOpen) {
-                closeLayer(false, true);
-            }
 
             if (mScreenSide == STICK_TO_RIGHT) {
                 setPadding(getPaddingLeft() + mShadowSize, getPaddingTop(), getPaddingRight(), getPaddingBottom());
@@ -1174,9 +1064,6 @@ public class SlidingLayer extends FrameLayout {
                 setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight() + mShadowSize, getPaddingBottom());
             } else if (mScreenSide == STICK_TO_TOP) {
                 setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom() + mShadowWidth);
-            } else if (mScreenSide == STICK_TO_MIDDLE) {
-                setPadding(getPaddingLeft() + mShadowWidth, getPaddingTop(), getPaddingRight() + mShadowWidth,
-                        getPaddingBottom());
             }
         }
 
@@ -1221,32 +1108,6 @@ public class SlidingLayer extends FrameLayout {
             case STICK_TO_BOTTOM:
                 pos[1] = -getHeight() + mOffsetDistance;
                 break;
-            case STICK_TO_MIDDLE:
-
-                // Calculate slope m to get direction of swiping and apply the same vector until the end of the
-                // animation
-                float m = 1;
-
-                // If no veocity nor translation (difficult to get) the target is random
-                if (xValue == 0 && yValue == 0) {
-                    m = mRandom != null ? (float) Math.tan(mRandom.nextFloat() * Math.PI - Math.PI / 2) : 1;
-                } else if (xValue == 0) {
-                    // Avoid division by 0 (Get the max value of the tan which is equivalent)
-                    m = (float) Math.tan(Math.PI / 2);
-                } else {
-                    // Get slope
-                    m = yValue / (float) xValue;
-                }
-
-                if (Math.abs(m) >= 1) {
-                    pos[0] = Math.round(getOperationSignForDiffMeasure(xValue) * getHeight() / Math.abs(m)
-                            - (mLastX - getWidth() / 2));
-                    pos[1] = Math.round(getOperationSignForDiffMeasure(yValue) * getHeight());
-                } else {
-                    pos[0] = Math.round(getOperationSignForDiffMeasure(xValue) * getWidth());
-                    pos[1] = Math.round(getOperationSignForDiffMeasure(yValue) * getWidth() * Math.abs(m)
-                            - (mLastY - getHeight() / 2));
-                }
                 break;
 
             }
