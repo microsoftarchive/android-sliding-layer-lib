@@ -531,12 +531,7 @@ public class SlidingLayer extends FrameLayout {
                     : MotionEventCompat.ACTION_POINTER_INDEX_MASK);
             mLastX = mInitialX = MotionEventCompat.getX(ev, mActivePointerId);
             mLastY = mInitialY = MotionEventCompat.getY(ev, mActivePointerId);
-            if (allowSlidingFromHereX(ev, mInitialX)) {
-                mIsDragging = false;
-                mIsUnableToDrag = false;
-                // If nobody else got the focus we use it to close the layer
-                return super.onInterceptTouchEvent(ev);
-            } else if (allowSlidingFromHereY(ev, mInitialY)) {
+            if (allowSlidingFromHere(mInitialX, mInitialY)) {
                 mIsDragging = false;
                 mIsUnableToDrag = false;
                 // If nobody else got the focus we use it to close the layer
@@ -562,8 +557,7 @@ public class SlidingLayer extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mEnabled || !mIsDragging && !mLastTouchAllowed && !allowSlidingFromHereX(ev, mInitialX)
-                && !allowSlidingFromHereY(ev, mInitialY)) {
+        if (!mEnabled || !mIsDragging && !mLastTouchAllowed && !allowSlidingFromHere(mInitialX, mInitialY)) {
             return false;
         }
 
@@ -725,91 +719,42 @@ public class SlidingLayer extends FrameLayout {
         return true;
     }
 
-    private boolean allowSlidingFromHereX(final MotionEvent ev, final float initialX) {
-        switch (mScreenSide) {
-        case STICK_TO_LEFT:
-        case STICK_TO_RIGHT:
-            if (mIsOpen) {
-                return true;
-            }
-            if (!mIsOpen && mOffsetDistance > 0) {
-                switch (mScreenSide) {
-                case STICK_TO_LEFT:
-                    return initialX <= mOffsetDistance;
-                case STICK_TO_RIGHT:
-                    return initialX >= getWidth() - mOffsetDistance;
-                }
-            }
-        default:
-            return false;
-        }
-    }
-
-    private boolean allowSlidingFromHereY(final MotionEvent ev, final float initialY) {
-        switch (mScreenSide) {
-        case STICK_TO_TOP:
-        case STICK_TO_BOTTOM:
-            if (mIsOpen) {
-                return true;
-            }
-            if (!mIsOpen && mOffsetDistance > 0) {
-                switch (mScreenSide) {
-                case STICK_TO_TOP:
-                    return initialY <= mOffsetDistance;
-                case STICK_TO_BOTTOM:
-                    return initialY >= getHeight() - mOffsetDistance;
-                }
-            }
-        default:
-            return false;
-        }
-    }
-
     /**
-     * Checks if the touch event is valid for dragging the view.
+     * Checks if it's allowed to slide from the given position.
      *
-     * @param dx       changed in delta from the initialX
-     * @param initialX where the touch event started.
+     * @param touchX where the touch event started
+     * @param touchY where the touch event started.
      * @return true if you can drag this view, false otherwise
      */
-    private boolean allowDragingX(final float dx, final float initialX) {
-        if (mIsOpen && getLeft() <= initialX || getRight() >= initialX) {
-            switch (mScreenSide) {
-            case STICK_TO_RIGHT:
-                return dx > 0;
-            case STICK_TO_LEFT:
-                return dx < 0;
-            }
-        }
-        if (!mIsOpen && mOffsetDistance > 0 && dx > 0) {
-            switch (mScreenSide) {
-            case STICK_TO_LEFT:
-                return initialX <= mOffsetDistance && dx > 0;
-            case STICK_TO_RIGHT:
-                return initialX >= getWidth() - mOffsetDistance && dx < 0;
-            }
-        }
-        return false;
-    }
+    private boolean allowSlidingFromHere(final float touchX, final float touchY) {
 
-    private boolean allowDragingY(final float dy, final float initialY) {
-        if (mIsOpen && getTop() <= initialY || getBottom() >= initialY) {
+        if (mCurrentState == STATE_OPENED) {
+            return true;
+        }
+
+        int visibleOffset = 0;
+        if (mCurrentState == STATE_PREVIEW) {
+            visibleOffset = Math.max(mPreviewOffsetDistance, 0);
+        } else if (mCurrentState == STATE_CLOSED) {
+            visibleOffset = mOffsetDistance;
+        }
+
+        if (visibleOffset == 0) {
+            return false;
+        } else {
             switch (mScreenSide) {
-            case STICK_TO_BOTTOM:
-                return mIsOpen && dy > 0;
+            case STICK_TO_LEFT:
+                return touchX <= visibleOffset;
+            case STICK_TO_RIGHT:
+                return touchX >= getWidth() - visibleOffset;
             case STICK_TO_TOP:
-                return mIsOpen && dy < 0;
+                return touchY <= visibleOffset;
+            case STICK_TO_BOTTOM:
+                return touchY >= getHeight() - visibleOffset;
+            default:
+                return false;
             }
         }
-        if (!mIsOpen && mOffsetDistance > 0 && dy > 0) {
-            switch (mScreenSide) {
-            case STICK_TO_TOP:
-                return initialY <= mOffsetDistance && dy > 0;
-            case STICK_TO_BOTTOM:
-                return initialY >= getHeight() - mOffsetDistance && dy < 0;
-            }
-        }
-        return false;
     }
 
     /**
