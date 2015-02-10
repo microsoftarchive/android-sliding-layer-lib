@@ -506,10 +506,8 @@ public class SlidingLayer extends FrameLayout {
             }
 
             final float x = MotionEventCompat.getX(ev, pointerIndex);
-            final float dx = x - mLastX;
-            final float xDiff = Math.abs(dx);
+            final float xDiff = Math.abs(x - mLastX);
             final float y = MotionEventCompat.getY(ev, pointerIndex);
-            final float dy = y - mLastY;
             final float yDiff = Math.abs(y - mLastY);
 
             if (xDiff > mTouchSlop && xDiff > yDiff && allowDragingX(dx, mInitialX)) {
