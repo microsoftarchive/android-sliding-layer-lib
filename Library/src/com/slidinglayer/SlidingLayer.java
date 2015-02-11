@@ -1010,9 +1010,9 @@ public class SlidingLayer extends FrameLayout {
 
             int scroll = 0;
             if (mScreenSide == STICK_TO_TOP || mScreenSide == STICK_TO_BOTTOM) {
-                scroll = y;
+                scroll = getHeight() - Math.abs(y);
             } else if (mScreenSide == STICK_TO_LEFT || mScreenSide == STICK_TO_RIGHT) {
-                scroll = x;
+                scroll = getWidth() - Math.abs(x);
             }
 
             mOnScrollListener.onScroll(Math.abs(scroll));
