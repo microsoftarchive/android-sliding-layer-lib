@@ -80,6 +80,7 @@ public class SlidingLayer extends FrameLayout {
      */
     public static final int STICK_TO_BOTTOM = -4;
 
+    private static final int HIGH_VELOCITY = 13000;
     private static final int MAX_SCROLLING_DURATION = 600; // in ms
     private static final int MIN_DISTANCE_FOR_FLING = 10; // in dip
     private static final Interpolator sMenuInterpolator = new Interpolator() {
@@ -832,7 +833,10 @@ public class SlidingLayer extends FrameLayout {
 
             if (relativeVelocity > 0) {
                 return STATE_OPENED;
-            } else if (isPreviewModeEnabled() && panelSize - panelOffset > mPreviewOffsetDistance) {
+            } else if (isPreviewModeEnabled()
+                    && panelSize - absoluteDelta > mPreviewOffsetDistance
+                    && absoluteVelocity < HIGH_VELOCITY) {
+
                 return STATE_PREVIEW;
             } else {
                 return STATE_CLOSED;
