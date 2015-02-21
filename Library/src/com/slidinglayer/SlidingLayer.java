@@ -719,11 +719,9 @@ public class SlidingLayer extends FrameLayout {
                 final int activePointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
                 final float x = MotionEventCompat.getX(ev, activePointerIndex);
                 final float y = MotionEventCompat.getY(ev, activePointerIndex);
-                final int totalDeltaX = (int) (x - mInitialX);
-                final int totalDeltaY = (int) (y - mInitialY);
 
                 int nextState = determineNextStateForDrag(scrollX, scrollY, initialVelocityX, initialVelocityY,
-                        totalDeltaX, totalDeltaY);
+                        (int) mInitialX, (int) mInitialY, (int) x, (int) y);
                 setLayerState(nextState, true, true, initialVelocityX, initialVelocityY);
 
                 mActivePointerId = INVALID_VALUE;
@@ -803,30 +801,31 @@ public class SlidingLayer extends FrameLayout {
      *
      * @param velocityX
      * @param velocityY
-     * @param deltaX
-     * @param deltaY
+     * @param initialX
+     * @param initialY
+     * @param currentX
+     * @param currentY
      * @return the state of the panel (@link STATE_OPENED, STATE_CLOSED or STATE_PREVIEW).
      */
     private int determineNextStateForDrag(final int scrollX, final int scrollY, final int velocityX,
-                                          final int velocityY, final int deltaX, final int deltaY) {
+                                          final int velocityY, final int initialX, final int initialY,
+                                          final int currentX, final int currentY) {
 
-        final boolean horizontal = mScreenSide == STICK_TO_RIGHT || mScreenSide == STICK_TO_LEFT;
-
+        int panelOffset;
+        int panelSize;
         int relativeVelocity;
         int absoluteDelta;
-        int panelSize;
-        int panelOffset;
 
-        if (horizontal) {
-            relativeVelocity = velocityX * (mScreenSide == STICK_TO_LEFT ? 1 : -1);
+        if (allowedDirection() == HORIZONTAL) {
             panelSize = getWidth();
-            absoluteDelta = Math.abs(deltaX);
-            panelOffset = Math.abs(scrollX);
+            panelOffset = Math.abs(panelSize - Math.abs(scrollX));
+            absoluteDelta = Math.abs(currentX - initialX);
+            relativeVelocity = velocityX * (mScreenSide == STICK_TO_LEFT ? 1 : -1);
         } else {
-            relativeVelocity = velocityY * (mScreenSide == STICK_TO_TOP ? 1 : -1);
             panelSize = getHeight();
-            absoluteDelta = Math.abs(deltaY);
-            panelOffset = Math.abs(scrollY);
+            panelOffset = Math.abs(panelSize - Math.abs(scrollY));
+            absoluteDelta = Math.abs(currentY - initialY);
+            relativeVelocity = velocityY * (mScreenSide == STICK_TO_TOP ? 1 : -1);
         }
 
         final int absoluteVelocity = Math.abs(relativeVelocity);
@@ -836,22 +835,26 @@ public class SlidingLayer extends FrameLayout {
 
             if (relativeVelocity > 0) {
                 return STATE_OPENED;
-            } else if (isPreviewModeEnabled()
-                    && panelSize - absoluteDelta > mPreviewOffsetDistance
-                    && absoluteVelocity < HIGH_VELOCITY) {
-
-                return STATE_PREVIEW;
             } else {
-                return STATE_CLOSED;
+
+                boolean goesToPreview = isPreviewModeEnabled()
+                        && panelOffset > mPreviewOffsetDistance
+                        && absoluteVelocity < HIGH_VELOCITY;
+
+                if (goesToPreview) {
+                    return STATE_PREVIEW;
+                } else {
+                    return STATE_CLOSED;
+                }
             }
 
         } else {
 
-            int openedThreshold = (panelSize - (isPreviewModeEnabled() ? mPreviewOffsetDistance : 0)) / 2;
+            int openedThreshold = (panelSize + (isPreviewModeEnabled() ? mPreviewOffsetDistance : 0)) / 2;
 
-            if (panelOffset < openedThreshold) {
+            if (panelOffset > openedThreshold) {
                 return STATE_OPENED;
-            } else if (isPreviewModeEnabled() && panelSize - panelOffset > mPreviewOffsetDistance / 2) {
+            } else if (isPreviewModeEnabled() && panelOffset > mPreviewOffsetDistance / 2) {
                 return STATE_PREVIEW;
             } else {
                 return STATE_CLOSED;
