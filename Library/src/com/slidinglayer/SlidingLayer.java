@@ -83,7 +83,7 @@ public class SlidingLayer extends FrameLayout {
     private static final int HORIZONTAL = 0;
     private static final int VERTICAL = 1;
 
-    private static final int HIGH_VELOCITY = 13000;
+    private static final int HIGH_VELOCITY = 12000;
     private static final int MAX_SCROLLING_DURATION = 600; // in ms
     private static final int MIN_DISTANCE_FOR_FLING = 10; // in dip
     private static final Interpolator sMenuInterpolator = new Interpolator() {
