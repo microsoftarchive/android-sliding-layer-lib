@@ -52,7 +52,7 @@ import android.widget.Scroller;
 
 public class SlidingLayer extends FrameLayout {
 
-    private static final String KEY_STATE = "state";
+    private static final String STATE_KEY = "state";
 
     /**
      * Special value for the position of the layer. STICK_TO_RIGHT means that
@@ -482,7 +482,7 @@ public class SlidingLayer extends FrameLayout {
         if (mState == null) {
             mState = new Bundle();
         }
-        mState.putInt(KEY_STATE, mCurrentState);
+        mState.putInt(STATE_KEY, mCurrentState);
         state.mState = mState;
         return state;
     }
@@ -496,7 +496,7 @@ public class SlidingLayer extends FrameLayout {
 
     public void restoreState(Parcelable in) {
         mState = (Bundle) in;
-        int state = mState.getInt(KEY_STATE);
+        int state = mState.getInt(STATE_KEY);
         setLayerState(state, true);
     }
 
