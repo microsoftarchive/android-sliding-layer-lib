@@ -80,6 +80,9 @@ public class SlidingLayer extends FrameLayout {
      */
     public static final int STICK_TO_BOTTOM = -4;
 
+    private static final int HORIZONTAL = 0;
+    private static final int VERTICAL = 1;
+
     private static final int HIGH_VELOCITY = 13000;
     private static final int MAX_SCROLLING_DURATION = 600; // in ms
     private static final int MIN_DISTANCE_FOR_FLING = 10; // in dip
@@ -1034,6 +1037,17 @@ public class SlidingLayer extends FrameLayout {
         mForceLayout = true;
         mScreenSide = screenSide;
         setLayerState(STATE_CLOSED, false, true);
+    }
+
+    private int allowedDirection() {
+
+        if (mScreenSide == STICK_TO_TOP || mScreenSide == STICK_TO_BOTTOM) {
+            return VERTICAL;
+        } else if (mScreenSide == STICK_TO_LEFT || mScreenSide == STICK_TO_RIGHT) {
+            return HORIZONTAL;
+        }
+
+        throw new IllegalStateException("The screen side of the layer is illegal");
     }
 
     /**
