@@ -1,20 +1,20 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
+apply plugin: 'android-reporting'
 
-  dependencies {
-    classpath 'com.android.tools.build:gradle:0.12.+'
-  }
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
 }
 
 allprojects {
-  group = 'com.6wunderkinder.slidinglayerlibrary'
-  version = '1.1-SNAPSHOT'
+    group = 'com.6wunderkinder.slidinglayerlibrary'
+    version = '1.1-SNAPSHOT'
 
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        mavenCentral()
+    }
 }
-
-apply plugin: 'android-reporting'

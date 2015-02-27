@@ -1,12 +1,8 @@
-apply plugin: 'android'
-
-dependencies {
-    compile project(':Library')
-}
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
 
     sourceSets {
         main {
@@ -15,4 +11,8 @@ android {
             res.srcDirs = ['res']
         }
     }
+}
+
+dependencies {
+    compile project(':Library')
 }

@@ -24,13 +24,14 @@
 <resources>
 
     <string name="app_name">SlidingLayerSample</string>
-    
+
     <string name="pref_title_stick_container">Stick layer to</string>
+    <string name="pref_title_enable_preview_mode">Enable preview mode</string>
     <string name="pref_title_show_shadow">Show shadow</string>
     <string name="pref_title_show_offset">Closed offset</string>
     <string name="open_button_container">Open</string>
     <string name="close_button_container">Close</string>
-    
+
     <string name="swipe_label">Swipe!</string>
     <string name="swipe_left_label">Swipe left!</string>
     <string name="swipe_right_label">Swipe right!</string>
@@ -39,22 +40,19 @@
 
     <string name="label_right">Right</string>
     <string name="label_left">Left</string>
-    <string name="label_middle">Middle</string>
     <string name="label_top">Top</string>
     <string name="label_bottom">Bottom</string>
 
     <string name="not_applicable">n/a</string>
-    
+
     <string-array name="pref_list_titles">
         <item>@string/label_right</item>
-        <item>@string/label_middle</item>
         <item>@string/label_left</item>
         <item>@string/label_top</item>
         <item>@string/label_bottom</item>
     </string-array>
     <string-array name="pref_list_values">
         <item>right</item>
-        <item>middle</item>
         <item>left</item>
         <item>top</item>
         <item>bottom</item>

@@ -26,17 +26,15 @@
 
     <declare-styleable name="SlidingLayer">
         <attr name="shadowDrawable" format="boolean"/>
-        <attr name="shadowWidth" format="dimension"/>
-        <attr name="closeOnTapEnabled" format="boolean"/>
-        <attr name="openOnTapEnabled" format="boolean"/>
-        <attr name="offsetWidth" format="dimension" />
+        <attr name="shadowSize" format="dimension"/>
+        <attr name="changeStateOnTap" format="boolean"/>
+        <attr name="offsetDistance" format="dimension"/>
+        <attr name="previewOffsetDistance" format="dimension"/>
         <attr name="stickTo" format="enum">
-            <enum name="auto" value="0"/>
             <enum name="right" value="-1"/>
             <enum name="left" value="-2"/>
-            <enum name="middle" value="-3"/>
-            <enum name="top" value="-4"/>
-            <enum name="bottom" value="-5"/>
+            <enum name="top" value="-3"/>
+            <enum name="bottom" value="-4"/>
         </attr>
     </declare-styleable>
 

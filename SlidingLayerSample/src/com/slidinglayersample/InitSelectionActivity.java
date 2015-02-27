@@ -24,7 +24,6 @@ package com.slidinglayersample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -60,9 +59,6 @@ public class InitSelectionActivity extends PreferenceActivity {
             });
         }
 
-        final CheckBoxPreference shadowPreference = (CheckBoxPreference) findPreference("layer_has_shadow");
-        final CheckBoxPreference offsetPreference = (CheckBoxPreference) findPreference("layer_has_offset");
-
         final ListPreference posPreference = (ListPreference) findPreference("layer_location");
         if (posPreference != null) {
 
@@ -75,29 +71,9 @@ public class InitSelectionActivity extends PreferenceActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
 
                     setPreferenceSummary(posPreference, (String) newValue);
-
-                    if (newValue.equals("middle")) {
-                        shadowPreference.setEnabled(false);
-                        shadowPreference.setChecked(false);
-                        offsetPreference.setEnabled(false);
-                        offsetPreference.setChecked(false);
-                    } else if (!shadowPreference.isEnabled()) {
-                        shadowPreference.setEnabled(true);
-                        shadowPreference.setChecked(true);
-                        offsetPreference.setEnabled(true);
-                        offsetPreference.setChecked(true);
-                    }
                     return true;
                 }
             });
-        }
-
-        if (PreferenceManager.getDefaultSharedPreferences(this).getString("layer_location", "right")
-                .equals("middle")) {
-            shadowPreference.setEnabled(false);
-            shadowPreference.setChecked(false);
-            offsetPreference.setEnabled(false);
-            offsetPreference.setChecked(false);
         }
     }
 
@@ -110,8 +86,6 @@ public class InitSelectionActivity extends PreferenceActivity {
             _preference.setSummary(getResources().getString(R.string.label_top));
         } else if (_locationString.equals("bottom")) {
             _preference.setSummary(getResources().getString(R.string.label_bottom));
-        } else {
-            _preference.setSummary(getResources().getString(R.string.label_middle));
         }
     }
 }
