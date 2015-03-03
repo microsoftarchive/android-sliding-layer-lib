@@ -1,4 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.0'
+    }
+}
+
 apply plugin: 'com.android.application'
+
+repositories {
+    mavenCentral()
+}
+
 
 android {
     compileSdkVersion 21
@@ -14,5 +28,5 @@ android {
 }
 
 dependencies {
-    compile project(':Library')
+    compile 'com.wunderlist:sliding-layer:1.1'
 }
