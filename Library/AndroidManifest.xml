@@ -16,7 +16,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.slidinglayer">
+          package="com.wunderlist.slidinglayer">
 
     <uses-sdk
             android:minSdkVersion="4"
