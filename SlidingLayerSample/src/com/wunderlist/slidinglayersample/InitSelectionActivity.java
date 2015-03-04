@@ -20,7 +20,7 @@
  * limitations under the License.
  */
 
-package com.slidinglayersample;
+package com.wunderlist.slidinglayersample;
 
 import android.content.Intent;
 import android.os.Bundle;

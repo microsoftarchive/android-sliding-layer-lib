@@ -6,7 +6,7 @@
  * @author      Jose L Ugia - @Jl_Ugia
  * @author      Antonio Consuegra - @aconsuegra
  * @author      Cesar Valiente - @CesarValiente
- * @version     1.0
+ * @version     1.1.1
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
  * limitations under the License.
  */
 
-package com.slidinglayer;
+package com.wunderlist.slidinglayer;
 
 import java.util.Random;
 

@@ -23,7 +23,7 @@
  * limitations under the License.
  */
 
-package com.slidinglayersample;
+package com.wunderlist.slidinglayersample;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -38,7 +38,7 @@ import android.view.View;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.slidinglayer.SlidingLayer;
+import com.wunderlist.slidinglayer.SlidingLayer;
 
 public class MainActivity extends Activity {
 
