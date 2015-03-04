@@ -43,7 +43,7 @@
             android:layout_centerInParent="true"
             android:text="@string/open_button_container"/>
 
-    <com.slidinglayer.SlidingLayer
+    <com.wunderlist.slidinglayer.SlidingLayer
             android:id="@+id/slidingLayer1"
             android:layout_width="@dimen/layer_size"
             android:layout_height="match_parent">
@@ -82,6 +82,6 @@
 
         </RelativeLayout>
 
-    </com.slidinglayer.SlidingLayer>
+    </com.wunderlist.slidinglayer.SlidingLayer>
 
 </RelativeLayout>
