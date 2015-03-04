@@ -1,14 +1,20 @@
 6Wunderkinder SlidingLayer for Android
 =============================
-This repository host a library that provides an easy way to include an autonomous layer/view that slides from any side of your screen and which is fully gesture ready, the same way as our detail view in Wunderlist 2 does.
-This pattern can also be seen in Google+’s notification center, Google Maps, Google Music, Basecamp’s detail view, among others.
+This repository hosts a library that provides an easy way to include an autonomous layer/view that slides from any side of your screen and which is fully gesture ready, the same way as our detail view in Wunderlist 2 does.
+This pattern can also be seen in Google+’s notification center, Google Maps, Google Music, Contacts app in Lollipop, Basecamp’s detail view, among others.
 
 If you want to see how it works you can have a look to our [video](http://www.youtube.com/watch?v=162oD0XPM40) or directly download from [Google Play](https://play.google.com/store/apps/details?id=com.slidinglayersample) it to test in on your device.
 
 
 Implementation setup
 ------------------------------
-As easy as to draw a green droid yourself, just include the library inside of your source code and you are ready to go.
+As easy as to draw a green droid yourself, just grab it in your build gradle:
+
+```gradle
+compile 'com.wunderlist:sliding-layer:1.1.1'
+```
+
+or directly add it as a submodule inside of your project.
 
 
 Integration
