@@ -28,5 +28,5 @@ android {
 }
 
 dependencies {
-    compile 'com.wunderlist:sliding-layer:1.1'
+    compile 'com.wunderlist:sliding-layer:1.1.1'
 }
