@@ -225,6 +225,10 @@ public class SlidingLayer extends FrameLayout {
 
     private void init() {
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setLayerType(LAYER_TYPE_HARDWARE, null);
+        }
+
         setWillNotDraw(false);
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setFocusable(true);
