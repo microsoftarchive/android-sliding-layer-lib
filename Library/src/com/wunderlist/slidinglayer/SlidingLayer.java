@@ -163,6 +163,8 @@ public class SlidingLayer extends FrameLayout {
     private int mFlingDistance;
     private boolean mLastTouchAllowed = false;
 
+    private LayerTransformer mLayerTransformer;
+
     public SlidingLayer(Context context) {
         this(context, null);
     }
@@ -326,6 +328,16 @@ public class SlidingLayer extends FrameLayout {
      */
     public void setOnScrollListener(OnScrollListener listener) {
         mOnScrollListener = listener;
+    }
+
+    /**
+     * Sets the transformer to use when the layer is being scrolled
+     * {@link LayerTransformer}.
+     *
+     * @param layerTransformer Transformer to adopt
+     */
+    public void setLayerTransformer(LayerTransformer layerTransformer) {
+        mLayerTransformer = layerTransformer;
     }
 
     /**
@@ -1014,18 +1026,29 @@ public class SlidingLayer extends FrameLayout {
     }
 
     private void scrollToAndNotify(int x, int y) {
+
         scrollTo(x, y);
 
+        if (mOnScrollListener == null && mLayerTransformer == null) return;
+
+        int scroll;
+        if (allowedDirection() == VERTICAL) {
+            scroll = getHeight() - Math.abs(y);
+        } else {
+            scroll = getWidth() - Math.abs(x);
+        }
+
         if (mOnScrollListener != null) {
-
-            int scroll;
-            if (allowedDirection() == VERTICAL) {
-                scroll = getHeight() - Math.abs(y);
-            } else {
-                scroll = getWidth() - Math.abs(x);
-            }
-
             mOnScrollListener.onScroll(Math.abs(scroll));
+        }
+
+        if (mLayerTransformer != null) {
+
+            int absoluteScroll = Math.abs(scroll);
+            int layerSize = allowedDirection() == HORIZONTAL ? getMeasuredWidth() : getMeasuredHeight();
+
+            mLayerTransformer.internalTransform(this, layerSize, absoluteScroll, mPreviewOffsetDistance,
+                    mScreenSide);
         }
     }
 
@@ -1336,7 +1359,7 @@ public class SlidingLayer extends FrameLayout {
          * Callback method to be invoked when the layer has been scrolled. This will be
          * called after the scroll has completed
          *
-         * @param absoluteScroll The absolute scrolling distance delta
+         * @param absoluteScroll The absolute scrolling delta relative to the position of the container
          */
         public void onScroll(int absoluteScroll);
     }
