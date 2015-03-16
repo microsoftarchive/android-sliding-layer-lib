@@ -17,7 +17,7 @@ public abstract class LayerTransformer {
      * @param layerSize             Total size of the layer
      * @param absoluteScroll        Current absolute scroll position
      * @param previewOffsetDistance Size of preview mode, or 0
-     * @param screenPosition        Side of the screen where the layer is stuck to
+     * @param screenSide            Side of the screen where the layer is stuck to
      */
     protected void internalTransform(View layerView, int layerSize, int absoluteScroll,
                                      int previewOffsetDistance, int screenSide) {
