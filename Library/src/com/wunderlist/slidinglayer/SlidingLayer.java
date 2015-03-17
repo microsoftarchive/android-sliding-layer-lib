@@ -1052,7 +1052,9 @@ public class SlidingLayer extends FrameLayout {
             int layerSize = allowedDirection() == HORIZONTAL ? getMeasuredWidth() : getMeasuredHeight();
 
             float layerProgress = (float) absoluteScroll / layerSize;
-            float previewProgress = mPreviewOffsetDistance > 0 ? absoluteScroll / mPreviewOffsetDistance : 0;
+            float previewProgress = mPreviewOffsetDistance > 0 ?
+                    Math.min(1, (float) absoluteScroll / mPreviewOffsetDistance) :
+                    0;
 
             mLayerTransformer.internalTransform(this, previewProgress, layerProgress, mScreenSide);
         }
