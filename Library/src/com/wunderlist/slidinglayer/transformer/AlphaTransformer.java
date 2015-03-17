@@ -24,7 +24,8 @@ public final class AlphaTransformer extends LayerTransformer {
     @Override
     public void transform(View layerView, float previewProgress, float layerProgress) {
 
-        final float alpha = Math.max(0, Math.min(1, layerProgress * mMultiplier));
+        final float progressRatioToAnimate = Math.max(previewProgress, layerProgress);
+        final float alpha = Math.max(0, Math.min(1, progressRatioToAnimate * mMultiplier));
         layerView.setAlpha(alpha);
     }
 }

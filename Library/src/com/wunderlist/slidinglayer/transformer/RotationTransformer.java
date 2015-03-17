@@ -29,6 +29,8 @@ public final class RotationTransformer extends LayerTransformer {
     @Override
     protected void internalTransform(View layerView, float previewProgress, float layerProgress, int screenSide) {
 
+        final float progressRatioToAnimate = Math.max(previewProgress, layerProgress);
+
         int[] pivotPosition = pivotPositionForScreenSide(layerView, screenSide);
         layerView.setPivotX(pivotPosition[0]);
         layerView.setPivotY(pivotPosition[1]);
@@ -36,7 +38,7 @@ public final class RotationTransformer extends LayerTransformer {
         float angle = mMaxAngle *
                 (screenSide == SlidingLayer.STICK_TO_LEFT || screenSide == SlidingLayer.STICK_TO_TOP ? -1 : 1);
 
-        layerView.setRotation(angle * (1 - layerProgress));
+        layerView.setRotation(angle * (1 - progressRatioToAnimate));
     }
 
     private int[] pivotPositionForScreenSide(View layerView, int screenSide) {
