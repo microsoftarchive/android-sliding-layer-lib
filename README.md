@@ -42,6 +42,9 @@ XML
     …
 </com.wunderlist.slidinglayer.SlidingLayer>
 ```
+DEMO
+------
+You may visit this link for the [live demo](https://appetize.io/embed/d0d7gtwab45q07nua2n7emkmt0?screenOnly=false&scale=75)
 
 Properties:
 * `shadowDrawable` - a reference to the resource drawable used to paint the shadow of the container
