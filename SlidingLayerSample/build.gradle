@@ -13,20 +13,19 @@ repositories {
     mavenCentral()
 }
 
-
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.2'
+    compileSdkVersion 22
+    buildToolsVersion "21.1.2"
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            res.srcDirs = ['res']
-        }
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.1.1"
     }
 }
 
 dependencies {
-    compile 'com.wunderlist:sliding-layer:1.1.1'
+    //compile 'com.wunderlist:sliding-layer:1.1.1'
+    compile project(':Library')
 }

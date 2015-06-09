@@ -39,6 +39,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.wunderlist.slidinglayer.SlidingLayer;
+import com.wunderlist.slidinglayer.transformer.SlideJoyTransformer;
 
 public class MainActivity extends Activity {
 
@@ -84,6 +85,8 @@ public class MainActivity extends Activity {
         setupShadow(prefs.getBoolean("layer_has_shadow", false));
         setupLayerOffset(prefs.getBoolean("layer_has_offset", false));
         setupPreviewMode(prefs.getBoolean("preview_mode_enabled", false));
+
+        mSlidingLayer.setLayerTransformer(new SlideJoyTransformer());
     }
 
     private void setupSlidingLayerPosition(String layerPosition) {

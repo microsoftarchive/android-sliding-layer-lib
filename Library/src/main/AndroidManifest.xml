@@ -15,12 +15,8 @@
    limitations under the License.
 -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.wunderlist.slidinglayer">
+<manifest package="com.wunderlist.slidinglayer">
 
-    <uses-sdk
-            android:minSdkVersion="4"
-            android:targetSdkVersion="21"/>
     <application/>
 
 </manifest>
