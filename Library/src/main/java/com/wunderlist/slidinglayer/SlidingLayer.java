@@ -33,7 +33,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
@@ -523,7 +522,7 @@ public class SlidingLayer extends FrameLayout {
             return false;
         }
 
-        final int action = ev.getAction() & MotionEventCompat.ACTION_MASK;
+        final int action = ev.getAction() & MotionEvent.ACTION_MASK;
 
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
             mIsDragging = false;
@@ -551,15 +550,15 @@ public class SlidingLayer extends FrameLayout {
                 break;
             }
 
-            final int pointerIndex = MotionEventCompat.findPointerIndex(ev, activePointerId);
+            final int pointerIndex = ev.findPointerIndex(activePointerId);
             if (pointerIndex == INVALID_VALUE) {
                 mActivePointerId = INVALID_VALUE;
                 break;
             }
 
-            final float x = MotionEventCompat.getX(ev, pointerIndex);
+            final float x = ev.getRawX();// ev.getX(pointerIndex);
             final float xDiff = Math.abs(x - mLastX);
-            final float y = MotionEventCompat.getY(ev, pointerIndex);
+            final float y = ev.getRawY(); //ev.getY(pointerIndex);
             final float yDiff = Math.abs(y - mLastY);
 
             final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
@@ -580,9 +579,9 @@ public class SlidingLayer extends FrameLayout {
         case MotionEvent.ACTION_DOWN:
             mActivePointerId = ev.getAction()
                     & (Build.VERSION.SDK_INT >= 8 ? MotionEvent.ACTION_POINTER_INDEX_MASK
-                    : MotionEventCompat.ACTION_POINTER_INDEX_MASK);
-            mLastX = mInitialX = MotionEventCompat.getX(ev, mActivePointerId);
-            mLastY = mInitialY = MotionEventCompat.getY(ev, mActivePointerId);
+                    : MotionEvent.ACTION_POINTER_INDEX_MASK);
+            mLastX = mInitialX = ev.getRawX(); // ev.getX(mActivePointerId);
+            mLastY = mInitialY = ev.getRawY(); // ev.getY(mActivePointerId);
             if (allowSlidingFromHere(mInitialX, mInitialY)) {
                 mIsDragging = false;
                 mIsUnableToDrag = false;
@@ -592,7 +591,7 @@ public class SlidingLayer extends FrameLayout {
                 mIsUnableToDrag = true;
             }
             break;
-        case MotionEventCompat.ACTION_POINTER_UP:
+        case MotionEvent.ACTION_POINTER_UP:
             onSecondaryPointerUp(ev);
             break;
         }
@@ -627,25 +626,25 @@ public class SlidingLayer extends FrameLayout {
         }
         mVelocityTracker.addMovement(ev);
 
-        switch (action & MotionEventCompat.ACTION_MASK) {
+        switch (action & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
             completeScroll();
 
             // Remember where the motion event started
-            mLastX = mInitialX = ev.getX();
-            mLastY = mInitialY = ev.getY();
-            mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+            mLastX = mInitialX = ev.getRawX(); // ev.getX();
+            mLastY = mInitialY = ev.getRawY(); // ev.getY();
+            mActivePointerId = ev.getPointerId(0);
             break;
         case MotionEvent.ACTION_MOVE:
             if (!mIsDragging) {
-                final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (pointerIndex == INVALID_VALUE) {
                     mActivePointerId = INVALID_VALUE;
                     break;
                 }
-                final float x = MotionEventCompat.getX(ev, pointerIndex);
+                final float x = ev.getRawX();// ev.getX(pointerIndex);
                 final float xDiff = Math.abs(x - mLastX);
-                final float y = MotionEventCompat.getY(ev, pointerIndex);
+                final float y = ev.getRawY();// ev.getY(pointerIndex);
                 final float yDiff = Math.abs(y - mLastY);
 
                 final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
@@ -664,13 +663,14 @@ public class SlidingLayer extends FrameLayout {
             }
             if (mIsDragging) {
                 // Scroll to follow the motion event
-                final int activePointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+                final int activePointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (activePointerIndex == INVALID_VALUE) {
                     mActivePointerId = INVALID_VALUE;
                     break;
                 }
-                final float x = MotionEventCompat.getX(ev, activePointerIndex);
-                final float y = MotionEventCompat.getY(ev, activePointerIndex);
+                final float x = ev.getRawX();// ev.getX(activePointerIndex);
+                final float y = ev.getRawY(); // ev.getY(activePointerIndex);
+
                 final float deltaX = mLastX - x;
                 final float deltaY = mLastY - y;
                 mLastX = x;
@@ -732,9 +732,9 @@ public class SlidingLayer extends FrameLayout {
                         mActivePointerId);
                 final int scrollX = getScrollX();
                 final int scrollY = getScrollY();
-                final int activePointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                final float x = MotionEventCompat.getX(ev, activePointerIndex);
-                final float y = MotionEventCompat.getY(ev, activePointerIndex);
+                final int activePointerIndex = ev.findPointerIndex(mActivePointerId);
+                final float x = ev.getRawX();// ev.getX(activePointerIndex);
+                final float y = ev.getRawY();// ev.getY(activePointerIndex);
 
                 int nextState = determineNextStateForDrag(scrollX, scrollY, initialVelocityX, initialVelocityY,
                         (int) mInitialX, (int) mInitialY, (int) x, (int) y);
@@ -755,17 +755,19 @@ public class SlidingLayer extends FrameLayout {
                 endDrag();
             }
             break;
-        case MotionEventCompat.ACTION_POINTER_DOWN: {
-            final int index = MotionEventCompat.getActionIndex(ev);
-            mLastX = MotionEventCompat.getX(ev, index);
-            mLastY = MotionEventCompat.getY(ev, index);
-            mActivePointerId = MotionEventCompat.getPointerId(ev, index);
+        case MotionEvent.ACTION_POINTER_DOWN: {
+            final int index = ev.getActionIndex();
+            mLastX = ev.getRawX();// ev.getX(index);
+            mLastY = ev.getRawY();// ev.getY(index);
+            mActivePointerId = ev.getPointerId(index);
             break;
         }
-        case MotionEventCompat.ACTION_POINTER_UP:
+        case MotionEvent.ACTION_POINTER_UP:
             onSecondaryPointerUp(ev);
-            mLastX = MotionEventCompat.getX(ev, MotionEventCompat.findPointerIndex(ev, mActivePointerId));
-            mLastY = MotionEventCompat.getY(ev, MotionEventCompat.findPointerIndex(ev, mActivePointerId));
+
+            final int index = ev.getActionIndex();
+            mLastX = ev.getRawX();// ev.getX(index);
+            mLastY = ev.getRawY();// ev.getY(index);
             break;
         }
         if (mActivePointerId == INVALID_VALUE) {
@@ -995,14 +997,14 @@ public class SlidingLayer extends FrameLayout {
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
-        final int pointerIndex = MotionEventCompat.getActionIndex(ev);
-        final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
+        final int pointerIndex = ev.getActionIndex();
+        final int pointerId = ev.getPointerId(pointerIndex);
         if (pointerId == mActivePointerId) {
             // This was our active pointer going up. Choose a new
             // active pointer and adjust accordingly.
             final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-            mLastX = MotionEventCompat.getX(ev, newPointerIndex);
-            mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
+            mLastX = ev.getX(newPointerIndex);
+            mActivePointerId = ev.getPointerId(newPointerIndex);
             if (mVelocityTracker != null) {
                 mVelocityTracker.clear();
             }
