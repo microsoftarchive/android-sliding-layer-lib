@@ -599,6 +599,8 @@ public class SlidingLayer extends FrameLayout {
                 // If nobody else got the focus we use it to close the layer
                 return super.onInterceptTouchEvent(ev);
             } else {
+                completeScroll();
+                mIsDragging = false;
                 mIsUnableToDrag = true;
             }
             break;
@@ -849,7 +851,7 @@ public class SlidingLayer extends FrameLayout {
 
         return checkV && (
                 (allowedDirection() == HORIZONTAL && ViewCompat.canScrollHorizontally(v, -dx) ||
-                        allowedDirection() == VERTICAL && ViewCompat.canScrollVertically(v, -dy));
+                        allowedDirection() == VERTICAL && ViewCompat.canScrollVertically(v, -dy)));
     }
 
     /**
