@@ -141,6 +141,8 @@ public class SlidingLayer extends FrameLayout {
 
     private float mInitialX = INVALID_VALUE;
     private float mInitialY = INVALID_VALUE;
+    private float mInitialRawX = INVALID_VALUE;
+    private float mInitialRawY = INVALID_VALUE;
 
     /**
      * Flags to determine the state of the layer
@@ -517,11 +519,11 @@ public class SlidingLayer extends FrameLayout {
     }
 
     private float getViewX(MotionEvent event, int pointerIndex) {
-        return MotionEventCompat.getX(event, pointerIndex);
+        return event.getRawX();
     }
 
     private float getViewY(MotionEvent event, int pointerIndex) {
-        return MotionEventCompat.getY(event, pointerIndex);
+        return event.getRawY();
     }
 
     @Override
@@ -568,8 +570,10 @@ public class SlidingLayer extends FrameLayout {
 
             if ((dx != 0 || dy != 0) &&
                     canScroll(this, false, (int) dx, (int) dy, (int) x, (int) y)) {
-                mLastX = mInitialX = x;
-                mLastY = mInitialY = y;
+                mLastX = mInitialRawX = x;
+                mLastY = mInitialRawY = y;
+                mInitialX = ev.getX(pointerIndex);
+                mInitialY = ev.getY(pointerIndex);
                 return false;
             }
 
@@ -589,11 +593,13 @@ public class SlidingLayer extends FrameLayout {
             break;
 
         case MotionEvent.ACTION_DOWN:
-            mLastX = mInitialX = ev.getX();
-            mLastY = mInitialY = ev.getY();
+            mLastX = mInitialRawX = getViewX(ev, 0);
+            mLastY = mInitialRawY = getViewY(ev, 0);
+            mInitialX = ev.getX(0);
+            mInitialY = ev.getY(0);
             mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
 
-            if (allowSlidingFromHere(mInitialX, mInitialY)) {
+            if (allowSlidingFromHere(ev.getX(), ev.getY())) {
                 mIsDragging = false;
                 mIsUnableToDrag = false;
                 // If nobody else got the focus we use it to close the layer
@@ -642,8 +648,10 @@ public class SlidingLayer extends FrameLayout {
             completeScroll();
 
             // Remember where the motion event started
-            mLastX = mInitialX = ev.getX();
-            mLastY = mInitialY = ev.getY();
+            mLastX = mInitialRawX = getViewX(ev, 0);
+            mLastY = mInitialRawY = getViewY(ev, 0);
+            mInitialX = ev.getX();
+            mInitialY = ev.getY();
             mActivePointerId = ev.getPointerId(0);
             break;
         }
@@ -748,7 +756,7 @@ public class SlidingLayer extends FrameLayout {
                 final float y = getViewY(ev, pointerIndex);
 
                 int nextState = determineNextStateForDrag(scrollX, scrollY, initialVelocityX, initialVelocityY,
-                        (int) mInitialX, (int) mInitialY, (int) x, (int) y);
+                        (int) mInitialRawX, (int) mInitialRawY, (int) x, (int) y);
                 setLayerState(nextState, true, true, initialVelocityX, initialVelocityY);
 
                 mActivePointerId = INVALID_VALUE;
