@@ -160,7 +160,6 @@ public class SlidingLayer extends FrameLayout {
 
     private int mMinimumVelocity;
     private int mFlingDistance;
-    private boolean mLastTouchAllowed = false;
 
     private LayerTransformer mLayerTransformer;
 
@@ -608,17 +607,9 @@ public class SlidingLayer extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mEnabled || !mIsDragging && !mLastTouchAllowed && !allowSlidingFromHere(mInitialX, mInitialY)) {
             return false;
         }
 
-        final int action = ev.getAction();
-
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
-                || action == MotionEvent.ACTION_OUTSIDE) {
-            mLastTouchAllowed = false;
-        } else {
-            mLastTouchAllowed = true;
         }
 
         if (mVelocityTracker == null) {
@@ -769,9 +760,6 @@ public class SlidingLayer extends FrameLayout {
             mLastX = ev.getRawX();// ev.getX(index);
             mLastY = ev.getRawY();// ev.getY(index);
             break;
-        }
-        if (mActivePointerId == INVALID_VALUE) {
-            mLastTouchAllowed = false;
         }
         return true;
     }
@@ -971,7 +959,6 @@ public class SlidingLayer extends FrameLayout {
     private void endDrag() {
         mIsDragging = false;
         mIsUnableToDrag = false;
-        mLastTouchAllowed = false;
 
         if (mVelocityTracker != null) {
             mVelocityTracker.recycle();
