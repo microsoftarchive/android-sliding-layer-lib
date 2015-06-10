@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
@@ -515,6 +516,14 @@ public class SlidingLayer extends FrameLayout {
         setLayerState(state, true);
     }
 
+    private float getViewX(MotionEvent event, int pointerIndex) {
+        return MotionEventCompat.getX(event, pointerIndex);
+    }
+
+    private float getViewY(MotionEvent event, int pointerIndex) {
+        return MotionEventCompat.getY(event, pointerIndex);
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 
@@ -549,22 +558,18 @@ public class SlidingLayer extends FrameLayout {
             if (activePointerId == INVALID_VALUE) {
                 break;
             }
-
-            final int pointerIndex = ev.findPointerIndex(activePointerId);
-            if (pointerIndex == INVALID_VALUE) {
-                mActivePointerId = INVALID_VALUE;
-                break;
-            }
-            final float x = ev.getRawX();
+            final int pointerIndex = MotionEventCompat.findPointerIndex(ev, activePointerId);
+            final float x = getViewX(ev, pointerIndex);
             final float dx = x - mLastX;
             final float xDiff = Math.abs(dx);
-            final float y = ev.getRawY();
+            final float y = getViewY(ev, pointerIndex);
             final float dy = y - mLastY;
             final float yDiff = Math.abs(dy);
 
-            if (canScroll(this, false, (int) dx, (int) dy, (int) x, (int) y)) {
+            if ((dx != 0 || dy != 0) &&
+                    canScroll(this, false, (int) dx, (int) dy, (int) x, (int) y)) {
                 mLastX = mInitialX = x;
-                mLastY = y;
+                mLastY = mInitialY = y;
                 return false;
             }
 
@@ -584,9 +589,9 @@ public class SlidingLayer extends FrameLayout {
             break;
 
         case MotionEvent.ACTION_DOWN:
-            mActivePointerId = MotionEvent.ACTION_POINTER_INDEX_MASK;
-            mLastX = mInitialX = ev.getRawX();
-            mLastY = mInitialY = ev.getRawY();
+            mLastX = mInitialX = ev.getX();
+            mLastY = mInitialY = ev.getY();
+            mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
 
             if (allowSlidingFromHere(mInitialX, mInitialY)) {
                 mIsDragging = false;
@@ -635,22 +640,20 @@ public class SlidingLayer extends FrameLayout {
             completeScroll();
 
             // Remember where the motion event started
-            mLastX = mInitialX = ev.getRawX();
-            mLastY = mInitialY = ev.getRawY();
+            mLastX = mInitialX = ev.getX();
+            mLastY = mInitialY = ev.getY();
             mActivePointerId = ev.getPointerId(0);
             break;
         }
 
-        case MotionEvent.ACTION_MOVE:
+        case MotionEvent.ACTION_MOVE: {
+
+            final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
             if (!mIsDragging) {
-                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                if (pointerIndex == INVALID_VALUE) {
-                    mActivePointerId = INVALID_VALUE;
-                    break;
-                }
-                final float x = ev.getRawX();
+
+                final float x = getViewX(ev, pointerIndex);
                 final float xDiff = Math.abs(x - mLastX);
-                final float y = ev.getRawY();
+                final float y = getViewY(ev, pointerIndex);
                 final float yDiff = Math.abs(y - mLastY);
 
                 final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
@@ -670,14 +673,8 @@ public class SlidingLayer extends FrameLayout {
 
             if (mIsDragging) {
 
-                // Scroll to follow the motion event
-                final int activePointerIndex = ev.findPointerIndex(mActivePointerId);
-                if (activePointerIndex == INVALID_VALUE) {
-                    mActivePointerId = INVALID_VALUE;
-                    break;
-                }
-                final float x = ev.getRawX();
-                final float y = ev.getRawY();
+                final float x = getViewX(ev, pointerIndex);
+                final float y = getViewY(ev, pointerIndex);
 
                 final float deltaX = mLastX - x;
                 final float deltaY = mLastY - y;
@@ -706,8 +703,8 @@ public class SlidingLayer extends FrameLayout {
                     bottomBound = rightBound = leftBound = 0;
                     break;
                 case STICK_TO_BOTTOM:
-                    topBound = rightBound = leftBound = 0;
                     bottomBound = -getHeight();
+                    topBound = rightBound = leftBound = 0;
                     break;
                 default:
                     topBound = bottomBound = rightBound = leftBound = 0;
@@ -730,8 +727,9 @@ public class SlidingLayer extends FrameLayout {
                 scrollToAndNotify((int) scrollX, (int) scrollY);
             }
             break;
+        }
 
-        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_UP: {
 
             if (mIsDragging) {
                 final VelocityTracker velocityTracker = mVelocityTracker;
@@ -743,8 +741,9 @@ public class SlidingLayer extends FrameLayout {
                 final int scrollX = getScrollX();
                 final int scrollY = getScrollY();
 
-                final float x = ev.getRawX();
-                final float y = ev.getRawY();
+                final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+                final float x = getViewX(ev, pointerIndex);
+                final float y = getViewY(ev, pointerIndex);
 
                 int nextState = determineNextStateForDrag(scrollX, scrollY, initialVelocityX, initialVelocityY,
                         (int) mInitialX, (int) mInitialY, (int) x, (int) y);
@@ -758,6 +757,7 @@ public class SlidingLayer extends FrameLayout {
                 setLayerState(nextState, true, true);
             }
             break;
+        }
 
         case MotionEvent.ACTION_CANCEL:
             if (mIsDragging) {
@@ -768,17 +768,20 @@ public class SlidingLayer extends FrameLayout {
             break;
 
         case MotionEvent.ACTION_POINTER_DOWN: {
-            mActivePointerId = ev.getPointerId(ev.getActionIndex());
-            mLastX = ev.getRawX();
-            mLastY = ev.getRawY();
+            final int pointerIndex = MotionEventCompat.getActionIndex(ev);
+            mActivePointerId = ev.getPointerId(pointerIndex);
+            mLastX = getViewX(ev, pointerIndex);
+            mLastY = getViewY(ev, pointerIndex);
             break;
 
         }
-        case MotionEvent.ACTION_POINTER_UP:
+        case MotionEvent.ACTION_POINTER_UP: {
             onSecondaryPointerUp(ev);
-            mLastX = ev.getRawX();
-            mLastY = ev.getRawY();
+            final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+            mLastX = getViewX(ev, pointerIndex);
+            mLastY = getViewY(ev, pointerIndex);
             break;
+        }
         }
 
         return true;
