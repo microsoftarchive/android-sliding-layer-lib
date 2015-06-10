@@ -21,36 +21,25 @@ public final class SlideJoyTransformer extends LayerTransformer {
         float progressRatioToAnimate = Math.max(previewProgress, layerProgress);
 
         // Scale
-
-        float scaleValue = Transitions.intermediateValueForRange(progressRatioToAnimate, 0.9f, 1,
+        float scaleValue = Transitions.intermediateValueForCuePoints(progressRatioToAnimate,
                 new float[] { 0.9f, 1 });
         layerView.setScaleX(scaleValue);
         layerView.setScaleY(scaleValue);
 
         // Rotation
-
-        float[] rotationValues = rotationValueForScreenSide(-9.5f, screenSide);
-
         float rotationX, rotationY;
-        float[] floor, ceil, range;
-        if (layerProgress < 0.9f) {
-            floor = new float[] { 0, 0 };
-            ceil = rotationValues;
-            range = new float[] { 0.7f, 0.8f };
-        } else {
-            floor = rotationValues;
-            ceil = new float[] { 0, 0 };
-            range = new float[] { 0.9f, 1 };
-        }
+        float[] rotationXY = rotationValueForScreenSide(-4.75f, screenSide);
 
-        rotationX = Transitions.intermediateValueForRange(progressRatioToAnimate, floor[0], ceil[0], range);
+        float[] cuePoints = new float[] { 0.7f, 0.9f, 1 };
+        float[] rotationXValues = new float[] { 0, rotationXY[0], 0 };
+        rotationX = Transitions.intermediateValueForRange(progressRatioToAnimate, cuePoints, rotationXValues);
         layerView.setRotationX(rotationX);
 
-        rotationY = Transitions.intermediateValueForRange(progressRatioToAnimate, floor[1], ceil[1], range);
+        float[] rotationYValues = new float[] { 0, rotationXY[1], 0 };
+        rotationY = Transitions.intermediateValueForRange(progressRatioToAnimate, cuePoints, rotationYValues);
         layerView.setRotationY(rotationY);
 
         // Pivot
-
         int[] pivotPosition = pivotPositionForScreenSide(layerView, screenSide);
         layerView.setPivotX(pivotPosition[0]);
         layerView.setPivotY(pivotPosition[1]);
