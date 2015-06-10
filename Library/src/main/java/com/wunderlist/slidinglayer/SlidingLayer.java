@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.VelocityTrackerCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.util.FloatMath;
@@ -559,6 +560,11 @@ public class SlidingLayer extends FrameLayout {
             final float xDiff = Math.abs(x - mLastX);
             final float y = ev.getRawY(); //ev.getY(pointerIndex);
             final float yDiff = Math.abs(y - mLastY);
+            if (canScroll(this, false, (int) dx, (int) dy, (int) x, (int) y)) {
+                mLastX = mInitialX = x;
+                mLastY = y;
+                return false;
+            }
 
             final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
             final boolean validVerticalDrag = yDiff > mTouchSlop && yDiff > xDiff;
@@ -800,6 +806,33 @@ public class SlidingLayer extends FrameLayout {
                 return false;
             }
         }
+    }
+
+    protected boolean canScroll(View v, boolean checkV, int dx, int dy, int x, int y) {
+
+        if (v instanceof ViewGroup) {
+            final ViewGroup group = (ViewGroup) v;
+            final int scrollX = v.getScrollX();
+            final int scrollY = v.getScrollY();
+
+            final int count = group.getChildCount();
+            // Count backwards - let topmost views consume scroll distance first.
+            for (int i = count - 1; i >= 0; i--) {
+                // TODO: Add versioned support here for transformed views.
+                // This will not work for transformed views in Honeycomb+
+                final View child = group.getChildAt(i);
+                if (x + scrollX >= child.getLeft() && x + scrollX < child.getRight() &&
+                        y + scrollY >= child.getTop() && y + scrollY < child.getBottom() &&
+                        canScroll(child, true, dx, dy, x + scrollX - child.getLeft(),
+                                y + scrollY - child.getTop())) {
+                    return true;
+                }
+            }
+        }
+
+        return checkV && (
+                (allowedDirection() == HORIZONTAL && ViewCompat.canScrollHorizontally(v, -dx) ||
+                        allowedDirection() == VERTICAL && ViewCompat.canScrollVertically(v, -dy));
     }
 
     /**
