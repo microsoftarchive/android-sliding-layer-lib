@@ -26,6 +26,7 @@
     <string name="app_name">SlidingLayerSample</string>
 
     <string name="pref_title_stick_container">Stick layer to</string>
+    <string name="pref_title_transformer">Transformer</string>
     <string name="pref_title_enable_preview_mode">Enable preview mode</string>
     <string name="pref_title_show_shadow">Show shadow</string>
     <string name="pref_title_show_offset">Closed offset</string>
@@ -43,6 +44,11 @@
     <string name="label_top">Top</string>
     <string name="label_bottom">Bottom</string>
 
+    <string name="label_none">None</string>
+    <string name="label_alpha">Alpha</string>
+    <string name="label_rotation">Rotation</string>
+    <string name="label_slide_joy">Slide Joy!</string>
+
     <string name="not_applicable">n/a</string>
 
     <string-array name="pref_list_titles">
@@ -56,6 +62,19 @@
         <item>left</item>
         <item>top</item>
         <item>bottom</item>
+    </string-array>
+
+    <string-array name="pref_transform_list_titles">
+        <item>@string/label_none</item>
+        <item>@string/label_alpha</item>
+        <item>@string/label_rotation</item>
+        <item>@string/label_slide_joy</item>
+    </string-array>
+    <string-array name="pref_transform_list_values">
+        <item>none</item>
+        <item>alpha</item>
+        <item>rotation</item>
+        <item>slide</item>
     </string-array>
 
     <string name="pref_go">Go!</string>

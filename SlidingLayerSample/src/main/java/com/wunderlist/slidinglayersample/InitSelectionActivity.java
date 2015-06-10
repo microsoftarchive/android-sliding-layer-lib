@@ -75,6 +75,23 @@ public class InitSelectionActivity extends PreferenceActivity {
                 }
             });
         }
+
+        final ListPreference transformPreference = (ListPreference) findPreference("layer_transform");
+        if (transformPreference != null) {
+
+            setTransformPreferenceSummary(transformPreference,
+                    PreferenceManager.getDefaultSharedPreferences(this).getString("layer_transform", "none"));
+
+            transformPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                    setTransformPreferenceSummary(transformPreference, (String) newValue);
+                    return true;
+                }
+            });
+        }
     }
 
     private void setPreferenceSummary(Preference _preference, String _locationString) {
@@ -86,6 +103,18 @@ public class InitSelectionActivity extends PreferenceActivity {
             _preference.setSummary(getResources().getString(R.string.label_top));
         } else if (_locationString.equals("bottom")) {
             _preference.setSummary(getResources().getString(R.string.label_bottom));
+        }
+    }
+
+    private void setTransformPreferenceSummary(Preference _preference, String _transformString) {
+        if (_transformString.equals("none")) {
+            _preference.setSummary(getResources().getString(R.string.label_none));
+        } else if (_transformString.equals("alpha")) {
+            _preference.setSummary(getResources().getString(R.string.label_alpha));
+        } else if (_transformString.equals("rotation")) {
+            _preference.setSummary(getResources().getString(R.string.label_rotation));
+        } else if (_transformString.equals("slide")) {
+            _preference.setSummary(getResources().getString(R.string.label_slide_joy));
         }
     }
 }

@@ -29,6 +29,14 @@
             android:key="layer_location"
             android:title="@string/pref_title_stick_container"/>
 
+    <ListPreference
+            android:defaultValue="none"
+            android:dialogTitle="@string/pref_title_transformer"
+            android:entries="@array/pref_transform_list_titles"
+            android:entryValues="@array/pref_transform_list_values"
+            android:key="layer_transform"
+            android:title="@string/pref_title_transformer"/>
+
     <CheckBoxPreference
             android:defaultValue="true"
             android:key="preview_mode_enabled"

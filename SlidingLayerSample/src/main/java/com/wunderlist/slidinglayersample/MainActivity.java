@@ -38,7 +38,10 @@ import android.view.View;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.wunderlist.slidinglayer.LayerTransformer;
 import com.wunderlist.slidinglayer.SlidingLayer;
+import com.wunderlist.slidinglayer.transformer.AlphaTransformer;
+import com.wunderlist.slidinglayer.transformer.RotationTransformer;
 import com.wunderlist.slidinglayer.transformer.SlideJoyTransformer;
 
 public class MainActivity extends Activity {
@@ -81,12 +84,11 @@ public class MainActivity extends Activity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setupSlidingLayerPosition(prefs.getString("layer_location", "right"));
+        setupSlidingLayerTransform(prefs.getString("layer_transform", "none"));
 
         setupShadow(prefs.getBoolean("layer_has_shadow", false));
         setupLayerOffset(prefs.getBoolean("layer_has_offset", false));
         setupPreviewMode(prefs.getBoolean("preview_mode_enabled", false));
-
-        mSlidingLayer.setLayerTransformer(new SlideJoyTransformer());
     }
 
     private void setupSlidingLayerPosition(String layerPosition) {
@@ -125,6 +127,26 @@ public class MainActivity extends Activity {
         swipeText.setCompoundDrawables(null, d, null, null);
         swipeText.setText(getResources().getString(textResource));
         mSlidingLayer.setLayoutParams(rlp);
+    }
+
+    private void setupSlidingLayerTransform(String layerTransform) {
+
+        LayerTransformer transformer;
+
+        if (layerTransform.equals("alpha")) {
+            transformer = new AlphaTransformer();
+
+        } else if (layerTransform.equals("rotation")) {
+            transformer = new RotationTransformer();
+
+        } else if (layerTransform.equals("slide")) {
+            transformer = new SlideJoyTransformer();
+
+        } else {
+            return;
+        }
+
+        mSlidingLayer.setLayerTransformer(transformer);
     }
 
     private void setupShadow(boolean enabled) {
