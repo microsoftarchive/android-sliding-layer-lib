@@ -966,10 +966,12 @@ public class SlidingLayer extends FrameLayout {
      *                 otherwise)
      */
     void smoothScrollTo(int x, int y, int velocity) {
+
         if (getChildCount() == 0) {
             setDrawingCacheEnabled(false);
             return;
         }
+
         int sx = getScrollX();
         int sy = getScrollY();
         int dx = x - sx;
@@ -990,7 +992,7 @@ public class SlidingLayer extends FrameLayout {
         final float distanceRatio = Math.min(1f, 1.0f * Math.abs(dx) / width);
         final float distance = halfWidth + halfWidth * distanceInfluenceForSnapDuration(distanceRatio);
 
-        int duration = 0;
+        int duration;
         velocity = Math.abs(velocity);
         if (velocity > 0) {
             duration = 4 * Math.round(1000 * Math.abs(distance / velocity));
@@ -1059,6 +1061,7 @@ public class SlidingLayer extends FrameLayout {
     }
 
     private void completeScroll() {
+
         boolean needPopulate = mScrolling;
         if (needPopulate) {
             // Done with scroll, no longer want to cache view drawing.
