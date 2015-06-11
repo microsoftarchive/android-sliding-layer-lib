@@ -1002,7 +1002,7 @@ public class SlidingLayer extends FrameLayout {
         duration = Math.min(duration, MAX_SCROLLING_DURATION);
 
         mScroller.startScroll(sx, sy, dx, dy, duration);
-        invalidate();
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     // We want the duration of the page snap animation to be influenced by the
@@ -1321,9 +1321,8 @@ public class SlidingLayer extends FrameLayout {
                     scrollToAndNotify(x, y);
                 }
 
-                // We invalidate a slightly larger area now, this was only optimised for right menu previously
-                // Keep on drawing until the animation has finished. Just re-draw the necessary part
-                invalidate(getLeft() + oldX, getTop() + oldY, getRight() - oldX, getBottom() - oldY);
+                // Keep on drawing until the animation has finished.
+                ViewCompat.postInvalidateOnAnimation(this);
                 return;
             }
         }
