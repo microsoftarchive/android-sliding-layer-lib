@@ -306,7 +306,8 @@ public class SlidingLayer extends FrameLayout {
         final int pos[] = getDestScrollPosForState(state);
 
         if (smoothAnimation) {
-            smoothScrollTo(pos[0], pos[1], Math.max(velocityX, velocityY));
+            int velocity = allowedDirection() == HORIZONTAL ? velocityX : velocityY;
+            smoothScrollTo(pos[0], pos[1], velocity);
         } else {
             completeScroll();
             scrollToAndNotify(pos[0], pos[1]);
