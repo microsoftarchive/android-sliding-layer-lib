@@ -1420,7 +1420,7 @@ public class SlidingLayer extends FrameLayout {
          *
          * @param absoluteScroll The absolute scrolling delta relative to the position of the container
          */
-        public void onScroll(int absoluteScroll);
+        void onScroll(int absoluteScroll);
     }
 
     static class SavedState extends BaseSavedState {
