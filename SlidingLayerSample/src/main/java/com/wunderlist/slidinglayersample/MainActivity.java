@@ -97,24 +97,28 @@ public class MainActivity extends Activity {
         int textResource;
         Drawable d;
 
-        if (layerPosition.equals("right")) {
+        switch (layerPosition) {
+        case "right":
             textResource = R.string.swipe_right_label;
             d = getResources().getDrawable(R.drawable.container_rocket_right);
 
             mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_RIGHT);
-        } else if (layerPosition.equals("left")) {
+            break;
+        case "left":
             textResource = R.string.swipe_left_label;
             d = getResources().getDrawable(R.drawable.container_rocket_left);
 
             mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT);
-        } else if (layerPosition.equals("top")) {
+            break;
+        case "top":
             textResource = R.string.swipe_up_label;
             d = getResources().getDrawable(R.drawable.container_rocket);
 
             mSlidingLayer.setStickTo(SlidingLayer.STICK_TO_TOP);
             rlp.width = LayoutParams.MATCH_PARENT;
             rlp.height = getResources().getDimensionPixelSize(R.dimen.layer_size);
-        } else {
+            break;
+        default:
             textResource = R.string.swipe_down_label;
             d = getResources().getDrawable(R.drawable.container_rocket);
 
@@ -133,19 +137,19 @@ public class MainActivity extends Activity {
 
         LayerTransformer transformer;
 
-        if (layerTransform.equals("alpha")) {
+        switch (layerTransform) {
+        case "alpha":
             transformer = new AlphaTransformer();
-
-        } else if (layerTransform.equals("rotation")) {
+            break;
+        case "rotation":
             transformer = new RotationTransformer();
-
-        } else if (layerTransform.equals("slide")) {
+            break;
+        case "slide":
             transformer = new SlideJoyTransformer();
-
-        } else {
+            break;
+        default:
             return;
         }
-
         mSlidingLayer.setLayerTransformer(transformer);
     }
 
