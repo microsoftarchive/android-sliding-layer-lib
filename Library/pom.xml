@@ -26,8 +26,8 @@
     <packaging>apklib</packaging>
 
     <parent>
-        <groupId>com.slidinglayer</groupId>
-        <artifactId>parent</artifactId>
+        <groupId>com.wunderlist</groupId>
+        <artifactId>sliding-layer</artifactId>
         <version>1.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
