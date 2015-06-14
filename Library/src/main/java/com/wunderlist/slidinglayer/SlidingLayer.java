@@ -518,11 +518,11 @@ public class SlidingLayer extends FrameLayout {
         setLayerState(state, true);
     }
 
-    private float getViewX(MotionEvent event, int pointerIndex) {
+    private float getViewX(MotionEvent event) {
         return event.getRawX();
     }
 
-    private float getViewY(MotionEvent event, int pointerIndex) {
+    private float getViewY(MotionEvent event) {
         return event.getRawY();
     }
 
