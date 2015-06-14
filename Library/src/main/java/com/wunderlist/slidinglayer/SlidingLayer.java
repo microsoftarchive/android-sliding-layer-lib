@@ -1281,14 +1281,6 @@ public class SlidingLayer extends FrameLayout {
         }
     }
 
-    private int getOperationSignForDiffMeasure(float d) {
-        if (mRandom == null) {
-            return 1;
-        } else {
-            return Math.abs(d) < mMinimumVelocity ? mRandom.nextBoolean() ? 1 : -1 : d > 0 ? -1 : 1;
-        }
-    }
-
     public int getContentLeft() {
         return getLeft() + getPaddingLeft();
     }
