@@ -561,10 +561,10 @@ public class SlidingLayer extends FrameLayout {
                 break;
             }
             final int pointerIndex = MotionEventCompat.findPointerIndex(ev, activePointerId);
-            final float x = getViewX(ev, pointerIndex);
+            final float x = getViewX(ev);
             final float dx = x - mLastX;
             final float xDiff = Math.abs(dx);
-            final float y = getViewY(ev, pointerIndex);
+            final float y = getViewY(ev);
             final float dy = y - mLastY;
             final float yDiff = Math.abs(dy);
 
@@ -593,8 +593,8 @@ public class SlidingLayer extends FrameLayout {
             break;
 
         case MotionEvent.ACTION_DOWN:
-            mLastX = mInitialRawX = getViewX(ev, 0);
-            mLastY = mInitialRawY = getViewY(ev, 0);
+            mLastX = mInitialRawX = getViewX(ev);
+            mLastY = mInitialRawY = getViewY(ev);
             mInitialX = ev.getX(0);
             mInitialY = ev.getY(0);
             mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
@@ -648,8 +648,8 @@ public class SlidingLayer extends FrameLayout {
             completeScroll();
 
             // Remember where the motion event started
-            mLastX = mInitialRawX = getViewX(ev, 0);
-            mLastY = mInitialRawY = getViewY(ev, 0);
+            mLastX = mInitialRawX = getViewX(ev);
+            mLastY = mInitialRawY = getViewY(ev);
             mInitialX = ev.getX();
             mInitialY = ev.getY();
             mActivePointerId = ev.getPointerId(0);
@@ -661,9 +661,9 @@ public class SlidingLayer extends FrameLayout {
             final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
             if (!mIsDragging) {
 
-                final float x = getViewX(ev, pointerIndex);
+                final float x = getViewX(ev);
                 final float xDiff = Math.abs(x - mLastX);
-                final float y = getViewY(ev, pointerIndex);
+                final float y = getViewY(ev);
                 final float yDiff = Math.abs(y - mLastY);
 
                 final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
@@ -683,8 +683,8 @@ public class SlidingLayer extends FrameLayout {
 
             if (mIsDragging) {
 
-                final float x = getViewX(ev, pointerIndex);
-                final float y = getViewY(ev, pointerIndex);
+                final float x = getViewX(ev);
+                final float y = getViewY(ev);
 
                 final float deltaX = mLastX - x;
                 final float deltaY = mLastY - y;
@@ -752,8 +752,8 @@ public class SlidingLayer extends FrameLayout {
                 final int scrollY = getScrollY();
 
                 final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                final float x = getViewX(ev, pointerIndex);
-                final float y = getViewY(ev, pointerIndex);
+                final float x = getViewX(ev);
+                final float y = getViewY(ev);
 
                 int nextState = determineNextStateForDrag(scrollX, scrollY, initialVelocityX, initialVelocityY,
                         (int) mInitialRawX, (int) mInitialRawY, (int) x, (int) y);
@@ -780,16 +780,16 @@ public class SlidingLayer extends FrameLayout {
         case MotionEvent.ACTION_POINTER_DOWN: {
             final int pointerIndex = MotionEventCompat.getActionIndex(ev);
             mActivePointerId = ev.getPointerId(pointerIndex);
-            mLastX = getViewX(ev, pointerIndex);
-            mLastY = getViewY(ev, pointerIndex);
+            mLastX = getViewX(ev);
+            mLastY = getViewY(ev);
             break;
 
         }
         case MotionEvent.ACTION_POINTER_UP: {
             onSecondaryPointerUp(ev);
             final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-            mLastX = getViewX(ev, pointerIndex);
-            mLastY = getViewY(ev, pointerIndex);
+            mLastX = getViewX(ev);
+            mLastY = getViewY(ev);
             break;
         }
         }
