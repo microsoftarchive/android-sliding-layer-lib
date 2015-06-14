@@ -1152,6 +1152,10 @@ public class SlidingLayer extends FrameLayout {
         int height = getDefaultSize(0, heightMeasureSpec);
         setMeasuredDimension(width, height);
 
+        if (mLayerTransformer != null) {
+            mLayerTransformer.onMeasure(this, mScreenSide);
+        }
+
         super.onMeasure(getChildMeasureSpec(widthMeasureSpec, 0, width),
                 getChildMeasureSpec(heightMeasureSpec, 0, height));
     }

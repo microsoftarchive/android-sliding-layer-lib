@@ -36,6 +36,7 @@ public final class RotationTransformer extends LayerTransformer {
     private static final int DEFAULT_ANGLE = 10;
 
     private final float mMaxAngle;
+    private float mAngle;
 
     public RotationTransformer() {
         this(DEFAULT_ANGLE);
@@ -46,22 +47,25 @@ public final class RotationTransformer extends LayerTransformer {
     }
 
     @Override
+    protected void onMeasure(View layerView, int screenSide) {
+
+        final int[] pivotPosition = pivotPositionForScreenSide(layerView, screenSide);
+        layerView.setPivotX(pivotPosition[0]);
+        layerView.setPivotY(pivotPosition[1]);
+
+        mAngle = mMaxAngle *
+                (screenSide == SlidingLayer.STICK_TO_LEFT || screenSide == SlidingLayer.STICK_TO_TOP ? -1 : 1);
+    }
+
+    @Override
     public void transform(View layerView, float previewProgress, float layerProgress) {
     }
 
     @Override
     protected void internalTransform(View layerView, float previewProgress, float layerProgress, int screenSide) {
-
+        
         final float progressRatioToAnimate = Math.max(previewProgress, layerProgress);
-
-        int[] pivotPosition = pivotPositionForScreenSide(layerView, screenSide);
-        layerView.setPivotX(pivotPosition[0]);
-        layerView.setPivotY(pivotPosition[1]);
-
-        float angle = mMaxAngle *
-                (screenSide == SlidingLayer.STICK_TO_LEFT || screenSide == SlidingLayer.STICK_TO_TOP ? -1 : 1);
-
-        layerView.setRotation(angle * (1 - progressRatioToAnimate));
+        layerView.setRotation(mAngle * (1 - progressRatioToAnimate));
     }
 
     private int[] pivotPositionForScreenSide(View layerView, int screenSide) {
