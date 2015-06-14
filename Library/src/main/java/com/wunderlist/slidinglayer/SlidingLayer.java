@@ -1085,7 +1085,9 @@ public class SlidingLayer extends FrameLayout {
 
         scrollTo(x, y);
 
-        if (mOnScrollListener == null && mLayerTransformer == null) return;
+        if (mOnScrollListener == null && mLayerTransformer == null) {
+            return;
+        }
 
         int scroll;
         if (allowedDirection() == VERTICAL) {
