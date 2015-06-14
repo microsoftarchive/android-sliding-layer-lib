@@ -95,26 +95,38 @@ public class InitSelectionActivity extends PreferenceActivity {
     }
 
     private void setPreferenceSummary(Preference _preference, String _locationString) {
-        if (_locationString.equals("right")) {
+
+        switch (_locationString) {
+        case "right":
             _preference.setSummary(getResources().getString(R.string.label_right));
-        } else if (_locationString.equals("left")) {
+            break;
+        case "left":
             _preference.setSummary(getResources().getString(R.string.label_left));
-        } else if (_locationString.equals("top")) {
+            break;
+        case "top":
             _preference.setSummary(getResources().getString(R.string.label_top));
-        } else if (_locationString.equals("bottom")) {
+            break;
+        case "bottom":
             _preference.setSummary(getResources().getString(R.string.label_bottom));
+            break;
         }
     }
 
     private void setTransformPreferenceSummary(Preference _preference, String _transformString) {
-        if (_transformString.equals("none")) {
+
+        switch (_transformString) {
+        case "none":
             _preference.setSummary(getResources().getString(R.string.label_none));
-        } else if (_transformString.equals("alpha")) {
+            break;
+        case "alpha":
             _preference.setSummary(getResources().getString(R.string.label_alpha));
-        } else if (_transformString.equals("rotation")) {
+            break;
+        case "rotation":
             _preference.setSummary(getResources().getString(R.string.label_rotation));
-        } else if (_transformString.equals("slide")) {
+            break;
+        case "slide":
             _preference.setSummary(getResources().getString(R.string.label_slide_joy));
+            break;
         }
     }
 }
