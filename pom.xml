@@ -15,8 +15,8 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -27,14 +27,14 @@
         <version>7</version>
     </parent>
 
-    <groupId>com.slidinglayer</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>com.wunderlist</groupId>
+    <artifactId>sliding-layer</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>1.2.0</version>
 
-    <name>SlidingLayer (Parent)</name>
+    <name>SlidingLayer</name>
     <description>A ViewGroup that smoothly scrolls its children in and out in a top layer fashion.</description>
-    <url>https://github.com/6wunderkinder/android-sliding-layer-lib</url>
+    <url>https://github.com/wunderlist/android-sliding-layer-lib</url>
     <inceptionYear>2013</inceptionYear>
 
     <modules>
@@ -43,9 +43,10 @@
     </modules>
 
     <scm>
-        <url>https://github.com/6wunderkinder/android-sliding-layer-lib</url>
-        <connection>scm:git:git://github.com/6wunderkinder/android-sliding-layer-lib.git</connection>
-        <developerConnection>scm:git:git@github.com:6wunderkinder/android-sliding-layer-lib.git</developerConnection>
+        <url>https://github.com/wunderlist/android-sliding-layer-lib</url>
+        <connection>scm:git:git://github.com/wunderlist/android-sliding-layer-lib.git</connection>
+        <developerConnection>scm:git:git@github.com:wunderlist/android-sliding-layer-lib.git
+        </developerConnection>
     </scm>
 
     <developers>
@@ -53,7 +54,7 @@
             <name>Jose L Ugia</name>
             <id>JlUgia</id>
             <url>http://twitter.com/Jl_Ugia</url>
-            <timezone>0</timezone>
+            <timezone>+1</timezone>
             <roles>
                 <role>developer</role>
             </roles>
@@ -62,7 +63,7 @@
             <name>Antonio Consuegra</name>
             <id>aconsuegra</id>
             <url>http://twitter.com/aconsuegra</url>
-            <timezone>0</timezone>
+            <timezone>+1</timezone>
             <roles>
                 <role>developer</role>
             </roles>
@@ -71,7 +72,7 @@
             <name>Cesar Valiente</name>
             <id>CesarValiente</id>
             <url>http://twitter.com/CesarValiente</url>
-            <timezone>0</timezone>
+            <timezone>+1</timezone>
             <roles>
                 <role>developer</role>
             </roles>
