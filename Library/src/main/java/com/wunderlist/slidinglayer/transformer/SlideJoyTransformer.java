@@ -34,6 +34,26 @@ import com.wunderlist.slidinglayer.utils.Transitions;
  */
 public final class SlideJoyTransformer extends LayerTransformer {
 
+    private final float[] mCuePoints = new float[] { 0.7f, 0.9f, 1 };
+
+    private float[] mRotationXValues;
+    private float[] mRotationYValues;
+
+    @Override
+    protected void onMeasure(View layerView, int screenSide) {
+
+        // Rotation
+        float[] rotationXY = rotationValueForScreenSide(-4.75f, screenSide);
+
+        mRotationXValues = new float[] { 0, rotationXY[0], 0 };
+        mRotationYValues = new float[] { 0, rotationXY[1], 0 };
+
+        // Pivot
+        int[] pivotPosition = pivotPositionForScreenSide(layerView, screenSide);
+        layerView.setPivotX(pivotPosition[0]);
+        layerView.setPivotY(pivotPosition[1]);
+    }
+
     @Override
     public void transform(View layerView, float previewProgress, float layerProgress) {
     }
@@ -51,21 +71,12 @@ public final class SlideJoyTransformer extends LayerTransformer {
 
         // Rotation
         float rotationX, rotationY;
-        float[] rotationXY = rotationValueForScreenSide(-4.75f, screenSide);
 
-        float[] cuePoints = new float[] { 0.7f, 0.9f, 1 };
-        float[] rotationXValues = new float[] { 0, rotationXY[0], 0 };
-        rotationX = Transitions.intermediateValueForRange(progressRatioToAnimate, cuePoints, rotationXValues);
+        rotationX = Transitions.intermediateValueForRange(progressRatioToAnimate, mCuePoints, mRotationXValues);
         layerView.setRotationX(rotationX);
 
-        float[] rotationYValues = new float[] { 0, rotationXY[1], 0 };
-        rotationY = Transitions.intermediateValueForRange(progressRatioToAnimate, cuePoints, rotationYValues);
+        rotationY = Transitions.intermediateValueForRange(progressRatioToAnimate, mCuePoints, mRotationYValues);
         layerView.setRotationY(rotationY);
-
-        // Pivot
-        int[] pivotPosition = pivotPositionForScreenSide(layerView, screenSide);
-        layerView.setPivotX(pivotPosition[0]);
-        layerView.setPivotY(pivotPosition[1]);
     }
 
     private float[] rotationValueForScreenSide(float value, int screenSide) {

@@ -31,6 +31,16 @@ import android.view.View;
 public abstract class LayerTransformer {
 
     /**
+     * This method is executed when the layer finish measurement. Use this method to set member values inside of
+     * the transformer so that they do not need to be calculated on every iteration of the animation;
+     *
+     * @param layerView       A reference to the layer itself.
+     * @param screenSide      Side of the screen where the layer is stuck to
+     */
+    protected void onMeasure(View layerView, int screenSide) {
+    }
+
+    /**
      * Internal method to expose necessary properties for internal transformers to operate. Note that custom
      * transformers will modify views based on their circumstances. For example,
      * a default transformer if the view is stuck to the top or bottom, or if the preview is enabled,
