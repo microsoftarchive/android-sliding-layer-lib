@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
