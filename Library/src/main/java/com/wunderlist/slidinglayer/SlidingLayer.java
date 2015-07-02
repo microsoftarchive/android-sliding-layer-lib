@@ -556,6 +556,7 @@ public class SlidingLayer extends FrameLayout {
 
         switch (action) {
         case MotionEvent.ACTION_MOVE:
+
             final int activePointerId = mActivePointerId;
             if (activePointerId == INVALID_VALUE) {
                 break;
@@ -659,6 +660,8 @@ public class SlidingLayer extends FrameLayout {
         case MotionEvent.ACTION_MOVE: {
 
             final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+
+            if (!touchPointIsWithinBounds(ev.getX(), ev.getY(), false)) return false;
             if (!mIsDragging) {
 
                 final float x = getViewX(ev);
