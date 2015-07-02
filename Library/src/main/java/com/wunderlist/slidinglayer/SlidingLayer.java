@@ -668,6 +668,10 @@ public class SlidingLayer extends FrameLayout {
 
             final float deltaX = mLastX - x;
             final float deltaY = mLastY - y;
+
+            mLastX = x;
+            mLastY = y;
+
             if (!mIsDragging) {
 
                 final float xDiff = Math.abs(x - mInitialRawX);
@@ -676,12 +680,6 @@ public class SlidingLayer extends FrameLayout {
                 final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
                 final boolean validVerticalDrag = yDiff > mTouchSlop && yDiff > xDiff;
 
-                if (validHorizontalDrag) {
-                    mLastX = x;
-                } else if (validVerticalDrag) {
-                    mLastY = y;
-                }
-
                 if (validHorizontalDrag || validVerticalDrag) {
                     mIsDragging = true;
                     setDrawingCacheEnabled(true);
@@ -689,9 +687,6 @@ public class SlidingLayer extends FrameLayout {
             }
 
             if (mIsDragging) {
-
-                mLastX = x;
-                mLastY = y;
 
                 final float oldScrollX = getScrollX();
                 final float oldScrollY = getScrollY();
