@@ -599,10 +599,10 @@ public class SlidingLayer extends FrameLayout {
             mInitialY = ev.getY(0);
             mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
 
-            if (allowSlidingFromHere(ev.getX(), ev.getY())) {
+            if (touchPointIsWithinBounds(ev.getX(), ev.getY())) {
                 mIsDragging = false;
                 mIsUnableToDrag = false;
-                // If nobody else got the focus we use it to close the layer
+                // We don't want to do anything, send the event up
                 return super.onInterceptTouchEvent(ev);
             } else {
                 completeScroll();
@@ -632,7 +632,7 @@ public class SlidingLayer extends FrameLayout {
             return false;
         }
 
-        if (!mEnabled || !mIsDragging && !allowSlidingFromHere(mInitialX, mInitialY)) {
+        if (!mEnabled || !mIsDragging && !touchPointIsWithinBounds(mInitialX, mInitialY)) {
             return false;
         }
 
@@ -720,6 +720,7 @@ public class SlidingLayer extends FrameLayout {
                     topBound = bottomBound = rightBound = leftBound = 0;
                     break;
                 }
+
                 if (scrollX > leftBound) {
                     scrollX = leftBound;
                 } else if (scrollX < rightBound) {
@@ -734,6 +735,7 @@ public class SlidingLayer extends FrameLayout {
                 // Keep the precision
                 mLastX += scrollX - (int) scrollX;
                 mLastY += scrollY - (int) scrollY;
+
                 scrollToAndNotify((int) scrollX, (int) scrollY);
             }
             break;
@@ -804,7 +806,9 @@ public class SlidingLayer extends FrameLayout {
      * @param touchY where the touch event started.
      * @return true if you can drag this view, false otherwise
      */
-    private boolean allowSlidingFromHere(final float touchX, final float touchY) {
+    private boolean touchPointIsWithinBounds(final float touchX, final float touchY) {
+        return touchPointIsWithinBounds(touchX, touchY, true);
+    }
 
         if (mCurrentState == STATE_OPENED) {
             return true;
