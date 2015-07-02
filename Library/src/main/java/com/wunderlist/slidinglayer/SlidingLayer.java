@@ -810,32 +810,30 @@ public class SlidingLayer extends FrameLayout {
         return touchPointIsWithinBounds(touchX, touchY, true);
     }
 
-        if (mCurrentState == STATE_OPENED) {
-            return true;
-        }
+    private boolean touchPointIsWithinBounds(final float touchX, final float touchY, boolean withinLayer) {
 
-        int visibleOffset = 0;
-        if (mCurrentState == STATE_PREVIEW) {
-            visibleOffset = Math.max(mPreviewOffsetDistance, 0);
-        } else if (mCurrentState == STATE_CLOSED) {
-            visibleOffset = mOffsetDistance;
-        }
+        int scroll = 0;
+        float touch;
 
-        if (visibleOffset == 0) {
-            return false;
+        if (allowedDirection() == HORIZONTAL) {
+            if (withinLayer) scroll = getScrollX();
+            touch = touchX;
         } else {
-            switch (mScreenSide) {
-            case STICK_TO_LEFT:
-                return touchX <= visibleOffset;
-            case STICK_TO_RIGHT:
-                return touchX >= getWidth() - visibleOffset;
-            case STICK_TO_TOP:
-                return touchY <= visibleOffset;
-            case STICK_TO_BOTTOM:
-                return touchY >= getHeight() - visibleOffset;
-            default:
-                return false;
-            }
+            if (withinLayer) scroll = getScrollY();
+            touch = touchY;
+        }
+
+        switch (mScreenSide) {
+        case STICK_TO_RIGHT:
+        case STICK_TO_BOTTOM:
+            return touch >= -scroll;
+        case STICK_TO_LEFT:
+            return touch <= getWidth() - scroll;
+        case STICK_TO_TOP:
+            return touch <= getHeight() - scroll;
+        default:
+            throw new IllegalStateException("The layer has to be stuck to one of the sides of the screen. " +
+                    "Current value is: " + mScreenSide);
         }
     }
 
