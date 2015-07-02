@@ -662,12 +662,14 @@ public class SlidingLayer extends FrameLayout {
             final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
 
             if (!touchPointIsWithinBounds(ev.getX(), ev.getY(), false)) return false;
+
+            final float x = getViewX(ev);
+            final float y = getViewY(ev);
+
+            final float deltaX = mLastX - x;
+            final float deltaY = mLastY - y;
             if (!mIsDragging) {
 
-                final float x = getViewX(ev);
-                final float xDiff = Math.abs(x - mLastX);
-                final float y = getViewY(ev);
-                final float yDiff = Math.abs(y - mLastY);
                 final float xDiff = Math.abs(x - mInitialRawX);
                 final float yDiff = Math.abs(y - mInitialRawY);
 
@@ -688,11 +690,6 @@ public class SlidingLayer extends FrameLayout {
 
             if (mIsDragging) {
 
-                final float x = getViewX(ev);
-                final float y = getViewY(ev);
-
-                final float deltaX = mLastX - x;
-                final float deltaY = mLastY - y;
                 mLastX = x;
                 mLastY = y;
 
