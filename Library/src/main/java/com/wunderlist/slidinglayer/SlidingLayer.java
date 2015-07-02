@@ -668,6 +668,8 @@ public class SlidingLayer extends FrameLayout {
                 final float xDiff = Math.abs(x - mLastX);
                 final float y = getViewY(ev);
                 final float yDiff = Math.abs(y - mLastY);
+                final float xDiff = Math.abs(x - mInitialRawX);
+                final float yDiff = Math.abs(y - mInitialRawY);
 
                 final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
                 final boolean validVerticalDrag = yDiff > mTouchSlop && yDiff > xDiff;
