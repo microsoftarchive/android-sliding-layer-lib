@@ -11,7 +11,7 @@ Implementation setup
 As easy as to draw a green droid yourself, just grab it in your build gradle:
 
 ```gradle
-compile 'com.wunderlist:sliding-layer:1.1.1'
+compile 'com.wunderlist:sliding-layer:1.2.5'
 ```
 
 or directly add it as a submodule inside of your project.

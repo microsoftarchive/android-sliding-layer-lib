@@ -30,7 +30,7 @@
     <groupId>com.wunderlist</groupId>
     <artifactId>sliding-layer</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0</version>
+    <version>1.2.5</version>
 
     <name>SlidingLayer</name>
     <description>A ViewGroup that smoothly scrolls its children in and out in a top layer fashion.</description>

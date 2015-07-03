@@ -22,7 +22,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 22
         versionCode 1
-        versionName "1.2.0"
+        versionName "1.2.5"
     }
 
     lintOptions {
