@@ -260,7 +260,11 @@ public class SlidingLayer extends FrameLayout {
     }
 
     public boolean isOpened() {
-        return mCurrentState == STATE_OPENED || mCurrentState == STATE_PREVIEW;
+        return mCurrentState == STATE_OPENED;
+    }
+
+    public boolean isInPreviewMode() {
+        return mCurrentState == STATE_PREVIEW;
     }
 
     public boolean isClosed() {
