@@ -449,8 +449,13 @@ public class SlidingLayer extends FrameLayout {
      */
     public void setPreviewOffsetDistance(int previewOffsetDistance) {
         mPreviewOffsetDistance = previewOffsetDistance;
+
         checkPreviewModeConsistency();
         invalidate(getLeft(), getTop(), getRight(), getBottom());
+
+        if (mCurrentState == STATE_PREVIEW) {
+            smoothScrollToCurrentPosition();
+        }
     }
 
     private void checkPreviewModeConsistency() {
@@ -1006,6 +1011,11 @@ public class SlidingLayer extends FrameLayout {
 
         mScroller.startScroll(sx, sy, dx, dy, duration);
         ViewCompat.postInvalidateOnAnimation(this);
+    }
+
+    private void smoothScrollToCurrentPosition() {
+        int[] pos = getDestScrollPosForState(mCurrentState);
+        smoothScrollTo(pos[0], pos[1]);
     }
 
     // We want the duration of the page snap animation to be influenced by the
