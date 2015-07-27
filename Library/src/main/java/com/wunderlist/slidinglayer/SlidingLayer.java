@@ -1169,11 +1169,19 @@ public class SlidingLayer extends FrameLayout {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        // Make sure scroll position is set correctly.
-        if (w != oldw) {
+        boolean scrollMustChange = false;
+        if (allowedDirection() == VERTICAL) {
+            if (h != oldh) {
+                scrollMustChange = true;
+            }
+        } else if (w != oldw) {
+            scrollMustChange = true;
+        }
+
+        if (scrollMustChange) {
             completeScroll();
             int[] pos = getDestScrollPosForState(mCurrentState);
-            scrollToAndNotify(pos[0], pos[1]);
+            scrollTo(pos[0], pos[1]);
         }
     }
 
