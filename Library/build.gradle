@@ -1,20 +1,48 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 
 dependencies {
     compile 'com.android.support:support-v4:22.2.0'
 }
 
-android {
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'wunderlist-sliding-layer'
 
+    publishedGroupId = 'com.wunderlist'
+    libraryName = 'wunderlist-sliding-layer'
+    artifact = 'sliding-layer'
+
+    libraryDescription = 'A fully customizable layer that shows your content in another layer. This layer can be ' +
+            'opened swiping from left/right/top/bottom and dismissed swiping too to the other direction.'
+
+    siteUrl = 'https://github.com/wunderlist/android-sliding-layer-lib'
+    gitUrl = 'https://github.com/wunderlist/android-sliding-layer-lib.git'
+
+    libraryVersion = '1.2.5'
+
+    developerId = '6Wunderkinder Gmbh'
+    developerName = '6Wunderkinder Gmbh'
+    developerEmail = 'android@6wunderkinder.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
@@ -31,3 +59,6 @@ android {
 }
 
 apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
