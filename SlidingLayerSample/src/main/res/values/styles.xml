@@ -29,7 +29,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -40,16 +40,18 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
     </style>
-    
-    <style name="ButtonRed" parent="@android:style/Widget.Button">
+
+    <style name="ButtonRed" parent="Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">50dp</item>
         <item name="android:paddingRight">50dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#fff</item>
-        <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:background">@drawable/button_red_selector</item>
     </style>
 

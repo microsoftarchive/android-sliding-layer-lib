@@ -24,9 +24,17 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context=".MainActivity">
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <ImageView
             android:layout_width="wrap_content"
@@ -47,7 +55,9 @@
     <com.wunderlist.slidinglayer.SlidingLayer
             android:id="@+id/slidingLayer1"
             android:layout_width="@dimen/layer_size"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:elevation="2dip">
         <!--slidingLayer:shadowDrawable="@drawable/sidebar_shadow"
         slidingLayer:shadowSize="@dimen/shadow_size"
         slidingLayer:offsetDistance="@dimen/offset_distance"
@@ -58,7 +68,7 @@
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#14ad8f">
+                android:background="@color/primary_light">
 
             <TextView
                     android:id="@+id/swipeText"
@@ -66,11 +76,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:fontFamily="sans-serif-medium"
                     android:drawablePadding="15dip"
                     android:paddingBottom="80dp"
                     android:textSize="17sp"
-                    android:textColor="#074035"/>
+                    android:textColor="@color/primary_text"/>
 
             <Button
                     android:id="@+id/buttonClose"
