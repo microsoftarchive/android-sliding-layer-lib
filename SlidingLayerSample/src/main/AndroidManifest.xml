@@ -21,9 +21,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.wunderlist.slidinglayersample"
-          android:versionCode="2"
-          android:versionName="1.5">
+          package="com.wunderlist.slidinglayersample">
 
     <application
             android:allowBackup="true"
