@@ -19,8 +19,5 @@ android {
 }
 
 dependencies {
-    //This is what you should use if you want to use the library from jcenter/mavencentral
-    //The other alternative is valid if you have the library as a project
-    //compile 'com.wunderlist:sliding-layer:1.1.1'
     compile project(':Library')
 }
