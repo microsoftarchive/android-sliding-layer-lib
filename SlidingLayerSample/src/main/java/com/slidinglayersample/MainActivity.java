@@ -23,7 +23,7 @@
  * limitations under the License.
  */
 
-package com.wunderlist.slidinglayersample;
+package com.slidinglayersample;
 
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
