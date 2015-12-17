@@ -36,6 +36,7 @@
             <enum name="top" value="-3"/>
             <enum name="bottom" value="-4"/>
         </attr>
+        <attr name="horizontalDrag" format="boolean"/>
     </declare-styleable>
 
 </resources>

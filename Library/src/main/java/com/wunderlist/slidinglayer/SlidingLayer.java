@@ -38,6 +38,7 @@ import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -166,6 +167,8 @@ public class SlidingLayer extends FrameLayout {
 
     private LayerTransformer mLayerTransformer;
 
+    private boolean horizontalDrag;
+
     public SlidingLayer(Context context) {
         this(context, null);
     }
@@ -215,6 +218,9 @@ public class SlidingLayer extends FrameLayout {
         // Sets the size of the preview summary, if any
         mPreviewOffsetDistance = ta.getDimensionPixelOffset(R.styleable.SlidingLayer_previewOffsetDistance,
                 INVALID_VALUE);
+
+        // Sets the ability to disable or enable the layer horizontal drag
+        horizontalDrag = ta.getBoolean(R.styleable.SlidingLayer_horizontalDrag, true);
 
         // If showing offset is greater than preview mode offset dimension, exception is thrown
         checkPreviewModeConsistency();
@@ -587,7 +593,7 @@ public class SlidingLayer extends FrameLayout {
                 return false;
             }
 
-            final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
+            final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff && horizontalDrag;
             final boolean validVerticalDrag = yDiff > mTouchSlop && yDiff > xDiff;
 
             if (validHorizontalDrag) {
@@ -686,7 +692,7 @@ public class SlidingLayer extends FrameLayout {
                 final float xDiff = Math.abs(x - mInitialRawX);
                 final float yDiff = Math.abs(y - mInitialRawY);
 
-                final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff;
+                final boolean validHorizontalDrag = xDiff > mTouchSlop && xDiff > yDiff && horizontalDrag;
                 final boolean validVerticalDrag = yDiff > mTouchSlop && yDiff > xDiff;
 
                 if (validHorizontalDrag || validVerticalDrag) {
