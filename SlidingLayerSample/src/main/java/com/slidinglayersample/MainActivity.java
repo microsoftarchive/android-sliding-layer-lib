@@ -23,15 +23,14 @@
  * limitations under the License.
  */
 
-package com.wunderlist.slidinglayersample;
+package com.slidinglayersample;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +43,7 @@ import com.wunderlist.slidinglayer.transformer.AlphaTransformer;
 import com.wunderlist.slidinglayer.transformer.RotationTransformer;
 import com.wunderlist.slidinglayer.transformer.SlideJoyTransformer;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private SlidingLayer mSlidingLayer;
     private TextView swipeText;
@@ -55,17 +54,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         bindViews();
+        initToolbar();
         initState();
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     /**
@@ -89,6 +79,12 @@ public class MainActivity extends Activity {
         setupShadow(prefs.getBoolean("layer_has_shadow", false));
         setupLayerOffset(prefs.getBoolean("layer_has_offset", false));
         setupPreviewMode(prefs.getBoolean("preview_mode_enabled", false));
+    }
+
+    private void initToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setupSlidingLayerPosition(String layerPosition) {
