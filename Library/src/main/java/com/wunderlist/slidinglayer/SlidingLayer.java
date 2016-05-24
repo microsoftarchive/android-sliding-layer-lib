@@ -23,8 +23,6 @@
 
 package com.wunderlist.slidinglayer;
 
-import java.util.Random;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -48,6 +46,8 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
+
+import java.util.Random;
 
 
 public class SlidingLayer extends FrameLayout {
@@ -1163,16 +1163,26 @@ public class SlidingLayer extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        int width = getDefaultSize(0, widthMeasureSpec);
-        int height = getDefaultSize(0, heightMeasureSpec);
-        setMeasuredDimension(width, height);
+        int count = getChildCount();
+
+        int maxHeight = 0;
+        int maxWidth = 0;
+
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            if (child.getVisibility() != GONE) {
+                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+
+                maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
+                maxWidth = Math.max(maxWidth, child.getMeasuredWidth());
+            }
+        }
+
+        setMeasuredDimension(maxWidth, maxHeight);
 
         if (mLayerTransformer != null) {
             mLayerTransformer.onMeasure(this, mScreenSide);
         }
-
-        super.onMeasure(getChildMeasureSpec(widthMeasureSpec, 0, width),
-                getChildMeasureSpec(heightMeasureSpec, 0, height));
     }
 
     @Override
