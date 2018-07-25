@@ -38,7 +38,6 @@ import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -865,13 +864,13 @@ public class SlidingLayer extends FrameLayout {
                 }
             }
         }
-        boolean temp = checkV && (
+        return canScrollToView(v, checkV, dx, dy);
+    }
+
+    public boolean canScrollToView(View v, boolean checkV, int dx, int dy) {
+        return checkV && (
                 (allowedDirection() == HORIZONTAL && ViewCompat.canScrollHorizontally(v, -dx) ||
-                        allowedDirection() == VERTICAL && v.canScrollVertically( -dy)));
-        if (v instanceof RecyclerView && dy > 0) {
-            return false;
-        }
-        return temp;
+                        allowedDirection() == VERTICAL && ViewCompat.canScrollVertically(v, -dy)));
     }
 
     /**
