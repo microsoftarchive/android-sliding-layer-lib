@@ -864,7 +864,10 @@ public class SlidingLayer extends FrameLayout {
                 }
             }
         }
+        return canScrollToView(v, checkV, dx, dy);
+    }
 
+    public boolean canScrollToView(View v, boolean checkV, int dx, int dy) {
         return checkV && (
                 (allowedDirection() == HORIZONTAL && ViewCompat.canScrollHorizontally(v, -dx) ||
                         allowedDirection() == VERTICAL && ViewCompat.canScrollVertically(v, -dy)));
