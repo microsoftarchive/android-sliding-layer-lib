@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ strings.xml
+  ~ 
+  ~ Copyright (C) 2018 6 Wunderkinder GmbH
+  ~
+  ~ Author: Jose L Ugia - @Jl_Ugia
+  ~ Designer: Benedikt Lehnert - @blehnert
+  ~ Designer: Timothy Achumba - @iam_timm
+  ~ Version: 1.0
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<resources>
+
+    <string name="app_name">SlidingLayerSample</string>
+
+    <string name="pref_title_stick_container">Coller la couche à</string>
+    <string name="pref_title_transformer">Transformateur</string>
+    <string name="pref_title_enable_preview_mode">Activer le mode aperçu</string>
+    <string name="pref_title_show_shadow">Afficher l\'ombre</string>
+    <string name="pref_title_show_offset">Offset fermé</string>
+    <string name="open_button_container">Ouvrir</string>
+    <string name="close_button_container">Fermer</string>
+
+    <string name="swipe_label">Glisser!</string>
+    <string name="swipe_left_label">Glisser à gauche!</string>
+    <string name="swipe_right_label">Glisser à droite!</string>
+    <string name="swipe_up_label">Glisser vers le haut!</string>
+    <string name="swipe_down_label">Glisser vers le bas!</string>
+
+    <string name="label_right">Droite</string>
+    <string name="label_left">Gauche</string>
+    <string name="label_top">Haut</string>
+    <string name="label_bottom">Bas</string>
+
+    <string name="label_none">Aucun</string>
+    <string name="label_alpha">Alpha</string>
+    <string name="label_rotation">Rotation</string>
+    <string name="label_slide_joy">Glisser la joie!</string>
+
+    <string name="not_applicable">n/a</string>
+
+    <string-array name="pref_list_titles">
+        <item>@string/label_right</item>
+        <item>@string/label_left</item>
+        <item>@string/label_top</item>
+        <item>@string/label_bottom</item>
+    </string-array>
+    <string-array name="pref_list_values">
+        <item>right</item>
+        <item>left</item>
+        <item>top</item>
+        <item>bottom</item>
+    </string-array>
+
+    <string-array name="pref_transform_list_titles">
+        <item>@string/label_none</item>
+        <item>@string/label_alpha</item>
+        <item>@string/label_rotation</item>
+        <item>@string/label_slide_joy</item>
+    </string-array>
+    <string-array name="pref_transform_list_values">
+        <item>none</item>
+        <item>alpha</item>
+        <item>rotation</item>
+        <item>slide</item>
+    </string-array>
+
+    <string name="pref_go">Aller!</string>
+
+</resources>
