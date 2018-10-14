@@ -3,15 +3,20 @@ apply plugin: 'android-reporting'
 buildscript {
 
     repositories {
+        google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
 
 allprojects {
+    repositories {
+        google()
+    }
+
     group = 'com.wunderlist.slidinglayer'
     version = '1.2.5'
 }
