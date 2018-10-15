@@ -76,6 +76,31 @@ public class SlidingLayerExampleActivity extends Activity {
     }
 }
 ```
+
+Kotlin
+------
+```kotlin
+class SlidingLayerExampleActivity:Activity() {
+
+  fun onCreate(savedInstanceState:Bundle) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.main_view)
+    
+    val slidingLayer = findViewById(R.id.slidingLayer1) as SlidingLayer
+    
+    slidingLayer.setShadowDrawable(R.drawable.sidebar_shadow)
+    slidingLayer.setShadowSizeRes(R.dimen.shadow_size)
+    slidingLayer.setOffsetDistanceRes(R.dimen.offset_distance)
+    slidingLayer.setPreviewOffsetDistanceRes(R.dimen.preview_offset_distance)
+    slidingLayer.setStickTo(SlidingLayer.STICK_TO_LEFT)
+    slidingLayer.setChangeStateOnTap(false)
+    
+    slidingLayer.addView(Button(this))
+    ...
+  }
+}
+```
+
 Code of Conduct
 -------------------
 
