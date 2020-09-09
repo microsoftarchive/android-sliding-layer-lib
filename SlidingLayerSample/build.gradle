@@ -5,17 +5,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 23
+        minSdkVersion 21
+        targetSdkVersion 30
         versionCode 3
         versionName "2.0.0"
     }
 }
 
 dependencies {
-    compile project(':Library')
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    implementation(project(':Library'))
+    implementation('androidx.appcompat:appcompat:1.2.0')
 }
